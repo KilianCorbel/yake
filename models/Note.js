@@ -8,4 +8,5 @@ let NoteSchema = new Schema({
     note : Number
 });
 
-mongoose.model('Note', NoteSchema);
+let note = mongoose.model('Note', NoteSchema);
+module.exports = note;

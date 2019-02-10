@@ -11,4 +11,5 @@ let PlaylistSchema = new Schema({
     privee : Boolean
 });
 
-mongoose.model('Playlist', PlaylistSchema);
+let playlist = mongoose.model('Playlist', PlaylistSchema);
+module.exports = playlist;

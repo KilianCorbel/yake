@@ -5,11 +5,12 @@ const mongoose 	= require('mongoose'),
 // ---- Artiste schema
 let ArtisteSchema = new Schema({
     id: Number,
-    nom : string,
+    nom : String,
     dateCreation : Date,
     dateFin : Date,
     biographie : String,
     image : String
 });
 
-mongoose.model('Artiste', ArtisteSchema);
+let artiste = mongoose.model('Artiste', ArtisteSchema);
+module.exports = artiste;

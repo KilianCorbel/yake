@@ -1,6 +1,6 @@
 let express = require('express'),
     app = express(),
-    router = express.Router();
+    router = express.Router(),
     session = require('cookie-session');
 
 // --- middleware
@@ -11,18 +11,18 @@ app.use(bodyParser.urlencoded({extended : true}));
 app.use(session({secret: 'todotopsecret'}))
 
 // -- Load model needed for the project
-require('../models/Musique');
+require('../models/Utilisateur');
 
 lienErreur = '/error';
-lienAll = '/album/';
-lienAjouter = '/album';
-lienModifier = '/album/:id';
-lienSupprimer = '/ablbum/:id';
-lienGet = '/album/:id';
+lienAll = '/user/';
+lienAjouter = '/user';
+lienModifier = '/user/:id';
+lienSupprimer = '/user/:id';
+lienGet = '/user/:id';
 
 // routes vers le front react
 pageErreur ='';
-pageMusique = '';
+pageUser = '';
 
 // -- ERROR
 app.get(lienErreur, function(req, res) {
@@ -31,18 +31,18 @@ app.get(lienErreur, function(req, res) {
 
 // -- FIND ALL
 app.get(lienAll, function (req, res) {
-    let musique = mongoose.model('Musique');
-    musique.find().then((musiques)=>{
-        res.render(pageMusique, musiques);
+    let user = mongoose.model('Utilisateur');
+    user.find().then((users)=>{
+        res.render(pageUser, users);
     })
 });
 // -- CREATE
 app.post(lienAjouter, function (req, res) {
-    let musique = mongoose.model('Musique');
-    let newMusique = new Musique(req.body);
-    newMusique.id = newMusique._id;
+    let user = mongoose.model('Utilisateur');
+    let newUser = new Utilisateur(req.body);
+    newUser.id = newUser._id;
 
-    newMusique.save().then(()=>{
+    newUser.save().then(()=>{
         res.redirect(lienAll);
     },(err)=>{
         res.redirect(lienErreur);
@@ -51,7 +51,7 @@ app.post(lienAjouter, function (req, res) {
 
 // -- UPDATE
 app.put(lienModifier, function (req, res) {
-    mongoose.model('Musique').updateOne({id : req.body.id}, {$set : req.body}, (err, updatedMusique)=>{
+    mongoose.model('Utilisateur').updateOne({id : req.body.id}, {$set : req.body}, (err, updatedUser)=>{
        if(err){
             res.redirect(lienErreur);
        }else{
@@ -62,7 +62,7 @@ app.put(lienModifier, function (req, res) {
 
 // -- DELETE
 app.delete(lienSupprimer, function (req, res) {
-    let musique = mongoose.model('Musique');
+    let album = mongoose.model('Album');
     album.find({id : req.params.id}).deleteOne().then(()=>{
         res.redirect(lienAll);
     },(err)=>{
@@ -72,9 +72,9 @@ app.delete(lienSupprimer, function (req, res) {
 
 // -- READ
 app.get(lienGet, function (req, res) {
-    mongoose.model('Musique').findOne({id : req.params.id}).then((musique)=>{
+    mongoose.model('Album').findOne({id : req.params.id}).then((album)=>{
         if(album){
-            res.render(pageMusique, musique);
+            res.render(pageBatiment, album);
         }else{
             res.status(404).json({message : "404 not found"});
         }

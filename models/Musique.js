@@ -9,4 +9,5 @@ let MusiqueSchema = new Schema({
     datePublication : Date
 });
 
-mongoose.model('Musique', MusiqueSchema);
+let musique = mongoose.model('Musique', MusiqueSchema);
+module.exports = musique;

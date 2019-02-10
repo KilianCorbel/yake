@@ -11,18 +11,18 @@ app.use(bodyParser.urlencoded({extended : true}));
 app.use(session({secret: 'todotopsecret'}))
 
 // -- Load model needed for the project
-require('../models/Musique');
+require('../models/Genre');
 
 lienErreur = '/error';
-lienAll = '/album/';
-lienAjouter = '/album';
-lienModifier = '/album/:id';
-lienSupprimer = '/ablbum/:id';
-lienGet = '/album/:id';
+lienAll = '/genre/';
+lienAjouter = '/genre';
+lienModifier = '/genre/:id';
+lienSupprimer = '/genre/:id';
+lienGet = '/genre/:id';
 
 // routes vers le front react
 pageErreur ='';
-pageMusique = '';
+pageGenre = '';
 
 // -- ERROR
 app.get(lienErreur, function(req, res) {
@@ -31,18 +31,18 @@ app.get(lienErreur, function(req, res) {
 
 // -- FIND ALL
 app.get(lienAll, function (req, res) {
-    let musique = mongoose.model('Musique');
-    musique.find().then((musiques)=>{
-        res.render(pageMusique, musiques);
+    let genre = mongoose.model('Genre');
+    genre.find().then((genres)=>{
+        res.render(pageGenre, genres);
     })
 });
 // -- CREATE
 app.post(lienAjouter, function (req, res) {
-    let musique = mongoose.model('Musique');
-    let newMusique = new Musique(req.body);
-    newMusique.id = newMusique._id;
+    let genre = mongoose.model('Genre');
+    let newGenre = new Genre(req.body);
+    newGenre.id = newGenre._id;
 
-    newMusique.save().then(()=>{
+    newGenre.save().then(()=>{
         res.redirect(lienAll);
     },(err)=>{
         res.redirect(lienErreur);
@@ -51,7 +51,7 @@ app.post(lienAjouter, function (req, res) {
 
 // -- UPDATE
 app.put(lienModifier, function (req, res) {
-    mongoose.model('Musique').updateOne({id : req.body.id}, {$set : req.body}, (err, updatedMusique)=>{
+    mongoose.model('Genre').updateOne({id : req.body.id}, {$set : req.body}, (err, updatedGenre)=>{
        if(err){
             res.redirect(lienErreur);
        }else{
@@ -62,8 +62,8 @@ app.put(lienModifier, function (req, res) {
 
 // -- DELETE
 app.delete(lienSupprimer, function (req, res) {
-    let musique = mongoose.model('Musique');
-    album.find({id : req.params.id}).deleteOne().then(()=>{
+    let genre = mongoose.model('Genre');
+    genre.find({id : req.params.id}).deleteOne().then(()=>{
         res.redirect(lienAll);
     },(err)=>{
         res.redirect(lienErreur);
@@ -72,9 +72,9 @@ app.delete(lienSupprimer, function (req, res) {
 
 // -- READ
 app.get(lienGet, function (req, res) {
-    mongoose.model('Musique').findOne({id : req.params.id}).then((musique)=>{
-        if(album){
-            res.render(pageMusique, musique);
+    mongoose.model('Genre').findOne({id : req.params.id}).then((genre)=>{
+        if(genre){
+            res.render(pageGenre, genre);
         }else{
             res.status(404).json({message : "404 not found"});
         }

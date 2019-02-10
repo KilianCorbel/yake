@@ -2,8 +2,8 @@
 const mongoose 	= require('mongoose'),
     Schema	 	= mongoose.Schema;
 
-// ---- Artiste schema
-let ArtisteSchema = new Schema({
+// ---- Schema
+let UtilisateurSchema = new Schema({
     id : Number,
     pseudo : String,
     email : String,
@@ -13,4 +13,5 @@ let ArtisteSchema = new Schema({
     dateCreation : Date
 });
 
-mongoose.model('Artiste', ArtisteSchema);
+let user = mongoose.model('Utilisateur', UtilisateurSchema);
+module.exports = user;

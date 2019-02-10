@@ -5,9 +5,11 @@ const mongoose 	= require('mongoose'),
 // ---- Album schema
 let AlbumSchema = new Schema({
     id : Number,
-    nom : string,
-    couverture : string,
-    datePublication : Date
+    nom : String,
+    couverture : String,
+    datePublication : String
 });
 
-mongoose.model('Album', AlbumSchema);
+
+let album = mongoose.model('Album', AlbumSchema);
+module.exports = album;

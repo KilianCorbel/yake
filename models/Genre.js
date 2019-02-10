@@ -8,4 +8,5 @@ let GenreSchema = new Schema({
     libelle : String
 });
 
-mongoose.model('Genre', GenreSchema);
+let genre = mongoose.model('Genre', GenreSchema);
+module.exports = genre;
