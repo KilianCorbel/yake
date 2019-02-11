@@ -1,36 +1,25 @@
-
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-}
-
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
   display: flex;
-  flex-direction: column;
+  flex-flow: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
 }
-
-.App-link {
-  color: #61dafb;
-}
-
 .App {
+  flex: 1 0 0;
   text-align: center;
-  height:100%;
   display:flex;
   align-content: stretch;
-  flex-direction: column;
+  flex-flow: column;
 }
 
 .Header{
   display:flex;
   flex: 1 0 0;
-  flex-direction: row;
+  flex-flow: row;
   align-items: center;
   align-content: stretch;
   background-color: #188021;
@@ -41,7 +30,7 @@
   height:100%;
   flex:6 0 0;
   display:flex;
-  flex-direction: row;
+  flex-flow: row;
   align-content: stretch;
   align-items: center;
 }
@@ -51,7 +40,7 @@
   flex:1 0 0;
   background-color: #91d199c9;
   color: #525252;
-  height:50%;
+  height:40%;
 }
 
 .RightHeaderBlock{
@@ -59,23 +48,24 @@
 }
 
 .FullBody{
-  flex: 9 0 0;
+  flex: 50 0 0;
   display: flex;
   align-content: stretch;
-  flex-direction: row;
+  flex-flow: row;
 }
 
 .LeftMenuBar{
   display: flex;
   align-content: stretch;
-  flex-direction: column;
-  flex:1 0 0;
+  flex-flow: column;
+  flex:1 0 auto;
 }
 
 .Body{
   display: flex;
   align-content: stretch;
-  flex:7 0 0;
+  flex:9 0 0;
+  flex-flow:column;
 }
 
 @keyframes App-logo-spin {

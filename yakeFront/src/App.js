@@ -4,6 +4,7 @@ import './App.css';
 import Menu from './Menu.js'
 import Title from './Title.js'
 import MusiqueList from './musiqueList.js'
+import MusicPlayer from './MusicPlayer/MusicPlayer.js'
 //import {Form} from 'react-bootstrap';
 class App extends Component {
   constructor(props){
@@ -52,9 +53,11 @@ class App extends Component {
         </div>
         <div className="FullBody">
           <div className="LeftMenuBar">
-          <Menu value="Mes musiques"/>
+            <Menu value="Mes musiques"/>
             <Menu value="Tendances"/>
             <Menu value="Mes playlists"/>
+            <Menu value="Autre"/>
+            <Menu value=""/>
           </div>
           <div className="Body">
             <MusiqueList musiqueList={this.state.musicList}/>
