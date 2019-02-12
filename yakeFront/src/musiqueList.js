@@ -20,7 +20,9 @@ class musiqueList extends Component{
     }
     runMusic(sound){
         console.log(this.play);
-        if(this.play===true){
+        this.props.musicPlayer.addNext(sound);
+        //this.props.musicPlayer.next();
+        /*if(this.play===true){
             try{
                 console.log("play");
                 this.context = new (window.AudioContext||window.webkitAudioContext||window.mozAudioContext)();
@@ -50,12 +52,12 @@ class musiqueList extends Component{
                 this.source.disconnect();
                 this.source.stop(0);
             }
-        }
+        }*/
     }
     render(){
         let musiqueList=[];
         if(this.props.musiqueList.length>0){
-            musiqueList=this.props.musiqueList.map((ele)=><li key={`${ele.titre}`}>{`${ele.titre} ---- ${ele.Album} ---- ${ele.Groupe}`}<button onClick={()=>{this.runMusic(ele.Sound);}}>{this.play?"play":"pause"}</button></li>)
+            musiqueList=this.props.musiqueList.map((ele)=><li key={`${ele.titre}`}>{`${ele.titre} ---- ${ele.Album} ---- ${ele.Groupe}`}<button onClick={()=>{this.runMusic(ele);}}>{this.play?"play":"pause"}</button></li>)
         }
         return <div>
             <ul>

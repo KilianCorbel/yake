@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 //import logo from './logo.svg';
 import './App.css';
-import Menu from './Menu.js'
-import Title from './Title.js'
-import MusiqueList from './musiqueList.js'
-import MusicPlayer from './MusicPlayer/MusicPlayer.js'
+import Menu from './Menu.js';
+import Title from './Title.js';
+import MusiqueList from './musiqueList.js';
+import MusicPlayer from './MusicPlayer/MusicPlayer.js';
+import MusicPlayerI from './MusicPlayer/MusicPlayerI.js';
 //import {Form} from 'react-bootstrap';
 class App extends Component {
   constructor(props){
@@ -16,6 +17,7 @@ class App extends Component {
     this.submitInputValue = this.submitInputValue.bind(this);
     this.updateInputValue = this.updateInputValue.bind(this);
     this.search = this.search.bind(this);
+    this.musicPlayer = new MusicPlayer();
    // this.findMusique("Evolve");
   }
   findMusique(musique){
@@ -60,7 +62,10 @@ class App extends Component {
             <Menu value=""/>
           </div>
           <div className="Body">
-            <MusiqueList musiqueList={this.state.musicList}/>
+            <div className="MainContent">
+              <MusiqueList musicPlayer={this.musicPlayer} musiqueList={this.state.musicList}/>
+            </div>           
+              <MusicPlayerI musicPlayer={this.musicPlayer}/>
           </div>
         </div>
       </div>      

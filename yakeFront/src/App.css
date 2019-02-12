@@ -67,6 +67,13 @@
   flex:9 0 0;
   flex-flow:column;
 }
+.MainContent{
+  display: flex;
+  align-content: stretch;
+  flex:1 0 0;
+  flex-flow:column;
+}
+
 
 @keyframes App-logo-spin {
   from {

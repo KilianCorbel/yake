@@ -1,0 +1,6 @@
+.MusicBar{
+    display: flex;
+    align-content: stretch;
+    flex:1 0 0;
+    flex-flow:column;
+  }
