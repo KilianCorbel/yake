@@ -1,12 +1,14 @@
 class MusicPlayer{
     constructor(){
-        this.playlist = [];
+        this.playlist= [];
         this.windowAudioContext = (window.AudioContext||window.webkitAudioContext||window.mozAudioContext)
         this.context = new this.windowAudioContext();
         this.eventListenerObject={};
         this.nowPlaying = false;
         this.paused=false;
+        this.context.onstatechange = ()=>{console.log(this.context);console.log("Fin");console.log(this.context.state);};
     }
+    
     nextIsAble(){
         return this.playlist.length>this.actualMusicIndex+1;
     }
@@ -18,7 +20,6 @@ class MusicPlayer{
     }
     pause(){
         if(this.playlist.length>this.actualMusicIndex && !this.paused){
-            console.log(this.context);
             this.context.suspend();
             this.paused=true;
         }
@@ -60,7 +61,6 @@ class MusicPlayer{
     }
     getActualAuthor(){
         if(this.playlist.length>0){
-            console.log(this.playlist[this.actualMusicIndex]);
             return this.playlist[this.actualMusicIndex].Groupe;
         }
         return "";
@@ -105,13 +105,12 @@ class MusicPlayer{
             this.context.decodeAudioData(this.toArrayBuffer(music.Sound.data), (buffer)=>{
                 source.buffer = buffer;
                 source.connect(this.context.destination);
-                source.loop = true;
+                source.loop = false;
             },
             function(e){ console.log(e); });
             source.connect(this.context.destination);       // connect the source to the context's destination (the speakers)
             source.start(0); 
             music.source = source;                          // play the source now 
-            console.log(this.context);
         }                       
       }
     toArrayBuffer(buf) {

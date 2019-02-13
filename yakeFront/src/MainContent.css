@@ -1,7 +1,6 @@
-.MusicBar{
+.MainContent{
     display: flex;
     align-content: stretch;
-    flex:1 0 0;
+    flex:8 0 0;
     flex-flow:column;
-    border: solid 1 #4e4e4e;
   }

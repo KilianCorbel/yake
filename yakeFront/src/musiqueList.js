@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import './MainContent.css';
 class musiqueList extends Component{
     constructor(props){
         super(props);
@@ -59,7 +60,7 @@ class musiqueList extends Component{
         if(this.props.musiqueList.length>0){
             musiqueList=this.props.musiqueList.map((ele)=><li key={`${ele.titre}`}>{`${ele.titre} ---- ${ele.Album} ---- ${ele.Groupe}`}<button onClick={()=>{this.runMusic(ele);}}>{this.play?"play":"pause"}</button></li>)
         }
-        return <div>
+        return <div className="MainContent">
             <ul>
                 {musiqueList}
             </ul>

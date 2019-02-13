@@ -3,7 +3,7 @@ import './Menu.css';
 class Menu extends Component {
   render() {
     return (
-      <div className="MenuBarre">
+      <div onClick={()=>{this.props.onClick()}} className="MenuBarre">
         {
             this.props.value
         }
