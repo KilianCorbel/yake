@@ -1,6 +1,6 @@
 let express = require('express'),
     app = express(),
-    router = express.Router();
+    mongoose = require('mongoose'),
     session = require('cookie-session');
 
 // --- middleware
@@ -14,7 +14,7 @@ app.use(session({secret: 'todotopsecret'}))
 require('../models/Playlist');
 
 lienErreur = '/error';
-lienAll = '/playlist/';
+lienAll = '/';
 lienAjouter = '/playlist';
 lienModifier = '/playlist/:id';
 lienSupprimer = '/playlist/:id';
@@ -33,29 +33,29 @@ app.get(lienErreur, function(req, res) {
 app.get(lienAll, function (req, res) {
     let playlist = mongoose.model('Playlist');
     playlist.find().then((playlists)=>{
-        res.render(pagePlaylist, playlists);
+        res.send(playlists);
     })
 });
 // -- CREATE
 app.post(lienAjouter, function (req, res) {
     let playlist = mongoose.model('Playlist');
-    let newPLaylist = new Playlist(req.body);
+    let newPLaylist = new mongoose.Schema(req.body);
     newPLaylist.id = newPLaylist._id;
 
     newPLaylist.save().then(()=>{
-        res.redirect(lienAll);
+        res.send(newPLaylist);
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send(err);
     })
 });
 
 // -- UPDATE
 app.put(lienModifier, function (req, res) {
-    mongoose.model('Playlist').updateOne({id : req.body.id}, {$set : req.body}, (err, updatedPlaylist)=>{
+    mongoose.model('Playlist').updateOne({_id : req.body.id}, {$set : req.body}, (err, updatedPlaylist)=>{
        if(err){
-            res.redirect(lienErreur);
+            res.send(err);
        }else{
-            res.redirect(lienAll);
+            res.send(updatedPlaylist);
        }
     });
 });
@@ -63,23 +63,23 @@ app.put(lienModifier, function (req, res) {
 // -- DELETE
 app.delete(lienSupprimer, function (req, res) {
     let playlist = mongoose.model('Playlist');
-    playlist.find({id : req.params.id}).deleteOne().then(()=>{
-        res.redirect(lienAll);
+    playlist.find({_id : req.params.id}).deleteOne().then(()=>{
+        res.send(playlist);
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send(err);
     });
 });
 
 // -- READ
 app.get(lienGet, function (req, res) {
-    mongoose.model('Playlist').findOne({id : req.params.id}).then((playlist)=>{
+    mongoose.model('Playlist').findOne({_id : req.params.id}).then((playlist)=>{
         if(playlist){
-            res.render(pageBatiment, playlist);
+            res.send(playlist);
         }else{
             res.status(404).json({message : "404 not found"});
         }
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send(err);
     });
 });
 

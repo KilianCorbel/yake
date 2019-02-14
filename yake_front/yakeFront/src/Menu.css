@@ -1,0 +1,11 @@
+.MenuBarre{
+    flex:1 0 0;
+    text-align: center;
+    background-color: #188021;
+    color: #ffffff;
+    border : 2px solid #6d6e6c;
+    overflow:hidden;
+    display: flex;
+    justify-content: center;
+    flex-flow: column;
+}

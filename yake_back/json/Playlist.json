@@ -1,0 +1,14 @@
+[
+    {
+        "nom" : "playlist test",
+        "image": "null.png",
+        "description" : "Ma playlist test",
+        "privee" : true
+    },
+    {
+        "nom" : "Soirées",
+        "image": "null.png",
+        "description" : "Ma playlist pour soirées",
+        "privee" : false
+    }
+]

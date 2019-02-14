@@ -1,0 +1,18 @@
+[
+    {
+        "pseudo" : "karmapolice",
+        "email" : "karma.police@gmail.com",
+        "nom" : "karma",
+        "prenom": "police",
+        "password" : "pcw123",
+        "dateCreation" : "09-02-2019"
+    },
+    {
+        "pseudo" : "darklink77",
+        "email" : "darklink77@gmail.com",
+        "nom" : "Laink",
+        "prenom": "Dark",
+        "password" : "1234",
+        "dateCreation" : "09-02-2019"
+    }
+]

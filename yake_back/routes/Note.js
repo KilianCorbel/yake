@@ -1,6 +1,6 @@
 let express = require('express'),
     app = express(),
-    router = express.Router();
+    mongoose = require('mongoose'),
     session = require('cookie-session');
 
 // --- middleware
@@ -14,7 +14,7 @@ app.use(session({secret: 'todotopsecret'}))
 require('../models/Note');
 
 lienErreur = '/error';
-lienAll = '/note/';
+lienAll = '/';
 lienAjouter = '/note';
 lienModifier = '/note/:id';
 lienSupprimer = '/note/:id';
@@ -33,29 +33,29 @@ app.get(lienErreur, function(req, res) {
 app.get(lienAll, function (req, res) {
     let note = mongoose.model('Note');
     note.find().then((notes)=>{
-        res.render(pageNote, notes);
+        res.send(notes);
     })
 });
 // -- CREATE
 app.post(lienAjouter, function (req, res) {
     let note = mongoose.model('Note');
-    let newNote = new Note(req.body);
+    let newNote = new mongoose.Schema(req.body);
     newNote.id = newNote._id;
 
     newNote.save().then(()=>{
-        res.redirect(lienAll);
+        res.send(newNote);
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send(err);
     })
 });
 
 // -- UPDATE
 app.put(lienModifier, function (req, res) {
-    mongoose.model('Note').updateOne({id : req.body.id}, {$set : req.body}, (err, updatedNote)=>{
+    mongoose.model('Note').updateOne({_id : req.body.id}, {$set : req.body}, (err, updatedNote)=>{
        if(err){
-            res.redirect(lienErreur);
+            res.send(err);
        }else{
-            res.redirect(lienAll);
+            res.send(updatedNote);
        }
     });
 });
@@ -63,23 +63,23 @@ app.put(lienModifier, function (req, res) {
 // -- DELETE
 app.delete(lienSupprimer, function (req, res) {
     let note = mongoose.model('Note');
-    note.find({id : req.params.id}).deleteOne().then(()=>{
-        res.redirect(lienAll);
+    note.find({_id : req.params.id}).deleteOne().then(()=>{
+        res.send(note);
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send(err);
     });
 });
 
 // -- READ
 app.get(lienGet, function (req, res) {
-    mongoose.model('Note').findOne({id : req.params.id}).then((note)=>{
+    mongoose.model('Note').findOne({_id : req.params.id}).then((note)=>{
         if(note){
-            res.render(pageBatiment, note);
+            res.send(note);
         }else{
             res.status(404).json({message : "404 not found"});
         }
     },(err)=>{
-        res.redirect(lienErreur);
+        res.send(err);
     });
 });
 

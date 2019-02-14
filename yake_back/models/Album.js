@@ -4,7 +4,6 @@ const mongoose 	= require('mongoose'),
 
 // ---- Album schema
 let AlbumSchema = new Schema({
-    id : Number,
     nom : String,
     couverture : String,
     datePublication : String

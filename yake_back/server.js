@@ -1,7 +1,6 @@
 // ---- Dependencies
 let express = require('express'),
-    app = express(),
-    router = express.Router();
+    app = express();
 let bodyParser = require('body-parser');
 let mongoose = require('mongoose');
 
@@ -32,15 +31,15 @@ app.use(function (req, res, next) {
 });
 
 // ---- Define routes
-app.use('/albums', require('./routes/Album'));
-app.use('/artistes', require('./routes/Artiste'));
-app.use('/genres', require('./routes/Genre'));
-app.use('/musiques', require('./routes/Musique'));
-app.use('/notes', require('./routes/Note'));
-app.use('/playlists', require('./routes/Playlist'));
-app.use('/users', require('./routes/Utilisateur'));
+app.use('/api/albums', require('./routes/Album'));
+app.use('/api/artistes', require('./routes/Artiste'));
+app.use('/api/genres', require('./routes/Genre'));
+app.use('/api/musiques', require('./routes/Musique'));
+app.use('/api/notes', require('./routes/Note'));
+app.use('/api/playlists', require('./routes/Playlist'));
+app.use('/api/users', require('./routes/Utilisateur'));
 
 // ---- Start server
 app.listen(7990, function(){
-    console.info('HTTP server started on port 7990 \n Connect to http://localhost:7990/');
+    console.info('HTTP server started on port 7990 \nConnect to http://localhost:7990/');
 });
