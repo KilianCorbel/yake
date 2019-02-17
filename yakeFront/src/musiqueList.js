@@ -19,9 +19,19 @@ class musiqueList extends Component{
         }
         return ab;
     }
+    initMusic(sound){
+        this.props.playlist.initMusic(sound);
+        this.props.refresh();
+    }
+    addNext(sound){
+        this.props.playlist.addNext(sound);
+        this.props.refresh();
+    }
     runMusic(sound){
-        console.log(this.play);
-        this.props.musicPlayer.addNext(sound);
+        //console.log(this.play);
+        //this.props.musicPlayer.addNext(sound);
+        this.props.playlist.addNext(sound);
+        this.props.refresh();
         //this.props.musicPlayer.next();
         /*if(this.play===true){
             try{
@@ -58,7 +68,17 @@ class musiqueList extends Component{
     render(){
         let musiqueList=[];
         if(this.props.musiqueList.length>0){
-            musiqueList=this.props.musiqueList.map((ele)=><li key={`${ele.titre}`}>{`${ele.titre} ---- ${ele.Album} ---- ${ele.Groupe}`}<button onClick={()=>{this.runMusic(ele);}}>{this.play?"play":"pause"}</button></li>)
+            musiqueList=this.props.musiqueList.map((ele)=>{
+                if(this.props.playlist.isInitialised()){
+                    return(<li key={`${ele.titre}`}>{`${ele.titre} ---- ${ele.Album} ---- ${ele.Groupe}`}
+                    <button onClick={()=>{this.initMusic(ele);}}>{"Play"}</button>
+                    </li>);}
+            else{
+                return(<li key={`${ele.titre}`}>{`${ele.titre} ---- ${ele.Album} ---- ${ele.Groupe}`}
+                <button onClick={()=>{this.initMusic(ele);}}>{"Play"}</button>
+                <button onClick={()=>{this.addNext(ele);}}>{"Add Next"}</button>
+                </li>);}
+            })
         }
         return <div className="MainContent">
             <ul>
