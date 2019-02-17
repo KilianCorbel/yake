@@ -2,6 +2,25 @@
     display: flex;
     align-content: stretch;
     flex:1 0 0;
-    flex-flow:column;
-    border: solid 1 #4e4e4e;
+    flex-flow:row;
   }
+
+.MusicBodyInfo{
+  display: flex;
+  align-content: stretch;
+  flex:6 0 0;
+  align-items: center;
+  flex-flow:row;
+}
+
+.MusicBody{
+  display: flex;
+  align-content: stretch;
+  flex:1 0 0;
+  flex-flow:column;
+  border: 1px solid #4e4e4e;
+}
+
+#audioContent{
+  flex:1 0 0;
+}

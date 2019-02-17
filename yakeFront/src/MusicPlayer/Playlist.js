@@ -5,6 +5,9 @@ class Playlist{
         this.actualMusicIndex=0;
         this.firstInit=true;
     }
+    isEmpty(){
+        return this.playlist.length===0;
+    }
     addNext(music){
         this.playlist.push(music);
     }
@@ -19,6 +22,9 @@ class Playlist{
         else{
             this.dispatchEvent("change");
         }
+    }
+    getMusics(){
+        return this.playlist;
     }
     isInitialised(){
         return this.firstInit;

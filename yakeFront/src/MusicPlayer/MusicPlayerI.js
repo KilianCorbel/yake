@@ -1,5 +1,7 @@
 import './MusicPlayer.css';
 import React, { Component } from 'react';
+import { Button } from 'reactstrap';
+import AddPlaylist from '../AddPlaylist.js';
 class MusicPlayerI extends Component{
     constructor(props){
         super(props);
@@ -52,14 +54,15 @@ class MusicPlayerI extends Component{
              </audio>)
         }
         return(
-            <div className="MusicBar">
-                <div>
+            <div className="MusicBody">
+                <div className="MusicBodyInfo">
                 {`${this.props.playlist.getActualSong().titre}-------${this.props.playlist.getActualSong().album}------${this.props.playlist.getActualSong().Groupe}`}
+                <AddPlaylist playlist={this.props.playlist}/>
                 </div>
-                <div>
-                    <button onClick={()=>{this.previous();}}>{"previous"}</button>
+                <div className="MusicBar">
+                    <Button color="success" onClick={()=>{this.previous();}}>{"<"}</Button>
                     {show}
-                    <button onClick={()=>{this.next();}}>{"next"}</button>
+                    <Button color="success" onClick={()=>{this.next();}}>{">"}</Button>
                 </div>
             </div>
         );
