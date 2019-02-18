@@ -2,7 +2,6 @@ let express = require('express'),
     app = express(),
     mongoose = require('mongoose'),
     session = require('cookie-session');
-
 // --- middleware
 // - body-parser needed to catch and to treat information inside req.body
 let bodyParser = require('body-parser');
@@ -14,10 +13,14 @@ app.use(session({secret: 'todotopsecret'}))
 require('./Artiste.model');
 
 const getAll = '/';
-const getArtiste = '/:id';
-const getAlbum = '/albums/:id';
+const getArtisteById = '/id/:id';
+const getArtisteByName = '/name/:name';
+const getAlbumById = '/albums/id/:id';
+const getAlbumByName = '/albums/name/:name';
 const getAlbums = '/albums'
-const getMusique = '/albums/musiques/:id';
+const getMusiqueById = '/albums/musiques/id/:id';
+const getMusiqueByTitle = '/albums/musiques/title/:title';
+const readMusique = '/albums/musiques/stream/:id';
 const getMusiques = '/albums/musiques';
 const postArtiste = '/';
 // const postAlbum = '/artiste/album';
@@ -36,13 +39,34 @@ pageErreur ='';
 pageArtiste = '';
 
 let Artiste = mongoose.model('Artiste');
-
 // -- FIND ALL
 app.get(getAll, function (req, res) {
     let artiste = mongoose.model('Artiste');
     artiste.find().then((artistes)=>{
         let result = artistes;
         console.log(result.albums);
+        res.send(artistes);
+    })
+});
+
+
+//Find Artiste byName
+app.get(getArtisteByName, function (req, res) {
+    let artiste = mongoose.model('Artiste');
+    artiste.find({'nom' : req.params.name}).then((artistes)=>{
+        let result = artistes;
+		result = result.map(ele=>{
+			ele.image=undefined;console.log(ele.albums); 
+			ele.albums=ele.albums.map(album=>{
+				album.couverture=undefined;
+				album.musiques = album.musiques.map(musique=>{
+					musique.son=undefined;
+					return musique;
+				});
+			return album;
+		});return ele;});
+		console.log(result);
+        //console.log(result[0].albums);
         res.send(artistes);
     })
 });
@@ -78,12 +102,12 @@ app.get(getMusiques, function(req, res) {
 });
 
 // -- GET album/:id
-app.get(getAlbum, function(req, res) {
+app.get(getAlbumById, function(req, res) {
     let artiste = mongoose.model('Artiste');
 
     artiste.find({'albums._id' : req.params.id}, {'albums.$':1}).then((album)=>{
         if(album){
-            res.send(album);
+            res.send(album[0]);
         }else{
             res.status(404).json({message : "404 not found"});
         }
@@ -92,13 +116,62 @@ app.get(getAlbum, function(req, res) {
     });
 });
 
-// -- GET musique
-app.get(getMusique, function(req, res) {
+// -- GET album/:name
+app.get(getAlbumByName, function(req, res) {
+    let artiste = mongoose.model('Artiste');
+
+    artiste.find({'albums.nom' : new RegExp('^.*'+req.params.name+'.*$', "ig")}).then((art)=>{
+        if(art){
+			art = art.map(arti=>{arti.albums=arti.albums.filter(album=>album.nom.includes(req.params.name));return arti;});
+			art = art.map(arti=>arti.albums.map(alb=>{let retour = {};retour.musiques=alb.musiques;retour._id=alb._id;retour.nom = alb.nom;retour.nomGroupe = arti.nom;retour.idGroupe=arti._id;return retour}).reduce((prev,ele)=>prev.concat(ele),[])).reduce((prev,ele)=>prev.concat(ele),[]);
+            res.send(art);
+        }else{
+            res.status(404).json({message : "404 not found"});
+        }
+    },(err)=>{
+        res.send(err);
+    });
+});
+
+// -- GET musique/:id
+app.get(getMusiqueById, function(req, res) {
     let artiste = mongoose.model('Artiste');
 
     artiste.find({'albums.musiques._id' : req.params.id}, {'albums.musiques.$':1}).then((musique)=>{
         if(musique){
             res.send(musique[0]);
+        }else{
+            res.status(404).json({message : "404 not found"});
+        }
+    },(err)=>{
+        res.send(err);
+    });
+});
+
+// -- GET musique/:title
+app.get(getMusiqueByTitle, function(req, res) {
+    let artiste = mongoose.model('Artiste');
+
+    artiste.find({'albums.musiques.titre' : new RegExp('^.*'+req.params.title+'.*$', "ig")}).then((art)=>{
+        if(art){
+			console.log(art);
+			albums = art.map(arti=>arti.albums.map(alb=>{let retour = {};retour.musiques=alb.musiques;retour._id=alb._id;retour.nom = alb.nom;retour.nomGroupe = arti.nom;retour.idGroupe=arti._id;return retour}).reduce((prev,ele)=>prev.concat(ele),[])).reduce((prev,ele)=>prev.concat(ele),[]);
+            mus = albums.map(alb=>alb.musiques.map(mus=>{
+				let musicObj={};
+				musicObj.nomGroupe=alb.nomGroupe;
+				musicObj.idAlbum=alb._id;
+				musicObj.nomAlbum=alb.nom;
+				musicObj.idGoupe = alb.idGroupe;
+				musicObj.titre=mus.titre;
+				musicObj._id=mus._id;
+				return musicObj;
+			}).reduce((prev,ele)=>prev.concat(ele),[])).reduce((prev,ele)=>prev.concat(ele),[]).filter(ele=>ele.titre.includes(req.params.title));
+			
+			//res.send(art);
+			/*art=art.filter(ele=>ele.albums.filter(album=>album.musiques.filter(mus=>mus.titre.includes(req.params.title))).length>0);
+			art=art.map(arti=>{arti.albums=arti.albums.filter(album=>album.musiques.filter(mus=>mus.titre.includes(req.params.title))>0);return arti;});
+			art.map(arti=>arti.albums.map(album=>{album.musiques=album.musiques.filter(mus=>mus.titre===req.params.title);return album;}));*/
+            res.send(mus);
         }else{
             res.status(404).json({message : "404 not found"});
         }
@@ -140,9 +213,28 @@ app.delete(deleteArtiste, function (req, res) {
         res.send(err);
     });
 });
+//READ a music
+app.get(readMusique,function (req,res){
+	let artiste = mongoose.model('Artiste');
+	artiste.find({'albums.musiques._id' : req.params.id}, 'albums.musiques').then((musique)=>{
+        if(musique){
+			let fs = require('fs');
+			musique=musique[0].albums.reduce((prev,ele)=>prev.concat(ele),[]).reduce((prev,ele)=>prev.concat(ele.musiques),[]).filter(ele=>ele._id.toString()===req.params.id)[0].son;
+			let rstream = fs.createReadStream(musique);
+			rstream.pipe(res);
+			//res.send(musique);
+        }else{
+            res.status(404).json({message : "404 not found"});
+        }
+    },(err)=>{
+        res.send(err);
+    });
+});
+
+
 
 // -- READ
-app.get(getArtiste, function (req, res) {
+app.get(getArtisteById, function (req, res) {
     mongoose.model('Artiste').findOne({_id : req.params.id}).then((artiste)=>{
         if(artiste){
             res.send(artiste);

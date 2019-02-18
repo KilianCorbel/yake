@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './MainContent.css';
+import { Button } from 'reactstrap';
 class musiqueList extends Component{
     constructor(props){
         super(props);
@@ -19,51 +20,59 @@ class musiqueList extends Component{
         }
         return ab;
     }
+    initMusic(sound){
+        this.props.playlist.initMusic(sound);
+        this.props.refresh();
+    }
+    addNext(sound){
+        this.props.playlist.addNext(sound);
+        this.props.refresh();
+    }
     runMusic(sound){
-        console.log(this.play);
-        this.props.musicPlayer.addNext(sound);
+        //console.log(this.play);
+        //this.props.musicPlayer.addNext(sound);
+        this.props.playlist.addNext(sound);
+        this.props.refresh();
         //this.props.musicPlayer.next();
-        /*if(this.play===true){
-            try{
-                console.log("play");
-                this.context = new (window.AudioContext||window.webkitAudioContext||window.mozAudioContext)();
-                this.source = this.context.createBufferSource();
-                this.play=false;
-                this.context.decodeAudioData(this.toArrayBuffer(sound.data), (buffer)=>{
-                    this.source.buffer = buffer;
-                    this.source.connect(this.context.destination);
-                    this.source.loop = true;
-                },
-                function(e){ console.log(e); });
-                //source.start(0);
-            }catch(e){
-                console.log(e);
-                this.play=true;
-                alert("error while loading sound");
-            }
-            this.source.start(0,this.resume);
-            this.beginningTime = this.source.context.currentTime-this.resume;
-        }
-        else if(this.play===false){
-            this.play=true;
-            if (this.source) { 
-                console.log("stop");
-                this.resume=this.source.context.currentTime-this.beginningTime;
-                console.log(this.resume);         
-                this.source.disconnect();
-                this.source.stop(0);
-            }
-        }*/
     }
     render(){
         let musiqueList=[];
+        let albumList=[];
+        let artisteList=[];
         if(this.props.musiqueList.length>0){
-            musiqueList=this.props.musiqueList.map((ele)=><li key={`${ele.titre}`}>{`${ele.titre} ---- ${ele.Album} ---- ${ele.Groupe}`}<button onClick={()=>{this.runMusic(ele);}}>{this.play?"play":"pause"}</button></li>)
+            musiqueList=this.props.musiqueList.map((ele)=>{
+                if(this.props.playlist.isInitialised()){
+                    return(<div className="musicLine" key={`${ele.titre}`}>{`${ele.titre} ---- ${ele.nomAlbum} ---- ${ele.nomGroupe}`}
+                    <Button color="secondary" size="sm" onClick={()=>{this.initMusic(ele);}}>{"Play"}</Button>
+                    </div>);}
+            else{
+                return(<div className="musicLine" key={`${ele.titre}`}>{`${ele.titre} ---- ${ele.nomAlbum} ---- ${ele.nomGroupe}`}
+                <Button color="secondary" size="sm" onClick={()=>{this.initMusic(ele);}}>{"Play"}</Button>
+                <Button color="secondary" size="sm" onClick={()=>{this.addNext(ele);}}>{"Add Next"}</Button>
+                </div>);}
+            })
+            musiqueList=(<div><h3>Liste de musique</h3><div>{musiqueList}</div></div>);
+        }
+        if(this.props.albumList.length>0){
+            albumList=this.props.albumList.map((ele)=>{
+
+                    return(<div className="musicLine" key={`${ele.nom}`}>{`${ele.nom}`}
+                    </div>);}
+                )
+                albumList=(<div><h3>{"Liste d'album"}</h3><div>{albumList}</div></div>);
+        }
+        if(this.props.artisteList.length>0){
+            artisteList=this.props.artisteList.map(ele=>{
+                return(<div className="musicLine" key={`${ele.nom}`}>{`${ele.nom}`}
+                    </div>);
+            });
+            artisteList=(<div><h3>{"Liste d'Artistes"}</h3><div>{artisteList}</div></div>);
         }
         return <div className="MainContent">
-            <ul>
                 {musiqueList}
-            </ul>
+                {albumList}
+                {artisteList}
+
         </div>
     }
 }
