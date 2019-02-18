@@ -1,0 +1,6 @@
+.MainContent{
+    display: flex;
+    align-content: stretch;
+    flex:8 0 0;
+    flex-flow:column;
+  }
