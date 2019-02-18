@@ -8,7 +8,20 @@ let PlaylistSchema = new Schema({
     nom : String,
     image : String,
     description : String,
-    privee : Boolean
+    privee : Boolean,
+    utilisateur : {
+        pseudo : String,
+        email : String,
+        nom : String,
+        prenom : String,
+        dateCreation : Date
+    },
+    musiques : [
+        {
+            titre : String,
+            note : Number
+        }
+    ]
 });
 
 let playlist = mongoose.model('Playlist', PlaylistSchema);

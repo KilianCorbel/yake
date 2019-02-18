@@ -31,13 +31,9 @@ app.use(function (req, res, next) {
 });
 
 // ---- Define routes
-app.use('/api/albums', require('./routes/Album'));
-app.use('/api/artistes', require('./routes/Artiste'));
-app.use('/api/genres', require('./routes/Genre'));
-app.use('/api/musiques', require('./routes/Musique'));
-app.use('/api/notes', require('./routes/Note'));
-app.use('/api/playlists', require('./routes/Playlist'));
-app.use('/api/users', require('./routes/Utilisateur'));
+app.use('/api/artistes', require('./Composants/Artiste/Artiste.route'));
+// app.use('/api/playlists', require('./Composants/Playlist/Playlist.process'));
+// app.use('/api/users', require('./Composants/Utilisateur/Utilisateur.process'));
 
 // ---- Start server
 app.listen(7990, function(){

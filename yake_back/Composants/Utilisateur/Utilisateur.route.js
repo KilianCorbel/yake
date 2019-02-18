@@ -11,18 +11,18 @@ app.use(bodyParser.urlencoded({extended : true}));
 app.use(session({secret: 'todotopsecret'}))
 
 // -- Load model needed for the project
-require('../models/Note');
+require('./Utilisateur.model');
 
 lienErreur = '/error';
 lienAll = '/';
-lienAjouter = '/note';
-lienModifier = '/note/:id';
-lienSupprimer = '/note/:id';
-lienGet = '/note/:id';
+lienAjouter = '/user';
+lienModifier = '/user/:id';
+lienSupprimer = '/user/:id';
+lienGet = '/user/:id';
 
 // routes vers le front react
 pageErreur ='';
-pageNote = '';
+pageUser = '';
 
 // -- ERROR
 app.get(lienErreur, function(req, res) {
@@ -31,19 +31,19 @@ app.get(lienErreur, function(req, res) {
 
 // -- FIND ALL
 app.get(lienAll, function (req, res) {
-    let note = mongoose.model('Note');
-    note.find().then((notes)=>{
-        res.send(notes);
+    let user = mongoose.model('Utilisateur');
+    user.find().then((users)=>{
+        res.send(users);
     })
 });
 // -- CREATE
 app.post(lienAjouter, function (req, res) {
-    let note = mongoose.model('Note');
-    let newNote = new mongoose.Schema(req.body);
-    newNote.id = newNote._id;
+    let user = mongoose.model('Utilisateur');
+    let newUser = new mongoose.Schema(req.body);
+    newUser.id = newUser._id;
 
-    newNote.save().then(()=>{
-        res.send(newNote);
+    newUser.save().then(()=>{
+        res.send(newUser);
     },(err)=>{
         res.send(err);
     })
@@ -51,20 +51,20 @@ app.post(lienAjouter, function (req, res) {
 
 // -- UPDATE
 app.put(lienModifier, function (req, res) {
-    mongoose.model('Note').updateOne({_id : req.body.id}, {$set : req.body}, (err, updatedNote)=>{
+    mongoose.model('Utilisateur').updateOne({_id : req.body.id}, {$set : req.body}, (err, updatedUser)=>{
        if(err){
             res.send(err);
        }else{
-            res.send(updatedNote);
+            res.send(updatedUser);
        }
     });
 });
 
 // -- DELETE
 app.delete(lienSupprimer, function (req, res) {
-    let note = mongoose.model('Note');
-    note.find({_id : req.params.id}).deleteOne().then(()=>{
-        res.send(note);
+    let user = mongoose.model('Utilisateur');
+    user.find({_id : req.params.id}).deleteOne().then(()=>{
+        res.send(user);
     },(err)=>{
         res.send(err);
     });
@@ -72,9 +72,9 @@ app.delete(lienSupprimer, function (req, res) {
 
 // -- READ
 app.get(lienGet, function (req, res) {
-    mongoose.model('Note').findOne({_id : req.params.id}).then((note)=>{
-        if(note){
-            res.send(note);
+    mongoose.model('Utilisateur').findOne({_id : req.params.id}).then((user)=>{
+        if(user){
+            res.send(user);
         }else{
             res.status(404).json({message : "404 not found"});
         }

@@ -10,7 +10,21 @@ let UtilisateurSchema = new Schema({
     nom : String,
     prenom : String,
     password : String,
-    dateCreation : Date
+    dateCreation : Date,
+    playlists : [
+        {
+            nom : String,
+            image : String,
+            description : String,
+            privee : Boolean,
+            musiques : [
+                {
+                    titre : String,
+                    note : Number
+                }
+            ]
+        }
+    ]
 });
 
 let user = mongoose.model('Utilisateur', UtilisateurSchema);
