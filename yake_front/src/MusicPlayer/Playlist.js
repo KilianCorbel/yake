@@ -52,7 +52,14 @@ class Playlist{
         obj.album=this.getActualAlbum();
         obj.Groupe=this.getActualAuthor();
         obj.id=this.getActualId();
+        obj.idAlbum = this.getActualIdAlbum();
         return obj;
+    }
+    getActualIdAlbum(){
+        if(this.playlist.length>0){
+            return this.playlist[this.actualMusicIndex].idAlbum;
+        }
+        return "";
     }
     getActualId(){
         if(this.playlist.length>0)

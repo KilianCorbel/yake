@@ -21,7 +21,7 @@ class AddPlaylist extends Component{
     }
     render(){
         let musicList = this.props.playlist.getMusics().map(ele=>(
-            <div>
+            <div key={`${ele.nomGroupe}----------${ele.nomAlbum}-------${ele.titre}`}>
                 {`${ele.titre}----------${ele.nomAlbum}-------${ele.nomGroupe}`}
             </div>
         ));

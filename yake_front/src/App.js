@@ -11,6 +11,8 @@ import MusicWindow from './MusicWindow.js';
 import TendancesWindow from './TendancesWindow.js';
 import PlaylistWindow from './PlaylistWindow.js';
 import AutresWindow from './AutresWindow.js';
+import ArtisteWindow from './ArtisteWindow.js';
+import AlbumWindow from './AlbumWindow.js';
 import Playlist from './MusicPlayer/Playlist.js';
 import { Input, InputGroupAddon, InputGroup, Button, Popover, PopoverHeader, PopoverBody } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.css';
@@ -114,6 +116,12 @@ class App extends Component {
   }
   autresWindow(){
     return <AutresWindow/>
+  }
+  artisteWindow(){
+    return <ArtisteWindow/>
+  }
+  albumWindow(){
+    return <AlbumWindow/>
   }
   render() {
     let show = this[`${this.state.windowShowed}`]();

@@ -21,6 +21,8 @@ const getAlbums = '/albums'
 const getMusiqueById = '/albums/musiques/id/:id';
 const getMusiqueByTitle = '/albums/musiques/title/:title';
 const readMusique = '/albums/musiques/stream/:id';
+const getAlbumCover = '/albums/stream/:id';
+const getArtisteCover = '/stream/:id';
 const getMusiques = '/albums/musiques';
 const postArtiste = '/';
 // const postAlbum = '/artiste/album';
@@ -231,6 +233,40 @@ app.get(readMusique,function (req,res){
     });
 });
 
+
+//READ albumCover
+app.get(getAlbumCover,function (req,res){
+	let artiste = mongoose.model('Artiste');
+	artiste.find({'albums._id' : req.params.id}, 'albums').then((album)=>{
+        if(album){
+			let fs = require('fs');
+			album=album[0].albums.filter(ele=>ele._id.toString()===req.params.id)[0].couverture;
+			let rstream = fs.createReadStream(album);
+			rstream.pipe(res);
+        }else{
+            res.status(404).json({message : "404 not found"});
+        }
+    },(err)=>{
+        res.send(err);
+    });
+});
+
+//READ ArtisteCover
+app.get(getArtisteCover,function (req,res){
+	let artiste = mongoose.model('Artiste');
+	artiste.find({'_id' : req.params.id}).then((art)=>{
+        if(art){
+			let fs = require('fs');
+			art=art[0].image;
+			let rstream = fs.createReadStream(art);
+			rstream.pipe(res);
+        }else{
+            res.status(404).json({message : "404 not found"});
+        }
+    },(err)=>{
+        res.send(err);
+    });
+});
 
 
 // -- READ
