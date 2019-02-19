@@ -1,0 +1,76 @@
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+.App {
+  flex: 1 0 0;
+  text-align: center;
+  display:flex;
+  align-content: stretch;
+  flex-flow: column;
+}
+
+.Header{
+  display:flex;
+  flex: 1 0 0;
+  flex-flow: row;
+  align-items: center;
+  align-content: stretch;
+  background-color: #188021;
+  color: #ffffff;
+}
+
+.SearchHeaderBlock{
+  height:100%;
+  flex:6 0 0;
+  display:flex;
+  flex-flow: row;
+  align-content: stretch;
+  align-items: center;
+}
+
+.Recherche{
+  border:none;
+  flex:1 0 0;
+  background-color: #91d199c9;
+  color: #525252;
+  height:50%;
+}
+
+.RightHeaderBlock{
+    flex: 2 0 0;
+}
+
+.FullBody{
+  flex: 50 0 0;
+  display: flex;
+  align-content: stretch;
+  flex-flow: row;
+}
+
+.LeftMenuBar{
+  display: flex;
+  align-content: stretch;
+  flex-flow: column;
+  flex:1 0 auto;
+}
+
+.Body{
+  display: flex;
+  align-content: stretch;
+  flex:9 0 0;
+  flex-flow:column;
+}
+
+.paramSearch{
+  display: flex;
+  background-color: #ffffff;
+  flex-flow:column;
+  overflow:hidden;
+}

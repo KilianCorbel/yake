@@ -1,0 +1,13 @@
+.MainContent{
+    display: flex;
+    align-content: stretch;
+    flex:8 0 0;
+    flex-flow:column;
+}
+
+.musicLine{
+}
+
+.musicLine:hover{
+  background-color:#e6e4e4;
+}

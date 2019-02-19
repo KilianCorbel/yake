@@ -1,0 +1,250 @@
+[
+    {
+        "nom" : "Pink Floyd",
+        "dateCreation" : "1965",
+        "dateFin" : "1995",
+        "biographie" : "Pink Floyd est un groupe de rock progressif et psychédélique britannique, originaire de Londres, en Angleterre. Formé en 1965, il est considéré comme un pionnier et un représentant majeur de ces styles musicaux. Il est reconnu pour sa musique planante et expérimentale, ses textes philosophiques et satiriques, ses albums-concept et ses performances en concert originales et élaborées. De ses débuts à aujourd'hui, le groupe a vendu près de 300 millions d'albums à travers le monde1,2. Aux seuls États-Unis, les ventes des albums de Pink Floyd sont dénombrées par la RIAA à hauteur de 75 millions d'exemplaires3.",
+        "image" : "pinkfloyd.png",
+        "albums" : [
+            {
+                "id" : 1,
+                "nom" : "Dark Side of The Moon",
+                "couverture" : "darksideofthemoon.png",
+                "datePublication" : "01-03-1973",
+                "genres" : [
+                    {
+                        "id" : 1,
+                        "nom" : "Progressive Rock"
+                    },
+                    {
+                        "id" : 2,
+                        "nom" : "Rock"
+                    }
+                ],
+                "musiques" : 
+                [
+                    {
+                        "id" : 1,
+                        "titre" : "Speak To Me",
+                        "note" : 3.2
+                    },
+                    {
+                        "id" : 2,
+                        "titre" : "Breathe",
+                        "note" : 4.3
+                    },
+                    {
+                        "titre" : "On The Run",
+                        "note" : 2.3
+                    },
+                    {
+                        "titre" : "Time",
+                        "note" : 4.8
+                    },
+                    {
+                        "titre" : "The Great Gig In The Sky",
+                        "note" : 4.9
+                    },
+                    {
+                        "titre" : "Money",
+                        "note" : 5
+                    },
+                    {
+                        "titre" : "Us And Them",
+                        "note" : 4.1
+                    },
+                    {
+                        "titre" : "Any Colour You Like",
+                        "note" : 3.9
+                    },
+                    {
+                        "titre" : "Brain Damage",
+                        "note" : 3.7
+                    },
+                    {
+                        "titre" : "Eclipse",
+                        "note" : 4.2
+                    }
+                ]
+            },
+            {
+                "id" : 2,
+                "nom" : "Wish you Were Here",
+                "couverture" : "wishyouwerehere.png",
+                "datePublication" : "15-09-1970",
+                "genres" : [
+                    {
+                        "nom" : "Progressive Rock"
+                    },
+                    {
+                        "nom" : "Rock"
+                    }
+                ],
+                "musiques" : 
+                [
+                    {
+                        "titre" : "Shine On You Crazy Diamond, Pts. 1-5",
+                        "note" : 4.8
+                    },
+                    {
+                        "titre" : "Welcome To The Machine",
+                        "note" : 4.3
+                    },
+                    {
+                        "titre" : "Have A Cigar",
+                        "note" : 2.3
+                    },
+                    {
+                        "titre" : "Wish You Were Here",
+                        "note" : 4.8
+                    },
+                    {
+                        "titre" : "Shine On You Crazy Diamond, Pts. 6-9",
+                        "note" : 4.9
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "nom": "Muse",
+        "dateCreation" : "1998",
+        "dateFin" : "",
+        "biographie" : "Lorem ipsum dolor sit amet",
+        "image" : "muse.png",
+        "albums" : [
+            {
+                "id" : 3,
+                "nom" : "Origin of Symmetry",
+                "couverture" : "originofsymmetry.png",
+                "datePublication" : "01-03-2008",
+                "genres" : [
+                    {
+                        "nom" : "Pop Rock"
+                    },
+                    {
+                        "nom" : "Rock"
+                    },
+                    {
+                        "nom" : "Metal"
+                    }
+                ],
+                "musiques" : 
+                [
+                    {
+                        "titre" : "New Born",
+                        "note" : 4.8
+                    },
+                    {
+                        "titre" : "Bliss",
+                        "note" : 4.3
+                    },
+                    {
+                        "titre" : "Space Dementia",
+                        "note" : 4.9
+                    },
+                    {
+                        "titre" : "Hyper Music",
+                        "note" : 2.8
+                    },
+                    {
+                        "titre" : "Plug In Baby",
+                        "note" : 4.3
+                    },
+                    {
+                        "titre" : "Citizen Erased",
+                        "note" : 4
+                    },
+                    {
+                        "titre" : "Micro Cuts",
+                        "note" : 3.2
+                    },
+                    {
+                        "titre" : "Screenager",
+                        "note" : 3.5
+                    },
+                    {
+                        "titre" : "Darkshines",
+                        "note" : 4.4
+                    },
+                    {
+                        "titre" : "Feeling Good",
+                        "note" : 5
+                    },
+                    {
+                        "titre" : "Megalomania",
+                        "note" : 2.9
+                    },
+                    {
+                        "titre" : "Futurism",
+                        "note" : 3.6
+                    }
+                ]
+            },
+            {
+                "id" : 4,
+                "nom" : "Resistance",
+                "couverture" : "null.png",
+                "datePublication" : "15-09-2012",
+                "genres" : [
+                    {
+                        "nom" : "Pop Rock"
+                    },
+                    {
+                        "nom" : "Rock"
+                    },
+                    {
+                        "nom" : "Electro"
+                    }
+                ],
+                "musiques" : 
+                [
+                    {
+                        "titre" : "Uprising",
+                        "note" : 4.2
+                    },
+                    {
+                        "titre" : "Resistance",
+                        "note" : 4.7
+                    },
+                    {
+                        "titre" : "Undisclosed Desires",
+                        "note" : 4.1
+                    },
+                    {
+                        "titre" : "United States Of Eurasia",
+                        "note" : 4.5
+                    },
+                    {
+                        "titre" : "Guiding Light",
+                        "note" : 3.8
+                    },
+                    {
+                        "titre" : "Unnatural Selection",
+                        "note" : 4
+                    },
+                    {
+                        "titre" : "MK Ultra",
+                        "note" : 3.2
+                    },
+                    {
+                        "titre" : "I Belong To You",
+                        "note" : 4.9
+                    },
+                    {
+                        "titre" : "Exogenesis : Symphony Pt.1 (Overture)",
+                        "note" : 5
+                    },
+                    {
+                        "titre" : "Exogenesis : Symphony Pt.2 (Cross-pollination)",
+                        "note" : 5
+                    },
+                    {
+                        "titre" : "Exogenesis : Symphony Pt.3 (Redemption)",
+                        "note" : 5
+                    }
+                ]
+            }
+        ]
+    }
+]
