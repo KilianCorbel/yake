@@ -44,8 +44,7 @@ class MusicPlayerI extends Component{
             show=(<audio controls id="audioContent" autoPlay>
                  <source src={`api/artistes/albums/musiques/stream/${this.props.playlist.getActualSong().id}`} type="audio/mp3"/>
             </audio>)
-            console.log(`api/artistes/albums/stream/${this.props.playlist.getActualIdAlbum()}`);
-            couverture=(<img key={`${this.props.playlist.getActualIdAlbum()}`}className="playlistCouverture" src={`api/artistes/albums/stream/${this.props.playlist.getActualIdAlbum()}`}></img>);
+            couverture=(<div className="Couverture"><img height="100px" width="100px" key={`${this.props.playlist.getActualIdAlbum()}`}className="playlistCouverture" src={`api/artistes/albums/stream/${this.props.playlist.getActualIdAlbum()}`} alt="noImage"></img></div>);
         }
         else{
             if(this.state.addEventOnce===true){

@@ -55,7 +55,7 @@ app.get(getAll, function (req, res) {
 //Find Artiste byName
 app.get(getArtisteByName, function (req, res) {
     let artiste = mongoose.model('Artiste');
-    artiste.find({'nom' : req.params.name}).then((artistes)=>{
+    artiste.find({'nom' : new RegExp('^.*'+req.params.name+'.*$', "ig")}).then((artistes)=>{
         let result = artistes;
 		result = result.map(ele=>{
 			ele.image=undefined;console.log(ele.albums); 
@@ -107,9 +107,11 @@ app.get(getMusiques, function(req, res) {
 app.get(getAlbumById, function(req, res) {
     let artiste = mongoose.model('Artiste');
 
-    artiste.find({'albums._id' : req.params.id}, {'albums.$':1}).then((album)=>{
-        if(album){
-            res.send(album[0]);
+    artiste.find({'albums._id' : req.params.id}).then((art)=>{
+        if(art){
+            art = art.map(arti=>{arti.albums=arti.albums.filter(album=>album._id.toString()===req.params.id);return arti;});
+			art = art.map(arti=>arti.albums.map(alb=>{let retour = {};retour.musiques=alb.musiques;retour.genres=alb.genres;retour.datePublication=alb.datePublication;retour._id=alb._id;retour.nom = alb.nom;retour.nomGroupe = arti.nom;retour.idGroupe=arti._id;return retour}).reduce((prev,ele)=>prev.concat(ele),[])).reduce((prev,ele)=>prev.concat(ele),[])[0];
+            res.send(art);
         }else{
             res.status(404).json({message : "404 not found"});
         }

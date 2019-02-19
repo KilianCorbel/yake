@@ -51,28 +51,33 @@ class musiqueList extends Component{
                 <Button color="secondary" size="sm" onClick={()=>{this.addNext(ele);}}>{"Add Next"}</Button>
                 </div>);}
             })
-            musiqueList=(<div><h3>Liste de musique</h3><div>{musiqueList}</div></div>);
+            musiqueList=(<div><h3>Liste de musique</h3><div className="MusicList">{musiqueList}</div></div>);
         }
         if(this.props.albumList.length>0){
             albumList=this.props.albumList.map((ele)=>{
 
-                    return(<div className="musicLine" key={`${ele.nom}`}>{`${ele.nom}`}
+                    return(<div className="albumRow" key={`${ele.nom}`} onClick={()=>{this.props.onAlbumClick(ele._id)}}>
+                    <div className="albumRowContentimg"><img height="100" width="100" src={`api/artistes/albums/stream/${ele._id}`} alt="noImage"/></div>
+                    <div className="albumRowContent">{`${ele.nom}`}</div>
                     </div>);}
                 )
-                albumList=(<div><h3>{"Liste d'album"}</h3><div>{albumList}</div></div>);
+                albumList=(<div className="AlbumList"><h3>{"Liste d'album"}</h3><div className="AlbumRows">{albumList}</div></div>);
         }
         if(this.props.artisteList.length>0){
             artisteList=this.props.artisteList.map(ele=>{
-                return(<div className="musicLine" key={`${ele.nom}`}>{`${ele.nom}`}
+                return(<div className="artisteRow" key={`${ele.nom}`} onClick={()=>{this.props.onArtisteClick(ele._id)}}>
+                        <div className="artisteRowContent"><img height="100" width="100" src={`api/artistes/stream/${ele._id}`} alt="noImage"/></div>
+                        <div className="artisteRowContent">{`${ele.nom}`}</div>
                     </div>);
             });
-            artisteList=(<div><h3>{"Liste d'Artistes"}</h3><div>{artisteList}</div></div>);
+            artisteList=(<div className="ArtisteList"><h3>{"Liste d'Artistes"}</h3><div className="ArtisteRows">{artisteList}</div></div>);
         }
         return <div className="MainContent">
+                    <div className="scrollable">
                 {musiqueList}
                 {albumList}
                 {artisteList}
-
+                </div>
         </div>
     }
 }
