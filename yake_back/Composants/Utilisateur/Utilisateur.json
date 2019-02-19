@@ -1,0 +1,162 @@
+[
+    {
+        "pseudo" : "karmapolice",
+        "email" : "karma.police@gmail.com",
+        "nom" : "karma",
+        "prenom": "police",
+        "password" : "pcw123",
+        "dateCreation" : "09-02-2019",
+        "playlists" : [
+            {
+                "nom" : "Playlist Perso",
+                "image": "null.png",
+                "description" : "Playlist test",
+                "privee" : true,
+                "musiques" : [
+                    {
+                        "titre" : "Resistance",
+                        "note" : 4.7
+                    },
+                    {
+                        "titre" : "I Belong To You",
+                        "note" : 4.9
+                    },
+                    {
+                        "titre" : "Space Dementia",
+                        "note" : 4.9
+                    },
+                    {
+                        "titre" : "Wish You Were Here",
+                        "note" : 4.8
+                    },
+                    {
+                        "titre" : "Time",
+                        "note" : 4.8
+                    }
+                ]
+            },
+            {
+                "nom" : "Soirées",
+                "image": "null.png",
+                "description" : "Ma playlist pour soirées",
+                "privee" : false,
+                "musiques" : [
+                    {
+                        "titre" : "Resistance",
+                        "note" : 4.7
+                    },
+                    {
+                        "titre" : "Unnatural Selection",
+                        "note" : 4
+                    },
+                    {
+                        "titre" : "Space Dementia",
+                        "note" : 4.9
+                    },
+                    {
+                        "titre" : "Plug In Baby",
+                        "note" : 4.8
+                    },
+                    {
+                        "titre" : "Feeling Good",
+                        "note" : 5
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "pseudo" : "darklaink77",
+        "email" : "darklaink77@gmail.com",
+        "nom" : "Laink",
+        "prenom": "Dark",
+        "password" : "1234",
+        "dateCreation" : "09-02-2019",
+        "playlists" : [
+            {
+                "nom" : "Old School",
+                "image": "null.png",
+                "description" : "Playlist old school",
+                "privee" : false,
+                "musiques" : [
+                    {
+                        "titre" : "Speak To Me",
+                        "note" : 3.2
+                    },
+                    {
+                        "titre" : "Breathe",
+                        "note" : 4.3
+                    },
+                    {
+                        "titre" : "On The Run",
+                        "note" : 2.3
+                    },
+                    {
+                        "titre" : "Time",
+                        "note" : 4.8
+                    },
+                    {
+                        "titre" : "The Great Gig In The Sky",
+                        "note" : 4.9
+                    },
+                    {
+                        "titre" : "Money",
+                        "note" : 5
+                    },
+                    {
+                        "titre" : "Us And Them",
+                        "note" : 4.1
+                    },
+                    {
+                        "titre" : "Any Colour You Like",
+                        "note" : 3.9
+                    },
+                    {
+                        "titre" : "Brain Damage",
+                        "note" : 3.7
+                    },
+                    {
+                        "titre" : "Eclipse",
+                        "note" : 4.2
+                    },
+                    {
+                        "titre" : "Shine On You Crazy Diamond, Pts. 1-5",
+                        "note" : 4.8
+                    },
+                    {
+                        "titre" : "Welcome To The Machine",
+                        "note" : 4.3
+                    },
+                    {
+                        "titre" : "Have A Cigar",
+                        "note" : 2.3
+                    },
+                    {
+                        "titre" : "Wish You Were Here",
+                        "note" : 4.8
+                    },
+                    {
+                        "titre" : "Shine On You Crazy Diamond, Pts. 6-9",
+                        "note" : 4.9
+                    }
+                ]
+            },
+            {
+                "nom" : "Soirées",
+                "image": "null.png",
+                "description" : "",
+                "privee" : false,
+                "musiques" : [
+                    {
+                        "titre" : "Resistance",
+                        "note" : 4.7
+                    },
+                    {
+                        "titre" : "Time",
+                        "note" : 4.8
+                    }
+                ]
+            }
+        ]
+    }
+]
