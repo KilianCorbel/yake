@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./ajoutArtiste.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Alert, Button, Form, FormGroup, Label, Input } from "reactstrap";
+import { Button, Form, FormGroup, Label, Input } from "reactstrap";
 
 class AjoutArtiste extends Component {
   constructor(props) {
@@ -52,8 +52,8 @@ class AjoutArtiste extends Component {
   render() {
     return (
       <Form className="formulaire">
-        <h1>Ajout d'un artiste</h1>
-        <FormGroup row  className = "fg">
+        <h2>Ajout d'un artiste</h2>
+        <FormGroup row>
         <Label for="nom">Nom</Label>
           <Input
             type="Text"
@@ -111,8 +111,6 @@ class AjoutArtiste extends Component {
           />
         </FormGroup>
 
-        <hr></hr>
-
         <FormGroup>
           <Button
             color="primary"
@@ -126,7 +124,7 @@ class AjoutArtiste extends Component {
             color="danger"
             size="md"
             type = "reset"
-            onClick={() => this.reinitialiserFormulaire()}
+            //onClick={() => this.reinitialiserFormulaire()}
           >
             Réinitialiser
           </Button>

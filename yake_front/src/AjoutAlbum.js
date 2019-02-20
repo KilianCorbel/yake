@@ -1,4 +1,7 @@
 import React, { Component } from "react";
+import "./ajoutAlbum.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { Button, Form, FormGroup, Label, Input } from "reactstrap";
 
 class AjoutAlbum extends Component {
   constructor(props) {
@@ -7,42 +10,13 @@ class AjoutAlbum extends Component {
       nom: "",
       couverture: "",
       datePublication: "",
-      genres: [{}],
-      musiques: [{}],
+      genres: [],
+      musiques: [],
       artiste: "",
       listeArtistes: [],
-      idsArtistes: [],
-
-      nomArtiste: "",
-      dateCreationArtiste: "",
-      dateFinArtiste: "",
-      bioArtsite: "",
-      imageArtiste: "",
-      albumsArtiste: []
+      idsArtistes: []
     };
-
     this.getArtistes();
-
-  }
-
-  getArtiste(id) {
-    fetch("/api/artistes/" + id, {
-      method: "GET",
-      headers: new Headers({
-        "Content-Type": "application/json"
-      })
-    })
-      .then(res => res.json())
-      .then(data => {
-        this.setState({ nomArtiste: data.nom });
-        this.setState({ dateCreationArtiste: data.dateCreation });
-        this.setState({ dateFinArtiste: data.dateFin });
-        this.setState({ bioArtsite: data.biographie });
-        this.setState({ imageArtiste: data.image });
-        this.setState({ albumsArtiste: data.albums });
-      })
-      .then(alert(this.state.bioArtsite))
-      .catch(err => console.log(err))
   }
 
   getArtistes() {
@@ -67,28 +41,25 @@ class AjoutAlbum extends Component {
   }
 
   ajouterAlbum() {
-    fetch("/api/albums/" + this.state.artiste, {
+    fetch("/api/artistes/" + this.state.artiste, {
       method: "PUT",
       headers: new Headers({
         "Content-Type": "application/json"
       }),
-      body: JSON.stringify(
-        {"id_":this.state.artiste},
-        {"nom":this.state.nomArtiste},
-        {"dateCreation":this.state.dateCreationArtiste},
-        {"dateFin":this.state.dateFinArtiste},
-        {"biographie":this.state.bioArtsite},
-        {"image":this.state.imageArtiste},
-        {"albums":[
-          {"nom":this.state.nom},
-          {"couverture":this.state.couverture},
-          {"datePublication":this.state.datePublication},
-          {"genres":this.state.genres},
-        {"musiques":this.state.musiques}
-        ]}
-      )
+      body: JSON.stringify({
+        _id: this.state.artiste,
+        albums: [
+          {
+            nom: this.state.nom,
+            couverture: this.state.couverture,
+            datePublication: this.state.datePublication,
+            genres: this.state.genre,
+            musiques: []
+          }
+        ]
+      })
     })
-      .then((str) => alert(str))
+      .then(() => alert("Album " + this.state.couverture + " ajouté"))
       .catch(err => console.log(err));
   }
 
@@ -112,63 +83,61 @@ class AjoutAlbum extends Component {
 
   render() {
     return (
-      <div className="formulaire">
-        <h1>Ajout d'un album</h1>
-        <ul>
-          <li>
-            <span>Artiste </span>
-            <select id="artiste" onChange={e => this.modifierState(e)}>
-              {this.creerSelects()}
-            </select>
-          </li>
-          <li>
-            <span>Nom </span>
-            <input
-              type="Text"
-              id="nom"
-              value={this.state.titre}
-              onChange={e => this.modifierState(e)}
-            />
-          </li>
+      <Form className="formulaire">
+        <h3>Ajout d'un album</h3>
+        <FormGroup row>
+          <Label for="artiste">Artiste </Label>
+          <Input type = "select" id="artiste" onChange={e => this.modifierState(e)}>
+            {this.creerSelects()}
+          </Input>
+        </FormGroup>
+        <FormGroup row>
+          <Label for="nom">Nom </Label>
+          <Input
+            type="Text"
+            id="nom"
+            value={this.state.titre}
+            onChange={e => this.modifierState(e)}
+          />
+        </FormGroup>
 
-          <li>
-            <span>Date de publication </span>
-            <input
-              type="Date"
-              id="datePublications"
-              value={this.state.dateSortie}
-              onChange={e => this.modifierState(e)}
-            />
-          </li>
-          <li>
-            <span>Genres </span>
-            <input
-              type="button"
-              id="boutonAjoutGenre"
-              value="+"
-              onClick="genererChampGenre"
-            />
-          </li>
-          <li>
-            <span>Couverture </span>
-            <input
-              type="Text"
-              id="image"
-              value={this.state.titre}
-              onChange={e => this.modifierState(e)}
-            />
-          </li>
-          <li>
-            <button onClick={() => this.ajouterAlbum()}>
-              Ajouter
-            </button>
-          </li>
-
-          <li>
-            <span id="recap" />
-          </li>
-        </ul>
-      </div>
+        <FormGroup row>
+          <Label for="datePubli">Date de publication </Label>
+          <Input
+            type="Date"
+            id="datePublication"
+            value={this.state.dateSortie}
+            onChange={e => this.modifierState(e)}
+          />
+        </FormGroup>
+        <FormGroup row>
+          <Label for="couv">Couverture </Label>
+          <Input
+            type="Text"
+            id="couverture"
+            value={this.state.titre}
+            onChange={e => this.modifierState(e)}
+          />
+        </FormGroup>
+        <FormGroup col>
+          <Label for="genres">Genres</Label>
+          <Button color="primary" id="boutonAjoutGenre" size = "sm">
+            Nouveau
+          </Button>
+          <span> </span>
+        </FormGroup>
+        <Button color="primary" size="md" onClick={() => this.ajouterAlbum()}>
+          Ajouter
+        </Button>
+        <span> </span>
+        <Button
+            color="danger"
+            size="md"
+            type = "reset"
+          >
+            Réinitialiser
+          </Button>
+      </Form>
     );
   }
 }

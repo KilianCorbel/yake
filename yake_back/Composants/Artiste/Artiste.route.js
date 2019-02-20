@@ -121,7 +121,7 @@ app.post(postArtiste, function (req, res) {
 
 // -- UPDATE
 app.put(putArtiste, function (req, res) {
-    mongoose.model('Artiste').updateOne({_id : req.body.id}, {$set : req.body}, (err, updatedArtiste)=>{
+    mongoose.model('Artiste').updateOne({_id : req.body._id}, {$set : req.body}, (err, updatedArtiste)=>{
        if(err){
             res.send(err);
        }else{

@@ -86,7 +86,8 @@ class App extends Component {
               <input className="Recherche" placeholder="Recherche" value={this.state.inputValue} onKeyPress={this.submitInputValue} onChange={evt => this.updateInputValue(evt)} onSubmit={()=>{this.search(this.state.inputValue)}}></input>
           </div>
           <div className="RightHeaderBlock">{"Connexion"}</div>
-          <Menu className ="RightHeaderBlock" onClick={()=>{this.setState({windowShowed:"ajoutArtiste"});}} value="Admin"/>
+          <Menu className ="RightHeaderBlock" onClick={()=>{this.setState({windowShowed:"ajoutArtiste"});}} value="Ajout artiste"/>
+          <Menu className ="RightHeaderBlock" onClick={()=>{this.setState({windowShowed:"ajoutAlbum"});}} value="Ajout album"/>
         </div>
         <div className="FullBody">
           <div className="LeftMenuBar">
