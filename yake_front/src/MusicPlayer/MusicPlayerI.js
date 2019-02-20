@@ -1,39 +1,73 @@
 import './MusicPlayer.css';
 import React, { Component } from 'react';
+import { Button } from 'reactstrap';
+import AddPlaylist from '../AddPlaylist.js';
 class MusicPlayerI extends Component{
     constructor(props){
         super(props);
         this.state={
             title:"",
             album:"",
-            auteur:""
+            auteur:"",
+            addEventOnce:true
         };
-        this.props.musicPlayer.addEventListener('test',()=>{this.setState({
-            title:`${this.props.musicPlayer.getActualTitle()}`,
-            album:`${this.props.musicPlayer.getActualAlbum()}`,
-            auteur:`${this.props.musicPlayer.getActualAuthor()}`
-        });
-    });
+        this.songToPlay="";
+        this.next = this.next.bind(this);
+        this.previous = this.previous.bind(this);
+        this.init=this.init.bind(this);
     }
-    playPause(){
-        if(this.props.musicPlayer.paused===true){
-            this.props.musicPlayer.play();
-        }
-        else{
-            this.props.musicPlayer.pause();
-        }
-        this.setState(this.state);
+    updateSource(){ 
+        let audio = document.getElementById('audioContent');
+        audio.load();
+    }
+    init(){
+        console.log("init");
+        let audio = document.getElementById('audioContent');
+        audio.addEventListener("ended", ()=>{this.next()});
+    }
+    next(){
+        this.props.playlist.next();
+        this.songToPlay=this.props.playlist.getActualSong();
+        this.setState({});
+        //this.updateSource();
+    }
+    previous(){
+        this.props.playlist.previous();
+        this.songToPlay=this.props.playlist.getActualSong();
+        this.setState({});
+        //this.updateSource();
     }
     render(){
+        let show;
+        let couverture;
+        if(this.props.playlist.getActualSong().titre !== ""){
+            show=(<audio controls id="audioContent" autoPlay>
+                 <source src={`api/artistes/albums/musiques/stream/${this.props.playlist.getActualSong().id}`} type="audio/mp3"/>
+            </audio>)
+            couverture=(<div className="Couverture"><img height="100px" width="100px" key={`${this.props.playlist.getActualIdAlbum()}`}className="playlistCouverture" src={`api/artistes/albums/stream/${this.props.playlist.getActualIdAlbum()}`} alt="noImage"></img></div>);
+        }
+        else{
+            if(this.state.addEventOnce===true){
+                this.props.playlist.addEventListener("change",this.updateSource);
+                this.props.playlist.addEventListener("init",this.init);
+                this.setState({addEventOnce:false});
+            }
+            show=(<audio controls id="audioContent">
+             </audio>)
+        }
         return(
-            <div className="MusicBar">
-                <div>
-                {`${this.state.title}-------${this.state.album}------${this.state.auteur}`}
+            <div className="MusicBody">
+                <div className="MusicBodyInfo">
+                {couverture}
+                <div className="MusicInfo">
+                    {`${this.props.playlist.getActualSong().titre}-------${this.props.playlist.getActualSong().album}------${this.props.playlist.getActualSong().Groupe}`}
                 </div>
-                <div>
-                    <button onClick={()=>{this.props.musicPlayer.previous()}}>{"previous"}</button>
-                    <button onClick={()=>{this.playPause()}}>{this.props.musicPlayer.paused?"Play":"Pause"}</button>
-                    <button onClick={()=>{this.props.musicPlayer.next()}}>{"next"}</button>
+                <AddPlaylist playlist={this.props.playlist}/>
+                </div>
+                <div className="MusicBar">
+                    <Button color="success" onClick={()=>{this.previous();}}>{"<"}</Button>
+                    {show}
+                    <Button color="success" onClick={()=>{this.next();}}>{">"}</Button>
                 </div>
             </div>
         );

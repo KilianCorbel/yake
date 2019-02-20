@@ -7,8 +7,15 @@ class MusicPlayer{
         this.nowPlaying = false;
         this.paused=false;
         this.context.onstatechange = ()=>{console.log(this.context);console.log("Fin");console.log(this.context.state);};
+        this.context.addEventListener('ended',()=>{console.log("hello");});
     }
-    
+    test(){
+        while(true){
+            if(this.playlist[this.actualMusicIndex].duration<=this.context.currentTime){
+                console.log("Fin");
+            }
+        }
+    }
     nextIsAble(){
         return this.playlist.length>this.actualMusicIndex+1;
     }
@@ -38,6 +45,7 @@ class MusicPlayer{
             this.eventListenerObject[`${key}`] = [];
             this.eventListenerObject[`${key}`].push(fonc);
         }
+
     }
     on(key){
         if(Object.keys(this.eventListenerObject).keys(key)){
@@ -70,6 +78,11 @@ class MusicPlayer{
             return this.playlist[this.actualMusicIndex].Album;
         return "";
     }
+    getActualSound(){
+        if(this.playlist.length>0)
+            return this.playlist[this.actualMusicIndex].Sound.data;
+        return "";
+    }
     next(){
         if(this.playlist.length>this.actualMusicIndex+1){
             this.stopPlayer();
@@ -88,6 +101,7 @@ class MusicPlayer{
         if(this.nowPlaying === false){
             this.nowPlaying = true;
             this.playSound(this.playlist[this.actualMusicIndex]);
+            this.playlist[this.actualMusicIndex].source.addEventListener('ended',()=>{this.next();});
         }
         else{
             this.stopPlayer();

@@ -1,0 +1,18 @@
+.HeaderAlbumWindow{
+    display:flex;
+    flex-flow:row;
+    justify-content: space-between;
+}
+.AlbumTitle{
+    flex: 1 1 auto;
+    flex-flow:column;
+}
+
+.AlbumImg{
+    flex: 1 1 auto;
+    flex-flow:column;
+}
+
+.clicable{
+    cursor: pointer;
+}

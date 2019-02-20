@@ -40,7 +40,7 @@
   flex:1 0 0;
   background-color: #91d199c9;
   color: #525252;
-  height:40%;
+  height:50%;
 }
 
 .RightHeaderBlock{
@@ -68,13 +68,9 @@
   flex-flow:column;
 }
 
-
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.paramSearch{
+  display: flex;
+  background-color: #ffffff;
+  flex-flow:column;
+  overflow:hidden;
 }
