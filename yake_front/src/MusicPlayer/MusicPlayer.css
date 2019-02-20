@@ -1,0 +1,34 @@
+.MusicBar{
+    display: flex;
+    align-content: stretch;
+    flex:1 0 0;
+    flex-flow:row;
+  }
+
+.MusicBodyInfo{
+  display: flex;
+  align-content: flex-end;
+  flex:6 0 0;
+  align-items: center;
+  flex-flow:row;
+}
+
+.MusicInfo{
+  flex:1 0 0;
+}
+
+.playlistCouverture{
+  flex:1 0 0;
+}
+
+.MusicBody{
+  display: flex;
+  align-content: stretch;
+  flex:1 0 0;
+  flex-flow:column;
+  border: 1px solid #4e4e4e;
+}
+
+#audioContent{
+  flex:1 0 0;
+}
