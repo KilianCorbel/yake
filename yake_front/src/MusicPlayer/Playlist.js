@@ -11,6 +11,17 @@ class Playlist{
     addNext(music){
         this.playlist.push(music);
     }
+    replacePlaylist(musics){
+        this.playlist=musics;
+        this.actualMusicIndex=0;
+        if(this.firstInit){
+            this.dispatchEvent("init");
+            this.firstInit=false;
+        }
+        else{
+            this.dispatchEvent("change");
+        }
+    }
     initMusic(music){
         this.playlist=[];
         this.actualMusicIndex=0;
