@@ -14,7 +14,8 @@ class AjoutAlbum extends Component {
       musiques: [],
       artiste: "",
       listeArtistes: [],
-      idsArtistes: []
+      idsArtistes: [],
+      albums: {}
     };
     this.getArtistes();
   }
@@ -40,27 +41,78 @@ class AjoutAlbum extends Component {
       .catch(err => console.log(err));
   }
 
-  ajouterAlbum() {
-    fetch("/api/artistes/" + this.state.artiste, {
-      method: "PUT",
+  /*getAlbumsArtiste(id){
+    fetch("/api/artistes/" + id, {
+      method: "GET",
       headers: new Headers({
         "Content-Type": "application/json"
       }),
-      body: JSON.stringify({
-        _id: this.state.artiste,
-        albums: [
-          {
-            nom: this.state.nom,
-            couverture: this.state.couverture,
-            datePublication: this.state.datePublication,
-            genres: this.state.genre,
-            musiques: []
-          }
-        ]
+    })
+    .then(res=>{return res.json()})
+    .then(data=>{return JSON.stringify(data.albums)})
+    .catch(err=>alert(err))
+  }*/
+
+  ajouterAlbum() {
+    //On récupère d'abord les albums de l'artiste
+    fetch("/api/artistes/" + this.state.artiste, {
+      method: "GET",
+      headers: new Headers({
+        "Content-Type": "application/json"
       })
     })
-      .then(() => alert("Album " + this.state.couverture + " ajouté"))
-      .catch(err => console.log(err));
+      .then(res => {
+        return res.json();
+      })
+      .then(data => {
+        return data.albums;
+      })
+      .then(albums => this.setState({ albums: albums }))
+      .then(() =>
+        this.setState({
+          albums: [
+            this.state.albums,
+            [
+              {
+                nom: this.state.nom,
+                couverture: this.state.couverture,
+                datePublication: this.state.datePublication,
+                genres: [],
+                musiques: []
+              }
+            ]
+          ]
+        })
+      )
+      //ensuite on fait la maj
+
+      .then(()=>alert(JSON.stringify(this.state.albums)))
+
+      .then(() =>
+        fetch("/api/artistes/" + this.state.artiste, {
+          method: "PUT",
+          headers: new Headers({
+            "Content-Type": "application/json"
+          }),
+          body: JSON.stringify({
+            _id: this.state.artiste,
+            albums: this.state.albums
+            /*albums:[
+              {
+                nom: this.state.nom,
+                couverture: this.state.couverture,
+                datePublication: this.state.datePublication,
+                genres: this.state.genre,
+                musiques: []
+              }
+            ]*/
+          })
+        })
+      )
+      .catch(err => alert(err));
+
+    /*.then(() => alert("Album " + this.state.albums+ " ajouté"))
+      .catch(err => console.log(err));*/
   }
 
   modifierState(e) {
@@ -81,13 +133,33 @@ class AjoutAlbum extends Component {
     return selects;
   }
 
+  ajouterChampGenre() {
+    let champs = this.state.genres;
+    champs.push(
+      <FormGroup row>
+        <Label for="nom">{`Genre ${champs.length()}`}</Label>
+        <Input
+          type="Text"
+          id="genre"
+          value={this.state.titre}
+          //onChange={e => this.modifierState(e)}
+        />
+      </FormGroup>
+    );
+    return champs;
+  }
+
   render() {
     return (
       <Form className="formulaire">
         <h3>Ajout d'un album</h3>
         <FormGroup row>
           <Label for="artiste">Artiste </Label>
-          <Input type = "select" id="artiste" onChange={e => this.modifierState(e)}>
+          <Input
+            type="select"
+            id="artiste"
+            onChange={e => this.modifierState(e)}
+          >
             {this.creerSelects()}
           </Input>
         </FormGroup>
@@ -121,7 +193,12 @@ class AjoutAlbum extends Component {
         </FormGroup>
         <FormGroup col>
           <Label for="genres">Genres</Label>
-          <Button color="primary" id="boutonAjoutGenre" size = "sm">
+          <Button
+            color="primary"
+            id="boutonAjoutGenre"
+            size="sm"
+            onClick={() => this.ajouterChampGenre()}
+          >
             Nouveau
           </Button>
           <span> </span>
@@ -130,13 +207,9 @@ class AjoutAlbum extends Component {
           Ajouter
         </Button>
         <span> </span>
-        <Button
-            color="danger"
-            size="md"
-            type = "reset"
-          >
-            Réinitialiser
-          </Button>
+        <Button color="danger" size="md" type="reset">
+          Réinitialiser
+        </Button>
       </Form>
     );
   }
