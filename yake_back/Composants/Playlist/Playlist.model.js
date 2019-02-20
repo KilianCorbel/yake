@@ -4,7 +4,6 @@ const mongoose 	= require('mongoose'),
 
 // ---- Artiste schema
 let PlaylistSchema = new Schema({
-    id : Number,
     nom : String,
     image : String,
     description : String,

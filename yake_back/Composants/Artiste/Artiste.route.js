@@ -58,7 +58,7 @@ app.get(getArtisteByName, function (req, res) {
     artiste.find({'nom' : req.params.name}).then((artistes)=>{
         let result = artistes;
 		result = result.map(ele=>{
-			ele.image=undefined;console.log(ele.albums); 
+            ele.image=undefined;
 			ele.albums=ele.albums.map(album=>{
 				album.couverture=undefined;
 				album.musiques = album.musiques.map(musique=>{
@@ -67,8 +67,6 @@ app.get(getArtisteByName, function (req, res) {
 				});
 			return album;
 		});return ele;});
-		console.log(result);
-        //console.log(result[0].albums);
         res.send(artistes);
     })
 });
@@ -109,7 +107,7 @@ app.get(getAlbumById, function(req, res) {
 
     artiste.find({'albums._id' : req.params.id}, {'albums.$':1}).then((album)=>{
         if(album){
-            res.send(album[0]);
+            res.send(album);
         }else{
             res.status(404).json({message : "404 not found"});
         }
@@ -119,6 +117,7 @@ app.get(getAlbumById, function(req, res) {
 });
 
 // -- GET album/:name
+// Rajouter tolower / toupper pour les regexp
 app.get(getAlbumByName, function(req, res) {
     let artiste = mongoose.model('Artiste');
 
@@ -139,9 +138,13 @@ app.get(getAlbumByName, function(req, res) {
 app.get(getMusiqueById, function(req, res) {
     let artiste = mongoose.model('Artiste');
 
-    artiste.find({'albums.musiques._id' : req.params.id}, {'albums.musiques.$':1}).then((musique)=>{
+    artiste.find({'albums.musiques._id' : req.params.id}, 'albums.musiques').then((musique)=>{
         if(musique){
-            res.send(musique[0]);
+            musique=musique[0].albums.reduce((prev,ele)=>prev.concat(ele),[])
+            .reduce((prev,ele)=>prev.concat(ele.musiques),[])
+            .filter(ele=>ele._id.toString()===req.params.id)[0];
+            
+            res.send(musique);
         }else{
             res.status(404).json({message : "404 not found"});
         }
@@ -157,7 +160,16 @@ app.get(getMusiqueByTitle, function(req, res) {
     artiste.find({'albums.musiques.titre' : new RegExp('^.*'+req.params.title+'.*$', "ig")}).then((art)=>{
         if(art){
 			console.log(art);
-			albums = art.map(arti=>arti.albums.map(alb=>{let retour = {};retour.musiques=alb.musiques;retour._id=alb._id;retour.nom = alb.nom;retour.nomGroupe = arti.nom;retour.idGroupe=arti._id;return retour}).reduce((prev,ele)=>prev.concat(ele),[])).reduce((prev,ele)=>prev.concat(ele),[]);
+			albums = art.map(arti=>arti.albums.map(alb=>{
+                let retour = {};
+                retour.musiques=alb.musiques;
+                retour._id=alb._id;
+                retour.nom = alb.nom;
+                retour.nomGroupe = arti.nom;
+                retour.idGroupe=arti._id;
+                return retour})
+                .reduce((prev,ele)=>prev.concat(ele),[]))
+                .reduce((prev,ele)=>prev.concat(ele),[]);
             mus = albums.map(alb=>alb.musiques.map(mus=>{
 				let musicObj={};
 				musicObj.nomGroupe=alb.nomGroupe;
@@ -165,9 +177,12 @@ app.get(getMusiqueByTitle, function(req, res) {
 				musicObj.nomAlbum=alb.nom;
 				musicObj.idGoupe = alb.idGroupe;
 				musicObj.titre=mus.titre;
-				musicObj._id=mus._id;
+                musicObj._id=mus._id;
 				return musicObj;
-			}).reduce((prev,ele)=>prev.concat(ele),[])).reduce((prev,ele)=>prev.concat(ele),[]).filter(ele=>ele.titre.includes(req.params.title));
+            }).reduce((prev,ele)=>prev.concat(ele),[]))
+            .reduce((prev,ele)=>prev.concat(ele),[])
+            .filter(ele=>ele.titre.includes(req.params.title));
+            //console.log(mus);
 			
 			//res.send(art);
 			/*art=art.filter(ele=>ele.albums.filter(album=>album.musiques.filter(mus=>mus.titre.includes(req.params.title))).length>0);
@@ -221,7 +236,9 @@ app.get(readMusique,function (req,res){
 	artiste.find({'albums.musiques._id' : req.params.id}, 'albums.musiques').then((musique)=>{
         if(musique){
 			let fs = require('fs');
-			musique=musique[0].albums.reduce((prev,ele)=>prev.concat(ele),[]).reduce((prev,ele)=>prev.concat(ele.musiques),[]).filter(ele=>ele._id.toString()===req.params.id)[0].son;
+            musique=musique[0].albums.reduce((prev,ele)=>prev.concat(ele),[])
+            .reduce((prev,ele)=>prev.concat(ele.musiques),[])
+            .filter(ele=>ele._id.toString()===req.params.id)[0].son;
 			let rstream = fs.createReadStream(musique);
 			rstream.pipe(res);
 			//res.send(musique);
@@ -269,7 +286,7 @@ app.get(getArtisteCover,function (req,res){
 });
 
 
-// -- READ
+// -- GET artiste/:id
 app.get(getArtisteById, function (req, res) {
     mongoose.model('Artiste').findOne({_id : req.params.id}).then((artiste)=>{
         if(artiste){

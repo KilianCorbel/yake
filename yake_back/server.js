@@ -4,6 +4,7 @@ let express = require('express'),
 let bodyParser = require('body-parser');
 let mongoose = require('mongoose');
 let test = require('./Composants/Artiste/Artiste.model.js');
+let playlist = require('./Composants/Playlist/Playlist.model');
 // ---- Body parser
 let urlencodedParser = bodyParser.urlencoded({
     extended: true,
@@ -21,6 +22,88 @@ let database = mongoose.connect("mongodb://localhost:27017/yake",{
     console.log('Error while connecting to database');
     console.log(e);
 });
+
+// let newPlaylist = new playlist({	
+// 	nom : "Playlist Perso",
+// 	image: "null.png",
+// 	description : "Playlist test",
+// 	privee : true,
+// 	utilisateur : {
+// 			pseudo : "karmapolice",
+// 			email : "karma.police@gmail.com",
+// 			nom : "karma",
+// 			prenom: "police",
+// 			dateCreation : "09-02-2019"
+// 	},
+// 	musiques : [
+// 		{
+// 			titre : "Resistance",
+// 			note : 4.7
+// 		},
+// 		{
+// 			titre : "I Belong To You",
+// 			note : 4.9
+// 		},
+// 		{
+// 			titre : "Space Dementia",
+// 			note : 4.9
+// 		},
+// 		{
+// 			titre : "Wish You Were Here",
+// 			note : 4.8
+// 		},
+// 		{
+// 			titre : "Time",
+// 			note : 4.8
+// 		}
+// 	]    
+// });
+
+// let newPlaylist2 = new playlist({
+// 	nom : "Soirées",
+// 	image: "null.png",
+// 	description : "Ma playlist pour soirées",
+// 	privee : false,
+// 	utilisateur : {
+// 		pseudo : "karmapolice"
+// 	},
+// 	musiques : [
+// 		{
+// 			titre : "Resistance",
+// 			note : 4.7
+// 		},
+// 		{
+// 			titre : "Unnatural Selection",
+// 			note : 4
+// 		},
+// 		{
+// 			titre : "Space Dementia",
+// 			note : 4.9
+// 		},
+// 		{
+// 			titre : "Plug In Baby",
+// 			note : 4.8
+// 		},
+// 		{
+// 			titre : "Feeling Good",
+// 			note : 5
+// 		}
+// 	]
+// });
+
+// newPlaylist.save().then(playlist => {
+// 	console.log(playlist);
+// })
+// .catch(err => {
+// 	console.error(err);
+// })
+
+// newPlaylist2.save().then(playlist => {
+// 	console.log(playlist);
+// })
+// .catch(err => {
+// 	console.error(err);
+// })
 /*
 let testMusique1 = new test.Musique({titre:"Lullaby",note:5,son:'C:/Users/corme/Desktop/Lullaby - Nickelback.mp3'});
 let testAlbum = new test.Album({nom:"Here And Now",couverture:'C:/Users/corme/Desktop/hereAndNow.jpg',musiques:[testMusique1]});
@@ -57,7 +140,7 @@ app.use(function (req, res, next) {
 
 // ---- Define routes
 app.use('/api/artistes', require('./Composants/Artiste/Artiste.route'));
-// app.use('/api/playlists', require('./Composants/Playlist/Playlist.process'));
+app.use('/api/playlists', require('./Composants/Playlist/Playlist.route'));
 // app.use('/api/users', require('./Composants/Utilisateur/Utilisateur.process'));
 
 // ---- Start server
