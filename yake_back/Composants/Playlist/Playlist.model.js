@@ -17,8 +17,12 @@ let PlaylistSchema = new Schema({
     },
     musiques : [
         {
+			id: String,
             titre : String,
-            note : Number
+			idAlbum : String,
+			idArtiste: String,
+			nomAlbum : String,
+			nomGroupe:String
         }
     ]
 });

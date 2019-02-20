@@ -6,6 +6,13 @@
 }
 
 .musicLine{
+  flex-flow:row;
+  display:flex;
+  justify-content:center;
+}
+
+.flex{
+  flex : 0 0 auto;
 }
 
 .albumRow{
@@ -28,6 +35,12 @@
   flex-basis:0px;
 }
 .AlbumRows{
+  /*flex-grow:1;
+  flex-shrink:1;
+  flex-basis:0px;*/
+  overflow-x:auto;
+}
+.AlbumContent{
   display:flex;
   /*flex-grow:1;
   flex-shrink:1;
@@ -35,7 +48,6 @@
   flex-flow:row;
   border: 1px solid #000000;
   justify-content:space-evenly;
-  overflow-x:auto;
 }
 .AlbumList{
   display:flex;
@@ -59,14 +71,14 @@
     flex-basis:0px;
 }
 .ArtisteRows{
+
+  overflow-x:auto;
+}
+.ArtisteContent{
   display:flex;
-  /*flex-grow:1;
-  flex-shrink:1;
-  flex-basis:0px;*/
   flex-flow:row;
   border: 1px solid #000000;
   justify-content:space-evenly;
-  overflow-x:auto;
 }
 .ArtisteList{
   display:flex;

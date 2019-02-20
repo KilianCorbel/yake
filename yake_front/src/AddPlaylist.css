@@ -7,9 +7,9 @@
 .musicCadre{
     border : 1px solid #000000;
     overflow:auto;
-    height:70%;
+    height:50%;
 }
 .addPlaylistCadre{
     overflow:hidden;
-    max-height: 50vh;
+    max-height: 60vh;
 }

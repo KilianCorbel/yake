@@ -18,7 +18,7 @@ const getAll = '/';
 const getPlaylistById = '/id/:id';
 const getPlaylistByName = '/name/:name';
 const getPlaylistByUser = '/user/:user';
-const postPlaylist = '/playlist';
+const postPlaylist = '/savePlaylist';
 lienModifier = '/playlist/:id';
 lienSupprimer = '/playlist/:id';
 lienGet = '/playlist/:id';
@@ -78,8 +78,9 @@ app.get(getPlaylistByUser, function (req, res) {
 // -- CREATE
 app.post(postPlaylist, function (req, res) {
     let playlist = mongoose.model('Playlist');
-    let newPLaylist = new mongoose.Schema(req.body);
-    newPLaylist.id = newPLaylist._id;
+	console.log(req.body);
+    let newPLaylist = new playlist(req.body);
+    //newPLaylist.id = newPLaylist._id;
 
     newPLaylist.save().then(()=>{
         res.send(newPLaylist);

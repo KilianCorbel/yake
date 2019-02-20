@@ -4,7 +4,6 @@ import './App.css';
 import Menu from './Menu.js';
 import Title from './Title.js';
 import MusiqueList from './musiqueList.js';
-import MusicPlayer from './MusicPlayer/MusicPlayer.js';
 import MusicPlayerI from './MusicPlayer/MusicPlayerI.js';
 import HomeWindow from './HomeWindow.js';
 import MusicWindow from './MusicWindow.js';
@@ -16,6 +15,9 @@ import AlbumWindow from './AlbumWindow.js';
 import Playlist from './MusicPlayer/Playlist.js';
 import { Input, InputGroupAddon, InputGroup, Button, Popover, PopoverHeader, PopoverBody } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.css';
+import AjoutArtiste from './AjoutArtiste';
+import AjoutAlbum from './AjoutAlbum';
+import PlaylistInfoWindow from './PlaylistInfoWindow.js'
 //import {Form} from 'react-bootstrap';
 class App extends Component {
   constructor(props){
@@ -27,6 +29,7 @@ class App extends Component {
       playlistList:[],
       albumInfo:{},
       artisteInfo:{},
+      playlistInfo:{},
       inputValue:"",
       windowShowed:"homeWindow",
       playlist:new Playlist(),
@@ -35,6 +38,7 @@ class App extends Component {
       findAlbum: true,
       findMusic: true
     }
+    this.getAllPlaylists=this.getAllPlaylists.bind(this);
     this.getAlbumInfo=this.getAlbumInfo.bind(this);
     this.getArtisteInfo=this.getArtisteInfo.bind(this);
     this.inputFindAlbumChange=this.inputFindAlbumChange.bind(this);
@@ -44,8 +48,6 @@ class App extends Component {
     this.submitInputValue = this.submitInputValue.bind(this);
     this.updateInputValue = this.updateInputValue.bind(this);
     this.searchMusic = this.searchMusic.bind(this);
-    this.musicPlayer = new MusicPlayer();
-
   }
   toggle() {
     this.setState({
@@ -84,6 +86,12 @@ class App extends Component {
         this.searchArtiste(this.state.inputValue);
       this.setState({windowShowed:"searchWindow"});
     }
+  }
+  getAllPlaylists(){
+    fetch(`/api/playlists/`)
+    .then(res => res.json())
+    .then(data => {this.setState({playlistList : data,windowShowed:"mesPlaylistsWindow"});})
+    .catch(error => console.log(error));
   }
   getAlbumInfo(input){
     fetch(`/api/artistes/albums/id/${input}`)
@@ -127,8 +135,11 @@ class App extends Component {
   tendancesWindow(){
     return <TendancesWindow/>
   }
+  playlistWindow(){
+    return <PlaylistInfoWindow playlistToShow={this.state.playlistInfo} playlist={this.state.playlist} refresh={()=>{this.setState({});}}/>
+  }
   mesPlaylistsWindow(){
-    return <PlaylistWindow playlists={this.searchAlbum.playlistList} playlist={this.state.playlist} refresh={()=>{this.setState({});}}/>
+    return <PlaylistWindow onPlaylistClick={(ele)=>this.setState({playlistInfo:ele,windowShowed:"playlistWindow"})} playlists={this.state.playlistList} playlist={this.state.playlist} refresh={()=>{this.setState({});}}/>
   }
   autresWindow(){
     return <AutresWindow/>
@@ -138,6 +149,13 @@ class App extends Component {
   }
   albumWindow(){
     return <AlbumWindow onArtisteClick={this.getArtisteInfo} refresh={()=>{this.setState({});}} album={this.state.albumInfo} playlist={this.state.playlist}/>
+  }
+  ajoutArtiste(){
+    return <AjoutArtiste/>
+  }
+
+  ajoutAlbum(){
+    return <AjoutAlbum/>
   }
   render() {
     let show = this[`${this.state.windowShowed}`]();
@@ -179,8 +197,10 @@ class App extends Component {
           <div className="LeftMenuBar">
             <Menu clicable={true} onClick={()=>{this.setState({windowShowed:"mesMusiquesWindow"});}} value="Mes musiques"/>
             <Menu clicable={true} onClick={()=>{this.setState({windowShowed:"tendancesWindow"});}} value="Tendances"/>
-            <Menu clicable={true} onClick={()=>{this.setState({windowShowed:"mesPlaylistsWindow"});}} value="Mes playlists"/>
+            <Menu clicable={true} onClick={()=>{this.getAllPlaylists();}} value="Mes playlists"/>
             <Menu clicable={true} onClick={()=>{this.setState({windowShowed:"autresWindow"});}} value="Autres"/>
+            <Menu onClick={()=>{this.setState({windowShowed:"ajoutArtiste"});}} value="Ajout artiste"/>
+            <Menu onClick={()=>{this.setState({windowShowed:"ajoutAlbum"});}} value="Ajout album"/>
             <Menu clicable={false} onClick={()=>{}} value=""/>
           </div>
           <div className="Body">

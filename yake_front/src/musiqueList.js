@@ -5,20 +5,11 @@ class musiqueList extends Component{
     constructor(props){
         super(props);
         this.runMusic = this.runMusic.bind(this);
-        this.toArrayBuffer=this.toArrayBuffer.bind(this);
         this.play=true;
         this.source=undefined;
         this.resume=0;
         this.context = undefined;
         this.beginningTime=0;
-    }
-    toArrayBuffer(buf) {
-        var ab = new ArrayBuffer(buf.length);
-        var view = new Uint8Array(ab);
-        for (var i = 0; i < buf.length; ++i) {
-            view[i] = buf[i];
-        }
-        return ab;
     }
     initMusic(sound){
         this.props.playlist.initMusic(sound);
@@ -61,7 +52,7 @@ class musiqueList extends Component{
                     <div className="albumRowContent">{`${ele.nom}`}</div>
                     </div>);}
                 )
-                albumList=(<div className="AlbumList"><h3>{"Liste d'album"}</h3><div className="AlbumRows">{albumList}</div></div>);
+                albumList=(<div className="AlbumList"><h3>{"Liste d'album"}</h3><div className="AlbumRows"><div className={"AlbumContent"}>{albumList}</div></div></div>);
         }
         if(this.props.artisteList.length>0){
             artisteList=this.props.artisteList.map(ele=>{
@@ -70,7 +61,7 @@ class musiqueList extends Component{
                         <div className="artisteRowContent">{`${ele.nom}`}</div>
                     </div>);
             });
-            artisteList=(<div className="ArtisteList"><h3>{"Liste d'Artistes"}</h3><div className="ArtisteRows">{artisteList}</div></div>);
+            artisteList=(<div className="ArtisteList"><h3>{"Liste d'Artistes"}</h3><div className="ArtisteRows"><div className={"ArtisteContent"}>{artisteList}</div></div></div>);
         }
         return <div className="MainContent">
                     <div className="scrollable">

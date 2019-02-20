@@ -198,20 +198,19 @@ app.get(getMusiqueByTitle, function(req, res) {
 
 // -- CREATE
 app.post(postArtiste, function (req, res) {
-    let artiste = mongoose.model('Artiste');
-    let newArtiste = new mongoose.Schema(req.body);
-    newArtiste.id = newArtiste._id;
-
+    let Artiste = mongoose.model('Artiste');
+    let newArtiste = new Artiste(req.body);
+    //newArtiste.id = newArtiste._id;
     newArtiste.save().then(()=>{
         res.send(newArtiste);
-    },(err)=>{
-        res.send(err);
     })
+    .catch(err=>console.log(err));
 });
+
 
 // -- UPDATE
 app.put(putArtiste, function (req, res) {
-    mongoose.model('Artiste').updateOne({_id : req.body.id}, {$set : req.body}, (err, updatedArtiste)=>{
+    mongoose.model('Artiste').updateOne({_id : req.body._id}, {$set : req.body}, (err, updatedArtiste)=>{
        if(err){
             res.send(err);
        }else{
@@ -257,8 +256,10 @@ app.get(getAlbumCover,function (req,res){
         if(album){
 			let fs = require('fs');
 			album=album[0].albums.filter(ele=>ele._id.toString()===req.params.id)[0].couverture;
-			let rstream = fs.createReadStream(album);
-			rstream.pipe(res);
+			if(album!==''){
+				let rstream = fs.createReadStream(album);
+				rstream.pipe(res);
+			}
         }else{
             res.status(404).json({message : "404 not found"});
         }
@@ -274,8 +275,10 @@ app.get(getArtisteCover,function (req,res){
         if(art){
 			let fs = require('fs');
 			art=art[0].image;
-			let rstream = fs.createReadStream(art);
-			rstream.pipe(res);
+			if(art.length>0){
+				let rstream = fs.createReadStream(art);
+				rstream.pipe(res);
+			}
         }else{
             res.status(404).json({message : "404 not found"});
         }
