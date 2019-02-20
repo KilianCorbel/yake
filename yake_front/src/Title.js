@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './Title.css';
+import './Menu.css'
 class Title extends Component {
   render() {
     return (

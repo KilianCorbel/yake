@@ -25,6 +25,8 @@ class App extends Component {
       albumList:[],
       artisteList:[],
       playlistList:[],
+      albumInfo:{},
+      artisteInfo:{},
       inputValue:"",
       windowShowed:"homeWindow",
       playlist:new Playlist(),
@@ -33,6 +35,8 @@ class App extends Component {
       findAlbum: true,
       findMusic: true
     }
+    this.getAlbumInfo=this.getAlbumInfo.bind(this);
+    this.getArtisteInfo=this.getArtisteInfo.bind(this);
     this.inputFindAlbumChange=this.inputFindAlbumChange.bind(this);
     this.inputFindMusicChange=this.inputFindMusicChange.bind(this);
     this.inputFindArtisteChange=this.inputFindArtisteChange.bind(this);
@@ -81,6 +85,18 @@ class App extends Component {
       this.setState({windowShowed:"searchWindow"});
     }
   }
+  getAlbumInfo(input){
+    fetch(`/api/artistes/albums/id/${input}`)
+    .then(res => res.json())
+    .then(data => {this.setState({albumInfo : data,windowShowed:"albumWindow"});})
+    .catch(error => console.log(error));
+  }
+  getArtisteInfo(input){
+    fetch(`/api/artistes/id/${input}`)
+    .then(res => res.json())
+    .then(data => {this.setState({artisteInfo : data,windowShowed:"artisteWindow"});})
+    .catch(error => console.log(error));
+  }
   searchMusic(input){
     fetch(`/api/artistes/albums/musiques/title/${input}`)
     .then(res => res.json())
@@ -100,7 +116,7 @@ class App extends Component {
     .catch(error => console.log(error));
   }
   searchWindow(){
-    return <MusiqueList refresh={()=>{this.setState({});}} playlist={this.state.playlist} artisteList={this.state.artisteList} albumList={this.state.albumList} musiqueList={this.state.musicList}/>;
+    return <MusiqueList onArtisteClick={this.getArtisteInfo} onAlbumClick={this.getAlbumInfo} refresh={()=>{this.setState({});}} playlist={this.state.playlist} artisteList={this.state.artisteList} albumList={this.state.albumList} musiqueList={this.state.musicList}/>;
   }
   homeWindow(){
     return <HomeWindow/>
@@ -118,10 +134,10 @@ class App extends Component {
     return <AutresWindow/>
   }
   artisteWindow(){
-    return <ArtisteWindow/>
+    return <ArtisteWindow artiste={this.state.artisteInfo} onAlbumClick={this.getAlbumInfo}/>
   }
   albumWindow(){
-    return <AlbumWindow/>
+    return <AlbumWindow onArtisteClick={this.getArtisteInfo} refresh={()=>{this.setState({});}} album={this.state.albumInfo} playlist={this.state.playlist}/>
   }
   render() {
     let show = this[`${this.state.windowShowed}`]();

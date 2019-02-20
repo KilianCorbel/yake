@@ -1,7 +1,15 @@
 .AddPlaylistButton{
-    flex:1 0 0;
+    
 }
 .AddPlaylistContent{
-    display:flex;
-    flex:1 0 0;
+}
+
+.musicCadre{
+    border : 1px solid #000000;
+    overflow:auto;
+    height:70%;
+}
+.addPlaylistCadre{
+    overflow:hidden;
+    max-height: 50vh;
 }

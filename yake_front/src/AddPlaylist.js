@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Button,Modal,ModalHeader,ModalBody,Input,ModalFooter } from 'reactstrap';
+import './AddPlaylist.css';
 class AddPlaylist extends Component{
     constructor(props){
         super(props);
@@ -30,9 +31,9 @@ class AddPlaylist extends Component{
                 <Button className="AddPlaylistButton" color="info" onClick={this.toggle} disabled={this.props.playlist.isEmpty()}>{"+"}</Button>
                 <Modal isOpen={this.state.modal} className={this.props.className} unmountOnClose={true}>
                         <ModalHeader >Ajouter une playlist</ModalHeader>
-                        <ModalBody>
+                        <ModalBody className="addPlaylistCadre">
                             <Input placeholder="Playlist Title" rows={1} />
-                            {musicList}
+                            <div className="musicCadre">{musicList}</div>
                         </ModalBody>
                         <ModalFooter>
                             <Button color="success" onClick={this.toggle}>Save</Button>{' '}

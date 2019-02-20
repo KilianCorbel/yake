@@ -8,6 +8,70 @@
 .musicLine{
 }
 
+.albumRow{
+  display:flex;
+  flex: 1 1 0;
+  flex-flow: column;
+  max-width:150px;
+}
+
+.albumRow:hover{
+  background-color: #6e8f8f;
+}
+
+.albumRowContentimg{
+  flex: 1 1 0;
+}
+.albumRowContent{
+  flex-grow:1;
+  flex-shrink:1;
+  flex-basis:0px;
+}
+.AlbumRows{
+  display:flex;
+  /*flex-grow:1;
+  flex-shrink:1;
+  flex-basis:0px;*/
+  flex-flow:row;
+  border: 1px solid #000000;
+  justify-content:space-evenly;
+  overflow-x:auto;
+}
+.AlbumList{
+  display:flex;
+  flex-flow:column;
+
+}
+.artisteRow{
+  display:flex;
+  flex: 1 1 0;
+  flex-flow: column;
+  max-width:150px;
+}
+
+.artisteRow:hover{
+  background-color: #6e8f8f;
+}
+
+.artisteRowContent{
+  flex-grow:1;
+    flex-shrink:1;
+    flex-basis:0px;
+}
+.ArtisteRows{
+  display:flex;
+  /*flex-grow:1;
+  flex-shrink:1;
+  flex-basis:0px;*/
+  flex-flow:row;
+  border: 1px solid #000000;
+  justify-content:space-evenly;
+  overflow-x:auto;
+}
+.ArtisteList{
+  display:flex;
+  flex-flow:column;
+}
 .musicLine:hover{
   background-color:#e6e4e4;
 }

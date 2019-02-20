@@ -55,7 +55,7 @@ app.get(getAll, function (req, res) {
 //Find Artiste byName
 app.get(getArtisteByName, function (req, res) {
     let artiste = mongoose.model('Artiste');
-    artiste.find({'nom' : req.params.name}).then((artistes)=>{
+    artiste.find({'nom' : new RegExp('^.*'+req.params.name+'.*$', "i")}).then((artistes)=>{
         let result = artistes;
 		result = result.map(ele=>{
             ele.image=undefined;
@@ -105,9 +105,11 @@ app.get(getMusiques, function(req, res) {
 app.get(getAlbumById, function(req, res) {
     let artiste = mongoose.model('Artiste');
 
-    artiste.find({'albums._id' : req.params.id}, {'albums.$':1}).then((album)=>{
-        if(album){
-            res.send(album);
+    artiste.find({'albums._id' : req.params.id}).then((art)=>{
+        if(art){
+            art = art.map(arti=>{arti.albums=arti.albums.filter(album=>album._id.toString()===req.params.id);return arti;});
+			art = art.map(arti=>arti.albums.map(alb=>{let retour = {};retour.musiques=alb.musiques;retour.genres=alb.genres;retour.datePublication=alb.datePublication;retour._id=alb._id;retour.nom = alb.nom;retour.nomGroupe = arti.nom;retour.idGroupe=arti._id;return retour}).reduce((prev,ele)=>prev.concat(ele),[])).reduce((prev,ele)=>prev.concat(ele),[])[0];
+            res.send(art);
         }else{
             res.status(404).json({message : "404 not found"});
         }
@@ -123,7 +125,7 @@ app.get(getAlbumByName, function(req, res) {
 
     artiste.find({'albums.nom' : new RegExp('^.*'+req.params.name+'.*$', "ig")}).then((art)=>{
         if(art){
-			art = art.map(arti=>{arti.albums=arti.albums.filter(album=>album.nom.includes(req.params.name));return arti;});
+			art = art.map(arti=>{arti.albums=arti.albums.filter(album=>album.nom.toLowerCase().includes(req.params.name.toLowerCase()));return arti;});
 			art = art.map(arti=>arti.albums.map(alb=>{let retour = {};retour.musiques=alb.musiques;retour._id=alb._id;retour.nom = alb.nom;retour.nomGroupe = arti.nom;retour.idGroupe=arti._id;return retour}).reduce((prev,ele)=>prev.concat(ele),[])).reduce((prev,ele)=>prev.concat(ele),[]);
             res.send(art);
         }else{
@@ -179,10 +181,7 @@ app.get(getMusiqueByTitle, function(req, res) {
 				musicObj.titre=mus.titre;
                 musicObj._id=mus._id;
 				return musicObj;
-            }).reduce((prev,ele)=>prev.concat(ele),[]))
-            .reduce((prev,ele)=>prev.concat(ele),[])
-            .filter(ele=>ele.titre.includes(req.params.title));
-            //console.log(mus);
+			}).reduce((prev,ele)=>prev.concat(ele),[])).reduce((prev,ele)=>prev.concat(ele),[]).filter(ele=>ele.titre.toLowerCase().includes(req.params.title.toLowerCase()));
 			
 			//res.send(art);
 			/*art=art.filter(ele=>ele.albums.filter(album=>album.musiques.filter(mus=>mus.titre.includes(req.params.title))).length>0);
