@@ -159,7 +159,7 @@ class App extends Component {
   }
   render() {
     let show = this[`${this.state.windowShowed}`]();
-   
+    let test = new FileReader();
     return (
       <div className="App">
         <div className="Header">
@@ -199,12 +199,12 @@ class App extends Component {
             <Menu clicable={true} onClick={()=>{this.setState({windowShowed:"tendancesWindow"});}} value="Tendances"/>
             <Menu clicable={true} onClick={()=>{this.getAllPlaylists();}} value="Mes playlists"/>
             <Menu clicable={true} onClick={()=>{this.setState({windowShowed:"autresWindow"});}} value="Autres"/>
-            <Menu onClick={()=>{this.setState({windowShowed:"ajoutArtiste"});}} value="Ajout artiste"/>
-            <Menu onClick={()=>{this.setState({windowShowed:"ajoutAlbum"});}} value="Ajout album"/>
+            <Menu clicable={true} onClick={()=>{this.setState({windowShowed:"ajoutArtiste"});}} value="Ajout artiste"/>
+            <Menu clicable={true} onClick={()=>{this.setState({windowShowed:"ajoutAlbum"});}} value="Ajout album"/>
             <Menu clicable={false} onClick={()=>{}} value=""/>
           </div>
           <div className="Body">
-              {show}         
+              {show}        
               <MusicPlayerI playlist={this.state.playlist} musicPlayer={this.musicPlayer}/> 
           </div>
         </div>

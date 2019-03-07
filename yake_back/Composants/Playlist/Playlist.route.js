@@ -2,7 +2,7 @@ let express = require('express'),
     app = express(),
     mongoose = require('mongoose'),
     session = require('cookie-session');
-
+let fs = require('fs');
 // --- middleware
 // - body-parser needed to catch and to treat information inside req.body
 let bodyParser = require('body-parser');
@@ -22,6 +22,7 @@ const postPlaylist = '/savePlaylist';
 lienModifier = '/playlist/:id';
 lienSupprimer = '/playlist/:id';
 lienGet = '/playlist/:id';
+lienGetCover = '/playlist/stream/:id';
 
 // routes vers le front react
 pageErreur ='';
@@ -79,6 +80,15 @@ app.get(getPlaylistByUser, function (req, res) {
 app.post(postPlaylist, function (req, res) {
     let playlist = mongoose.model('Playlist');
 	console.log(req.body);
+	let buf = Buffer.from(req.body.file.data);
+	fs.writeFile(`C:/Users/corme/Desktop/${req.body.fileName}`,buf,(err)=>{
+		if(err)
+			return console.log(err);
+		console.log("Fichier sauvé");
+	});
+	req.body.file=undefined;
+	req.body.image="C:/Users/corme/Desktop/"+req.body.fileName;
+	req.body.fileName=undefined;
     let newPLaylist = new playlist(req.body);
     //newPLaylist.id = newPLaylist._id;
 
@@ -88,7 +98,23 @@ app.post(postPlaylist, function (req, res) {
         res.send(err);
     })
 });
-
+app.get(lienGetCover,function (req,res){
+	let playlist = mongoose.model('Playlist');
+	playlist.find({'_id' : req.params.id}).then((pla)=>{
+        if(pla){
+			let fs = require('fs');
+			pla=pla[0].image;
+			if(pla.length>0){
+				let rstream = fs.createReadStream(pla);
+				rstream.pipe(res);
+			}
+        }else{
+            res.status(404).json({message : "404 not found"});
+        }
+    },(err)=>{
+        res.send(err);
+    });
+});
 // -- UPDATE
 app.put(lienModifier, function (req, res) {
     mongoose.model('Playlist').updateOne({_id : req.body.id}, {$set : req.body}, (err, updatedPlaylist)=>{
