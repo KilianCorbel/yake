@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './MainContent.css';
 import { Button } from 'reactstrap';
+import AlbumsBlock from './AlbumsBlock.js';
 class musiqueList extends Component{
     constructor(props){
         super(props);
@@ -28,7 +29,6 @@ class musiqueList extends Component{
     }
     render(){
         let musiqueList=[];
-        let albumList=[];
         let artisteList=[];
         if(this.props.musiqueList.length>0){
             musiqueList=this.props.musiqueList.map((ele)=>{
@@ -44,16 +44,6 @@ class musiqueList extends Component{
             })
             musiqueList=(<div><h3>Liste de musique</h3><div className="MusicList">{musiqueList}</div></div>);
         }
-        if(this.props.albumList.length>0){
-            albumList=this.props.albumList.map((ele)=>{
-
-                    return(<div className="albumRow" key={`${ele.nom}`} onClick={()=>{this.props.onAlbumClick(ele._id)}}>
-                    <div className="albumRowContentimg"><img height="100" width="100" src={`api/artistes/albums/stream/${ele._id}`} alt="noImage"/></div>
-                    <div className="albumRowContent">{`${ele.nom}`}</div>
-                    </div>);}
-                )
-                albumList=(<div className="AlbumList"><h3>{"Liste d'album"}</h3><div className="AlbumRows"><div className={"AlbumContent"}>{albumList}</div></div></div>);
-        }
         if(this.props.artisteList.length>0){
             artisteList=this.props.artisteList.map(ele=>{
                 return(<div className="artisteRow" key={`${ele.nom}`} onClick={()=>{this.props.onArtisteClick(ele._id)}}>
@@ -66,7 +56,7 @@ class musiqueList extends Component{
         return <div className="MainContent">
                     <div className="scrollable">
                 {musiqueList}
-                {albumList}
+                <AlbumsBlock albums={this.props.albumList} onAlbumClick={this.props.onAlbumClick}/>
                 {artisteList}
                 </div>
         </div>
