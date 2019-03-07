@@ -10,7 +10,7 @@ class AlbumsBlock extends Component{
                     <div className="albumRowContent">{`${ele.nom}`}</div>
                     </div>);}
                 )
-                albumList=(<div className="AlbumList"><h3>{"Albums publiés par cet auteur"}</h3><div className="AlbumRows"><div className="AlbumContent">{albumList}</div></div></div>);
+                albumList=(<div className="AlbumList"><h3>{"Albums"}</h3><div className="AlbumRows"><div className="AlbumContent">{albumList}</div></div></div>);
         }
         return (albumList);
     }
