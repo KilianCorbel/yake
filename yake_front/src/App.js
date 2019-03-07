@@ -159,7 +159,6 @@ class App extends Component {
   }
   render() {
     let show = this[`${this.state.windowShowed}`]();
-    let test = new FileReader();
     return (
       <div className="App">
         <div className="Header">

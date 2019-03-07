@@ -11,8 +11,8 @@ let urlencodedParser = bodyParser.urlencoded({
 });
 let fs = require('fs');
 app.use(urlencodedParser);
-app.use(bodyParser.json());
-
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 // ---- Connect to database
 let database = mongoose.connect("mongodb://localhost:27017/yake",{
     useNewUrlParser: true
@@ -150,6 +150,7 @@ queen2.save().then(doc => {
      console.error(err)
    });*/
 // ---- Define CORS
+app.use(bodyParser.json({limit: '50mb', extended: true}))
 app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
     res.setHeader('Access-Control-Allow-Origin', '*');
