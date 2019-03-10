@@ -8,7 +8,7 @@ let bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : true}));
 app.use(session({secret: 'todotopsecret'}))
-
+let fs = require('fs');
 // -- Load model needed for the project
 require('./Artiste.model');
 
@@ -199,6 +199,14 @@ app.get(getMusiqueByTitle, function(req, res) {
 // -- CREATE
 app.post(postArtiste, function (req, res) {
     let Artiste = mongoose.model('Artiste');
+	let buf = Buffer.from(req.body.image.data);
+	fs.writeFile(`C:/Users/corme/Desktop/${req.body.nom}`,buf,(err)=>{
+		if(err)
+			return console.log(err);
+		console.log("Fichier sauvĂ©");
+	});
+	req.body.fileName=undefined;
+	req.body.image="C:/Users/corme/Desktop/"+req.body.nom;
     let newArtiste = new Artiste(req.body);
     //newArtiste.id = newArtiste._id;
     newArtiste.save().then(()=>{

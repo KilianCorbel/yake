@@ -13,20 +13,36 @@ class AjoutArtiste extends Component {
       dateCreation: "",
       dateFin: "",
       biographie: "",
-      image: "",
+      fileChoosen: "",
       albums: []
     };
+    this.ajouterArtiste = this.ajouterArtiste.bind(this);
   }
-
+  toBuffer(ab) {
+    let buf = Buffer.alloc(ab.byteLength);
+    let view = new Uint8Array(ab);
+    for (var i = 0; i < buf.length; ++i) {
+        buf[i] = view[i];
+    }
+    return buf;
+}
   ajouterArtiste() {
-    fetch("/api/artistes/", {
-      method: "POST",
-      headers: new Headers({
-        "Content-Type": "application/json"
-      }),
-      body: JSON.stringify(this.state)
-    }).then(() => alert("Artiste " + this.state.nom + " ajouté"))
-    .then(()=>this.afficherAlerteConfirmation());
+    let body = this.state;
+    let fileReader = new FileReader();
+    fileReader.onloadend=()=>{
+      body.image=this.toBuffer(fileReader.result);
+      body.fileName=this.state.fileChoosen.name;
+      body.fileChoosen=undefined;
+      fetch("/api/artistes/", {
+        method: "POST",
+        headers: new Headers({
+          "Content-Type": "application/json"
+        }),
+        body: JSON.stringify(body)
+      }).then(() => alert("Artiste " + body.nom + " ajouté"))
+      .then(()=>{this.afficherAlerteConfirmation();this.reinitialiserFormulaire();});
+    }
+    fileReader.readAsArrayBuffer(this.state.fileChoosen);
   }
 
   afficherRecap() {
@@ -47,6 +63,7 @@ class AjoutArtiste extends Component {
       dateFin: "",
       biographie: "",
       image: "",
+      fileChoosen:undefined,
       albums: []
     })
   }
@@ -62,7 +79,7 @@ class AjoutArtiste extends Component {
           <Input
             type="Text"
             id="nom"
-            value={this.state.titre}
+            value={this.state.nom}
             onChange={e => this.modifierState(e)}
           />
         </FormGroup>
@@ -74,7 +91,7 @@ class AjoutArtiste extends Component {
           <Input
             type="Date"
             id="dateCreation"
-            value={this.state.dateSortie}
+            value={this.state.dateCreation}
             onChange={e => this.modifierState(e)}
           />
         </FormGroup>
@@ -86,7 +103,7 @@ class AjoutArtiste extends Component {
           <Input
             type="Date"
             id="dateFin"
-            value={this.state.dateSortie}
+            value={this.state.dateFin}
             onChange={e => this.modifierState(e)}
           />
         </FormGroup>
@@ -98,7 +115,7 @@ class AjoutArtiste extends Component {
           <Input
             type="textarea"
             id="biographie"
-            value={this.state.titre}
+            value={this.state.biographie}
             onChange={e => this.modifierState(e)}
           />
         </FormGroup>
@@ -107,12 +124,7 @@ class AjoutArtiste extends Component {
 
         <FormGroup row >
           <Label for="img">Image</Label>
-          <Input
-            type="text"
-            id="image"
-            value={this.state.titre}
-            onChange={e => this.modifierState(e)}
-          />
+          <input type="file" id="image" onChange={(e)=>{console.log(e.target.files[0]);this.setState({fileChoosen:e.target.files[0]});}}/>
         </FormGroup>
 
         <FormGroup>
@@ -128,7 +140,7 @@ class AjoutArtiste extends Component {
             color="danger"
             size="md"
             type = "reset"
-            //onClick={() => this.reinitialiserFormulaire()}
+            onClick={() => this.reinitialiserFormulaire()}
           >
             Réinitialiser
           </Button>
