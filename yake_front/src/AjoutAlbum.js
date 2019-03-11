@@ -10,14 +10,13 @@ class AjoutAlbum extends Component {
     super(props);
     this.state = {
       nom: "",
-      couverture: "",
       datePublication: "",
+      couverture:undefined,
+      fileChoosen:undefined,
       genres: [],
-      musiques: [],
-      artiste: "",
+      artisteId: "",
       listeArtistes: [],
       idsArtistes: [],
-      albums: {}
     };
     this.getArtistes();
   }
@@ -30,32 +29,29 @@ class AjoutAlbum extends Component {
       })
     })
       .then(res => res.json())
-      .then(data =>
-        data.forEach(element => {
-          this.setState({
-            listeArtistes: [...this.state.listeArtistes, element.nom]
-          });
-          this.setState({
-            idsArtistes: [...this.state.idsArtistes, element._id]
-          });
+      .then(
+        data =>this.setState({
+          listeArtistes:data.map(ele=>ele.nom),
+          idsArtistes:data.map(ele=>ele._id)
         })
-      )
+        )
       .catch(err => console.log(err));
   }
 
-  /*getAlbumsArtiste(id){
-    fetch("/api/artistes/" + id, {
-      method: "GET",
+  ajouterAlbum() {
+    fetch("/api/artistes/addAlbum" + this.state.artiste, {
+      method: "POSTT",
       headers: new Headers({
         "Content-Type": "application/json"
       }),
-    })
-    .then(res=>{return res.json()})
-    .then(data=>{return JSON.stringify(data.albums)})
-    .catch(err=>alert(err))
-  }*/
+      body: JSON.stringify({
+        _id: this.state.artiste,
+        nom: this.state.nom,
+        couverture: this.state.couverture,
 
-  ajouterAlbum() {
+      })
+    })
+    .catch(err => alert(err));
     //On récupère d'abord les albums de l'artiste
     fetch("/api/artistes/" + this.state.artiste, {
       method: "GET",
