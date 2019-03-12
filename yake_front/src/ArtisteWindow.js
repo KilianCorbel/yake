@@ -9,7 +9,10 @@ class ArtisteWindow extends Component{
             <div className="scrollable">
             <div className="Head"><h1>{this.props.artiste.nom}</h1><img src={`api/artistes/stream/${this.props.artiste._id}`} alt="noImage" key={"artiste"}></img></div>
             <div className="Content">{this.props.artiste.biographie}</div>  
-                <AlbumsBlock albums={this.props.artiste.albums} onAlbumClick={this.props.onAlbumClick}/>
+            <div className="AlbumList">
+              <h3>{"Albums de l'artiste"}</h3>
+              <AlbumsBlock albums={this.props.artiste.albums} onAlbumClick={this.props.onAlbumClick}/>
+            </div>
             </div>
         </div>);
     }

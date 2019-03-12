@@ -15,6 +15,7 @@ require('./Artiste.model');
 const getAll = '/';
 const getArtisteById = '/id/:id';
 const getArtisteByName = '/name/:name';
+const addAlbum = '/albums/addAlbum';
 const getAlbumById = '/albums/id/:id';
 const getAlbumByName = '/albums/name/:name';
 const getAlbums = '/albums'

@@ -9,7 +9,7 @@ class ArtistesBlock extends Component{
                         <div className="artisteRowContent">{`${ele.nom}`}</div>
                     </div>);
             });
-            artisteList=(<div className="ArtisteList"><h3>{"Liste d'Artistes"}</h3><div className="ArtisteRows"><div className={"ArtisteContent"}>{artisteList}</div></div></div>);
+            artisteList=(<div className="ArtisteRows"><div className={"ArtisteContent"}>{artisteList}</div></div>);
         }
         return (artisteList);
     }

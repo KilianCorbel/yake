@@ -36,7 +36,8 @@ class App extends Component {
       popoverOpen: false,
       findArtiste: true,
       findAlbum: true,
-      findMusic: true
+      findMusic: true,
+      searchParams:{}
     }
     this.getAllPlaylists=this.getAllPlaylists.bind(this);
     this.getAlbumInfo=this.getAlbumInfo.bind(this);
@@ -75,9 +76,14 @@ class App extends Component {
     });
   }
   submitInputValue(evt){
-    if(evt.key === "Enter"){
+    if(evt.key === "Enter" && evt.target.value.replace(/ /g,"").length>0){
       evt.target.value="";
-      this.setState({artisteList:[],albumList:[],musicList:[]});
+      this.setState({searchParams:{
+        findArtiste:this.state.findArtiste,
+        findAlbum:this.state.findAlbum,
+        findMusic:this.state.findMusic
+      },
+      artisteList:undefined,albumList:undefined,musicList:undefined});
       if(this.state.findMusic)
         this.searchMusic(this.state.inputValue);
       if(this.state.findAlbum)
@@ -124,7 +130,7 @@ class App extends Component {
     .catch(error => console.log(error));
   }
   searchWindow(){
-    return <MusiqueList onArtisteClick={this.getArtisteInfo} onAlbumClick={this.getAlbumInfo} refresh={()=>{this.setState({});}} playlist={this.state.playlist} artisteList={this.state.artisteList} albumList={this.state.albumList} musiqueList={this.state.musicList}/>;
+    return <MusiqueList searchParams={this.state.searchParams} onArtisteClick={this.getArtisteInfo} onAlbumClick={this.getAlbumInfo} refresh={()=>{this.setState({});}} playlist={this.state.playlist} artisteList={this.state.artisteList} albumList={this.state.albumList} musiqueList={this.state.musicList}/>;
   }
   homeWindow(){
     return <HomeWindow/>

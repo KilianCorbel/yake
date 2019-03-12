@@ -180,7 +180,7 @@ class AjoutArtiste extends Component {
 
         <FormGroup row >
           <Label for="img">Image</Label>
-          <input 
+          <Input 
           className={`${this.state.error.img===undefined?"":"errorInput"}`}
           type="file" id="image" onChange={(e)=>{console.log(e.target.files[0]);this.checkIfFileIsCorrect(e.target.files[0])}}/>
           {errorImg}

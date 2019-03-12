@@ -23,7 +23,7 @@ class MusiquesBlock extends Component{
                 <Button color="secondary" size="sm" onClick={()=>{this.addNext(ele);}}>{"Add Next"}</Button>
                 </div>);}
             })
-            musiqueList=(<div><h3>Liste de musique</h3><div className="MusicList">{musiqueList}</div></div>);
+            musiqueList=(<div className="MusicList">{musiqueList}</div>);
         }
         return (musiqueList);
     }

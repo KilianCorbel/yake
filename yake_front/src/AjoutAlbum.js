@@ -2,23 +2,27 @@ import React, { Component } from "react";
 import "./ajoutAlbum.css";
 import "./Scrollable.css";
 import "./MainContent.css";
+import "./ErrorColor.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Button, Form, FormGroup, Label, Input } from "reactstrap";
+import { Badge, InputGroup,InputGroupAddon,Button, Form, FormGroup, Label, Input } from "reactstrap";
 
 class AjoutAlbum extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      inputValue: "",
       nom: "",
       datePublication: "",
       couverture:undefined,
       fileChoosen:undefined,
       genres: [],
-      artisteId: "",
+      artiste: "",
       listeArtistes: [],
       idsArtistes: [],
+      error:{}
     };
     this.getArtistes();
+    this.submitInputValue=this.submitInputValue.bind(this);
   }
 
   getArtistes() {
@@ -37,86 +41,37 @@ class AjoutAlbum extends Component {
         )
       .catch(err => console.log(err));
   }
-
-  ajouterAlbum() {
-    fetch("/api/artistes/addAlbum" + this.state.artiste, {
-      method: "POSTT",
-      headers: new Headers({
-        "Content-Type": "application/json"
-      }),
-      body: JSON.stringify({
-        _id: this.state.artiste,
-        nom: this.state.nom,
-        couverture: this.state.couverture,
-
-      })
-    })
-    .catch(err => alert(err));
-    //On récupère d'abord les albums de l'artiste
-    fetch("/api/artistes/" + this.state.artiste, {
-      method: "GET",
-      headers: new Headers({
-        "Content-Type": "application/json"
-      })
-    })
-      .then(res => {
-        return res.json();
-      })
-      .then(data => {
-        return data.albums;
-      })
-      .then(albums => this.setState({ albums: albums }))
-      .then(() =>
-        this.setState({
-          albums: [
-            this.state.albums,
-            [
-              {
-                nom: this.state.nom,
-                couverture: this.state.couverture,
-                datePublication: this.state.datePublication,
-                genres: [],
-                musiques: []
-              }
-            ]
-          ]
-        })
-      )
-      //ensuite on fait la maj
-
-      .then(()=>alert(JSON.stringify(this.state.albums)))
-
-      .then(() =>
-        fetch("/api/artistes/" + this.state.artiste, {
-          method: "PUT",
-          headers: new Headers({
-            "Content-Type": "application/json"
-          }),
-          body: JSON.stringify({
-            _id: this.state.artiste,
-            albums: this.state.albums
-            /*albums:[
-              {
-                nom: this.state.nom,
-                couverture: this.state.couverture,
-                datePublication: this.state.datePublication,
-                genres: this.state.genre,
-                musiques: []
-              }
-            ]*/
-          })
-        })
-      )
-      .catch(err => alert(err));
-
-    /*.then(() => alert("Album " + this.state.albums+ " ajouté"))
-      .catch(err => console.log(err));*/
+  toBuffer(ab) {
+    let buf = Buffer.alloc(ab.byteLength);
+    let view = new Uint8Array(ab);
+    for (var i = 0; i < buf.length; ++i) {
+        buf[i] = view[i];
+    }
+    return buf;
   }
-
-  modifierState(e) {
-    let temp = {};
-    temp[`${e.target.id}`] = e.target.value;
-    this.setState(temp);
+  checkError(){
+    let error = this.state.error;
+    
+    return error;
+  }
+  ajouterAlbum() {
+    let error = this.checkError();
+    if(Object.keys(error).filter((ele)=>this.state.error[`${ele}`]!==undefined).length===0){
+      let fileReader = new FileReader();
+      fetch("/api/artistes/addAlbum" + this.state.artiste, {
+        method: "POSTT",
+        headers: new Headers({
+          "Content-Type": "application/json"
+        }),
+        body: JSON.stringify({
+          idArtiste: this.state.artiste,
+          nom: this.state.nom,
+          couverture: this.state.couverture,
+          datePublication: this.state.datePublication
+        })
+      })
+      .catch(err => alert(err));
+    }
   }
 
   creerSelects() {
@@ -130,24 +85,60 @@ class AjoutAlbum extends Component {
     }
     return selects;
   }
-
-  ajouterChampGenre() {
-    let champs = this.state.genres;
-    champs.push(
-      <FormGroup row>
-        <Label for="nom">{`Genre ${champs.length()}`}</Label>
-        <Input
-          type="Text"
-          id="genre"
-          value={this.state.titre}
-          //onChange={e => this.modifierState(e)}
-        />
-      </FormGroup>
-    );
-    return champs;
+  submitInputValue(evt){
+    if(evt.key === " "){
+      evt.target.value="";
+      this.addGenre();
+    }
   }
-
+  updateInputValue(evt) {
+    this.setState({
+      inputValue: evt.target.value
+    });
+  }
+  addGenre(){
+    if(this.state.inputValue.replace(" ","").length>0){
+      let genre = this.state.genres;
+      genre.push(this.state.inputValue.replace(" ",""));
+      this.setState({inputValue:"",genres:genre});
+    }
+    else{
+      this.setState({inputValue:""});
+    }
+  }
+  genreButtons(){
+    let tab = [];
+    for(let i = 0;i<this.state.genres.length;i++){
+      tab.push(
+      <Badge  color="secondary" id={`BadgeAjoutGenre${i}`} key={`BadgeAjoutGenre${i}`}>
+      <div key={`divAjoutGenre${i}`}>
+          {this.state.genres[i]}
+          <Button close id={`boutonClose${i}`} key={`boutonClose${i}`} onClick={()=>{this.setState({genres:this.state.genres.filter((ele,j)=>i!==j)})}}></Button>
+        </div>
+      </Badge>
+      );
+    }
+    return tab;
+  }
+  checkIfFileIsCorrect(file){
+    let img = new Image();
+    img.onload=()=>{
+      let error=this.state.error;
+      error.img=undefined;
+      if(img.width>255 || img.height>255){
+        error.img="La taille de l'image ne doit pas dépasser 255x255";
+      }
+      this.setState({fileChoosen:file,error:error});
+    }
+    img.onerror = ()=>{
+      let error=this.state.error;
+      error.img="Le fichier choisi n'est pas correct";
+      this.setState({fileChoosen:file,error:error});
+    }
+    img.src=URL.createObjectURL(file);
+  }
   render() {
+    let errorImg = this.state.error.img!==undefined?(<Badge color="danger">{this.state.error.img}</Badge>):undefined;
     return (
       <div className="MainContent">
       <div className="Scrollable">
@@ -168,7 +159,7 @@ class AjoutAlbum extends Component {
           <Input
             type="Text"
             id="nom"
-            value={this.state.titre}
+            value={this.state.nom}
             onChange={e => this.modifierState(e)}
           />
         </FormGroup>
@@ -178,29 +169,31 @@ class AjoutAlbum extends Component {
           <Input
             type="Date"
             id="datePublication"
-            value={this.state.dateSortie}
+            value={this.state.datePublication}
             onChange={e => this.modifierState(e)}
           />
         </FormGroup>
         <FormGroup row>
-          <Label for="couv">Couverture </Label>
-          <Input
-            type="Text"
-            id="couverture"
-            value={this.state.titre}
-            onChange={e => this.modifierState(e)}
-          />
+          <Label for="couv">Couverture</Label>
+          <Input 
+          className={`${this.state.error.img===undefined?"":"errorInput"}`}
+          type="file" id="couverture" onChange={(e)=>{console.log(e.target.files[0]);this.checkIfFileIsCorrect(e.target.files[0])}}/>
+          {errorImg}
         </FormGroup>
-        <FormGroup col>
+        <FormGroup row>
           <Label for="genres">Genres</Label>
-          <Button
-            color="primary"
-            id="boutonAjoutGenre"
-            size="sm"
-            onClick={() => this.ajouterChampGenre()}
-          >
-            Nouveau
-          </Button>
+          
+          <InputGroup>
+              <InputGroupAddon addonType="append">
+              {this.genreButtons()}
+              </InputGroupAddon>
+              <Input className="addGenreField" placeholder="Ajouter un genre" value={this.state.inputValue} onKeyPress={this.submitInputValue} onChange={evt => this.updateInputValue(evt)}></Input>
+              <InputGroupAddon addonType="prepend">
+                <Button id="addGenre" type="button" color="primary" onClick={()=>{this.addGenre();}}>
+                  Ajouter genre
+                </Button>
+              </InputGroupAddon>
+          </InputGroup>
           <span> </span>
         </FormGroup>
         <Button color="primary" size="md" onClick={() => this.ajouterAlbum()}>
