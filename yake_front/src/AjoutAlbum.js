@@ -58,19 +58,27 @@ class AjoutAlbum extends Component {
     let error = this.checkError();
     if(Object.keys(error).filter((ele)=>this.state.error[`${ele}`]!==undefined).length===0){
       let fileReader = new FileReader();
-      fetch("/api/artistes/addAlbum" + this.state.artiste, {
-        method: "POSTT",
-        headers: new Headers({
-          "Content-Type": "application/json"
-        }),
-        body: JSON.stringify({
-          idArtiste: this.state.artiste,
-          nom: this.state.nom,
-          couverture: this.state.couverture,
-          datePublication: this.state.datePublication
+      fileReader.onloadend=()=>{
+        let couverture = this.toBuffer(fileReader.result);
+        let body = {
+            idArtiste: this.state.artiste,
+            nom: this.state.nom,
+            couverture: couverture,
+            datePublication: this.state.datePublication,
+            genres: this.state.genres
+        };
+        fetch("/api/artistes/addAlbum", {
+          method: "POST",
+          headers: new Headers({
+            "Content-Type": "application/json"
+          }),
+          body: JSON.stringify(
+            body
+          )
         })
-      })
-      .catch(err => alert(err));
+        .catch(err => alert(err));
+      }
+      fileReader.readAsArrayBuffer(this.state.fileChoosen);
     }
   }
 
@@ -136,6 +144,12 @@ class AjoutAlbum extends Component {
       this.setState({fileChoosen:file,error:error});
     }
     img.src=URL.createObjectURL(file);
+  }
+
+  modifierState(e){
+    let temp={};
+    temp[`${e.target.id}`]=e.target.value;
+    this.setState(temp);
   }
   render() {
     let errorImg = this.state.error.img!==undefined?(<Badge color="danger">{this.state.error.img}</Badge>):undefined;
