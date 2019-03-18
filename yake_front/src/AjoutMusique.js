@@ -6,19 +6,21 @@ import "./ErrorColor.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Badge, InputGroup,InputGroupAddon,Button, Form, FormGroup, Label, Input } from "reactstrap";
 
-class AjoutAlbum extends Component {
+class AjoutMusique extends Component {
   constructor(props) {
     super(props);
     this.state = {
       inputValue: "",
       nom: "",
-      datePublication: "",
-      couverture:undefined,
+      note:[],
+      musique:undefined,
       fileChoosen:undefined,
-      genres: [],
       artiste: "",
+      album:"",
       listeArtistes: [],
       idsArtistes: [],
+      listeAlbums: [],
+      idsAlbums: [],
       error:{}
     };
     this.getArtistes();
@@ -41,6 +43,7 @@ class AjoutAlbum extends Component {
         )
       .catch(err => console.log(err));
   }
+
   toBuffer(ab) {
     let buf = Buffer.alloc(ab.byteLength);
     let view = new Uint8Array(ab);
@@ -51,9 +54,10 @@ class AjoutAlbum extends Component {
   }
   checkError(){
     let error = this.state.error;
+    
     return error;
   }
-  ajouterAlbum() {
+  ajouterMusique() {
     let error = this.checkError();
     if(Object.keys(error).filter((ele)=>this.state.error[`${ele}`]!==undefined).length===0){
       let fileReader = new FileReader();
@@ -81,22 +85,42 @@ class AjoutAlbum extends Component {
     }
   }
 
-  creerSelects() {
+  creerSelectsArtiste() {
     let selects = [];
     for (let i = 0; i < this.state.listeArtistes.length; i++) {
-      if(i===0){
+        if(i===0){
         selects.push(
-          <option value={this.state.idsArtistes[i]} selected disabled>
+            <option value={this.state.idsArtistes[i]} disabled selected>
             {this.state.listeArtistes[i]}
-          </option>
+            </option>
         );
+        }
+        else{
+            selects.push(
+        <option value={this.state.idsArtistes[i]}>
+          {this.state.listeArtistes[i]}
+        </option>
+      );
+        }
+    }
+    return selects;
+  }
+  creerSelectsAlbum() {
+    let selects = [];
+    for (let i = 0; i < this.state.listeAlbums.length; i++) {
+      if(i===0){
+          selects.push(
+        <option value={this.state.idsAlbums[i]} disabled selected>
+          {this.state.listeAlbums[i]}
+        </option>
+      );
       }
       else{
-        selects.push(
-          <option value={this.state.idsArtistes[i]}>
-            {this.state.listeArtistes[i]}
-          </option>
-        );
+          selects.push(
+        <option value={this.state.idsAlbums[i]}>
+          {this.state.listeAlbums[i]}
+        </option>
+      );
       }
     }
     return selects;
@@ -137,27 +161,41 @@ class AjoutAlbum extends Component {
     return tab;
   }
   checkIfFileIsCorrect(file){
-    let img = new Image();
-    img.onload=()=>{
-      let error=this.state.error;
-      error.img=undefined;
-      if(img.width>255 || img.height>255){
-        error.img="La taille de l'image ne doit pas dépasser 255x255";
-      }
-      this.setState({fileChoosen:file,error:error});
-    }
-    img.onerror = ()=>{
-      let error=this.state.error;
-      error.img="Le fichier choisi n'est pas correct";
-      this.setState({fileChoosen:file,error:error});
-    }
-    img.src=URL.createObjectURL(file);
+    
   }
 
   modifierState(e){
     let temp={};
     temp[`${e.target.id}`]=e.target.value;
     this.setState(temp);
+  }
+  chooseAlbum(e){
+      let event = e.target.value;
+      this.setState({
+          album:event
+      });
+  }
+  chooseArtiste(e){
+      let event = e.target.value;
+    fetch(`/api/artistes/id/${event}`, {
+    method: "GET",
+    headers: new Headers({
+        "Content-Type": "application/json"
+    })
+    })
+    .then(res => res.json())
+    .then(
+        data =>{this.setState({
+        listeAlbums:[],
+        idsAlbums:[],
+        artiste:event
+        });
+        this.setState({
+            listeAlbums:["Choisissez un album"].concat(data.albums.map(ele=>ele.nom)),
+            idsAlbums:[""].concat(data.albums.map(ele=>ele._id))
+        });
+        })
+    .catch(err => console.log(err));
   }
   render() {
     let errorImg = this.state.error.img!==undefined?(<Badge color="danger">{this.state.error.img}</Badge>):undefined;
@@ -171,9 +209,19 @@ class AjoutAlbum extends Component {
           <Input
             type="select"
             id="artiste"
-            onChange={e => this.modifierState(e)}
+            onChange={e => this.chooseArtiste(e)}
           >
-            {this.creerSelects()}
+            {this.creerSelectsArtiste()}
+          </Input>
+        </FormGroup>
+        <FormGroup row>
+          <Label for="album">Album </Label>
+          <Input
+            type="select"
+            id="album"
+            onChange={e => this.chooseAlbum(e)}
+          >
+            {this.creerSelectsAlbum()}
           </Input>
         </FormGroup>
         <FormGroup row>
@@ -185,40 +233,14 @@ class AjoutAlbum extends Component {
             onChange={e => this.modifierState(e)}
           />
         </FormGroup>
-
         <FormGroup row>
-          <Label for="datePubli">Date de publication </Label>
-          <Input
-            type="Date"
-            id="datePublication"
-            value={this.state.datePublication}
-            onChange={e => this.modifierState(e)}
-          />
-        </FormGroup>
-        <FormGroup row>
-          <Label for="couv">Couverture</Label>
+          <Label for="couv">Musique</Label>
           <Input 
           className={`${this.state.error.img===undefined?"":"errorInput"}`}
-          type="file" id="couverture" onChange={(e)=>{console.log(e.target.files[0]);this.checkIfFileIsCorrect(e.target.files[0])}}/>
+          type="file" id="musique" onChange={(e)=>{console.log(e.target.files[0]);this.checkIfFileIsCorrect(e.target.files[0])}}/>
           {errorImg}
         </FormGroup>
-        <FormGroup row>
-          <Label for="genres">Genres</Label>
-          
-          <InputGroup>
-              <InputGroupAddon addonType="append">
-              {this.genreButtons()}
-              </InputGroupAddon>
-              <Input className="addGenreField" placeholder="Ajouter un genre" value={this.state.inputValue} onKeyPress={this.submitInputValue} onChange={evt => this.updateInputValue(evt)}></Input>
-              <InputGroupAddon addonType="prepend">
-                <Button id="addGenre" type="button" color="primary" onClick={()=>{this.addGenre();}}>
-                  Ajouter genre
-                </Button>
-              </InputGroupAddon>
-          </InputGroup>
-          <span> </span>
-        </FormGroup>
-        <Button color="primary" size="md" onClick={() => this.ajouterAlbum()}>
+        <Button color="primary" size="md" onClick={() => this.ajouterMusique()}>
           Ajouter
         </Button>
         <span> </span>
@@ -232,4 +254,4 @@ class AjoutAlbum extends Component {
   }
 }
 
-export default AjoutAlbum;
+export default AjoutMusique;

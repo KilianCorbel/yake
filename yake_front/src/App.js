@@ -17,6 +17,7 @@ import { Input, InputGroupAddon, InputGroup, Button, Popover, PopoverHeader, Pop
 import 'bootstrap/dist/css/bootstrap.css';
 import AjoutArtiste from './AjoutArtiste';
 import AjoutAlbum from './AjoutAlbum';
+import AjoutMusique from './AjoutMusique.js';
 import PlaylistInfoWindow from './PlaylistInfoWindow.js'
 //import {Form} from 'react-bootstrap';
 class App extends Component {
@@ -163,6 +164,9 @@ class App extends Component {
   ajoutAlbum(){
     return <AjoutAlbum/>
   }
+  ajoutMusique(){
+    return <AjoutMusique/>
+  }
   render() {
     let show = this[`${this.state.windowShowed}`]();
     return (
@@ -206,6 +210,7 @@ class App extends Component {
             <Menu clicable={true} onClick={()=>{this.setState({windowShowed:"autresWindow"});}} value="Autres"/>
             <Menu clicable={true} onClick={()=>{this.setState({windowShowed:"ajoutArtiste"});}} value="Ajout artiste"/>
             <Menu clicable={true} onClick={()=>{this.setState({windowShowed:"ajoutAlbum"});}} value="Ajout album"/>
+            <Menu clicable={true} onClick={()=>{this.setState({windowShowed:"ajoutMusique"});}} value="Ajout musique"/>
             <Menu clicable={false} onClick={()=>{}} value=""/>
           </div>
           <div className="Body">
