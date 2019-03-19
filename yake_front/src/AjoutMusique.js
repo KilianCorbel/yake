@@ -4,7 +4,7 @@ import "./Scrollable.css";
 import "./MainContent.css";
 import "./ErrorColor.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Badge, InputGroup,InputGroupAddon,Button, Form, FormGroup, Label, Input } from "reactstrap";
+import { Badge,Button, Form, FormGroup, Label, Input } from "reactstrap";
 
 class AjoutMusique extends Component {
   constructor(props) {
@@ -24,7 +24,6 @@ class AjoutMusique extends Component {
       error:{}
     };
     this.getArtistes();
-    this.submitInputValue=this.submitInputValue.bind(this);
   }
 
   getArtistes() {
