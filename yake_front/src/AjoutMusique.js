@@ -54,7 +54,30 @@ class AjoutMusique extends Component {
   }
   checkError(){
     let error = this.state.error;
-    
+    if(this.state.artiste === undefined || this.state.artiste.length<=0){
+      error.artiste="Veuillez choisir un artiste";
+    }
+    else{
+      error.artiste=undefined;
+    }
+    if(this.state.album === undefined || this.state.album.length<=0){
+      error.album="Veuillez choisir un artiste";
+    }
+    else{
+      error.album=undefined;
+    }
+    if(this.state.nom === undefined || this.state.nom.length<=0){
+      error.nom="Veuillez entrer un nom d'album";
+    }
+    else{
+      error.nom=undefined;
+    }
+    if(this.state.fileChoosen===undefined){
+      error.img="Veuillez ajouter une musique";
+    }
+    else{
+      error.img=undefined;
+    }
     return error;
   }
   ajouterMusique() {
@@ -82,6 +105,9 @@ class AjoutMusique extends Component {
         .catch(err => alert(err));
       }
       fileReader.readAsArrayBuffer(this.state.fileChoosen);
+    }
+    else{
+      this.setState({error:error});
     }
   }
 
@@ -192,13 +218,17 @@ class AjoutMusique extends Component {
         });
         this.setState({
             listeAlbums:["Choisissez un album"].concat(data.albums.map(ele=>ele.nom)),
-            idsAlbums:[""].concat(data.albums.map(ele=>ele._id))
+            idsAlbums:[""].concat(data.albums.map(ele=>ele._id)),
+            album:""
         });
         })
     .catch(err => console.log(err));
   }
   render() {
     let errorImg = this.state.error.img!==undefined?(<Badge color="danger">{this.state.error.img}</Badge>):undefined;
+    let errorArtiste = this.state.error.artiste!==undefined?(<Badge color="danger">{this.state.error.artiste}</Badge>):undefined;
+    let errorAlbum = this.state.error.album!==undefined?(<Badge color="danger">{this.state.error.album}</Badge>):undefined;
+    let errorNom = this.state.error.nom!==undefined?(<Badge color="danger">{this.state.error.nom}</Badge>):undefined;
     return (
       <div className="MainContent">
       <div className="Scrollable">
@@ -207,31 +237,37 @@ class AjoutMusique extends Component {
         <FormGroup row>
           <Label for="artiste">Artiste </Label>
           <Input
+            className={`${this.state.error.artiste===undefined?"":"errorInput"}`}
             type="select"
             id="artiste"
             onChange={e => this.chooseArtiste(e)}
           >
             {this.creerSelectsArtiste()}
           </Input>
+          {errorArtiste}
         </FormGroup>
         <FormGroup row>
           <Label for="album">Album </Label>
           <Input
+            className={`${this.state.error.album===undefined?"":"errorInput"}`}
             type="select"
             id="album"
             onChange={e => this.chooseAlbum(e)}
           >
             {this.creerSelectsAlbum()}
           </Input>
+          {errorAlbum}
         </FormGroup>
         <FormGroup row>
           <Label for="nom">Nom </Label>
           <Input
+            className={`${this.state.error.nom===undefined?"":"errorInput"}`}
             type="Text"
             id="nom"
             value={this.state.nom}
             onChange={e => this.modifierState(e)}
           />
+          {errorNom}
         </FormGroup>
         <FormGroup row>
           <Label for="couv">Musique</Label>

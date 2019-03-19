@@ -51,6 +51,30 @@ class AjoutAlbum extends Component {
   }
   checkError(){
     let error = this.state.error;
+    if(this.state.artiste === undefined || this.state.artiste.length<=0){
+        error.artiste="Veuillez choisir un artiste";
+    }
+    else{
+      error.artiste=undefined;
+    }
+    if(this.state.nom === undefined || this.state.nom.length<=0){
+      error.nom="Veuillez entrer un nom d'album";
+    }
+    else{
+      error.nom=undefined;
+    }
+    if(this.state.genres === undefined || this.state.genres.length<=0){
+      error.genres = "Veuillez entrer au moins un genre";
+    }
+    else{
+      error.genres = undefined;
+    }
+    if(this.state.fileChoosen===undefined){
+      error.img="Veuillez ajouter une image";
+    }
+    else{
+      error.img=undefined;
+    }
     return error;
   }
   ajouterAlbum() {
@@ -78,6 +102,9 @@ class AjoutAlbum extends Component {
         .catch(err => alert(err));
       }
       fileReader.readAsArrayBuffer(this.state.fileChoosen);
+    }
+    else{
+      this.setState({error:error});
     }
   }
 
@@ -160,7 +187,10 @@ class AjoutAlbum extends Component {
     this.setState(temp);
   }
   render() {
+    let errorArtiste=this.state.error.artiste!==undefined?(<Badge color="danger">{this.state.error.artiste}</Badge>):undefined;
     let errorImg = this.state.error.img!==undefined?(<Badge color="danger">{this.state.error.img}</Badge>):undefined;
+    let errorNom = this.state.error.nom!==undefined?(<Badge color="danger">{this.state.error.nom}</Badge>):undefined;
+    let errorGenres = this.state.error.genres!==undefined?(<Badge color="danger">{this.state.error.genres}</Badge>):undefined;
     return (
       <div className="MainContent">
       <div className="Scrollable">
@@ -169,21 +199,25 @@ class AjoutAlbum extends Component {
         <FormGroup row>
           <Label for="artiste">Artiste </Label>
           <Input
+            className={`${this.state.error.artiste===undefined?"":"errorInput"}`}
             type="select"
             id="artiste"
             onChange={e => this.modifierState(e)}
           >
             {this.creerSelects()}
           </Input>
+          {errorArtiste}
         </FormGroup>
         <FormGroup row>
           <Label for="nom">Nom </Label>
           <Input
+            className={`${this.state.error.nom===undefined?"":"errorInput"}`}
             type="Text"
             id="nom"
             value={this.state.nom}
             onChange={e => this.modifierState(e)}
           />
+          {errorNom}
         </FormGroup>
 
         <FormGroup row>
@@ -205,7 +239,7 @@ class AjoutAlbum extends Component {
         <FormGroup row>
           <Label for="genres">Genres</Label>
           
-          <InputGroup>
+          <InputGroup className={`${this.state.error.genres===undefined?"":"errorInput"}`}>
               <InputGroupAddon addonType="append">
               {this.genreButtons()}
               </InputGroupAddon>
@@ -216,6 +250,7 @@ class AjoutAlbum extends Component {
                 </Button>
               </InputGroupAddon>
           </InputGroup>
+          {errorGenres}
           <span> </span>
         </FormGroup>
         <Button color="primary" size="md" onClick={() => this.ajouterAlbum()}>
