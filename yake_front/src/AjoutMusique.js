@@ -88,10 +88,10 @@ class AjoutMusique extends Component {
         let body = {
             idArtiste: this.state.artiste,
             idAlbum:this.state.album,
-            nom: this.state.nom,
+            titre: this.state.nom,
             son: musique
         };
-        fetch("/api/artistes/addAlbum", {
+        fetch("/api/artistes/addMusique", {
           method: "POST",
           headers: new Headers({
             "Content-Type": "application/json"
@@ -155,7 +155,7 @@ class AjoutMusique extends Component {
     });
   }
   checkIfFileIsCorrect(file){
-    
+    this.setState({fileChoosen:file});
   }
 
   modifierState(e){
