@@ -85,13 +85,12 @@ class AjoutMusique extends Component {
     if(Object.keys(error).filter((ele)=>this.state.error[`${ele}`]!==undefined).length===0){
       let fileReader = new FileReader();
       fileReader.onloadend=()=>{
-        let couverture = this.toBuffer(fileReader.result);
+        let musique = this.toBuffer(fileReader.result);
         let body = {
             idArtiste: this.state.artiste,
+            idAlbum:this.state.album,
             nom: this.state.nom,
-            couverture: couverture,
-            datePublication: this.state.datePublication,
-            genres: this.state.genres
+            son: musique
         };
         fetch("/api/artistes/addAlbum", {
           method: "POST",
@@ -151,40 +150,10 @@ class AjoutMusique extends Component {
     }
     return selects;
   }
-  submitInputValue(evt){
-    if(evt.key === " "){
-      evt.target.value="";
-      this.addGenre();
-    }
-  }
   updateInputValue(evt) {
     this.setState({
       inputValue: evt.target.value
     });
-  }
-  addGenre(){
-    if(this.state.inputValue.replace(" ","").length>0){
-      let genre = this.state.genres;
-      genre.push(this.state.inputValue.replace(" ",""));
-      this.setState({inputValue:"",genres:genre});
-    }
-    else{
-      this.setState({inputValue:""});
-    }
-  }
-  genreButtons(){
-    let tab = [];
-    for(let i = 0;i<this.state.genres.length;i++){
-      tab.push(
-      <Badge  color="secondary" id={`BadgeAjoutGenre${i}`} key={`BadgeAjoutGenre${i}`}>
-      <div key={`divAjoutGenre${i}`}>
-          {this.state.genres[i]}
-          <Button close id={`boutonClose${i}`} key={`boutonClose${i}`} onClick={()=>{this.setState({genres:this.state.genres.filter((ele,j)=>i!==j)})}}></Button>
-        </div>
-      </Badge>
-      );
-    }
-    return tab;
   }
   checkIfFileIsCorrect(file){
     
