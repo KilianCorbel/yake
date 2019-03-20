@@ -19,7 +19,7 @@ import AjoutArtiste from './AjoutArtiste';
 import AjoutAlbum from './AjoutAlbum';
 import AjoutMusique from './AjoutMusique.js';
 import PlaylistInfoWindow from './PlaylistInfoWindow.js'
-import {BrowserRouter as Router,Route,Switch,Link,Redirect} from 'react-router-dom';
+import {BrowserRouter as Router,Route,Switch, withRouter} from 'react-router-dom';
 //import {Form} from 'react-bootstrap';
 class App extends Component {
   constructor(props){
@@ -39,8 +39,7 @@ class App extends Component {
       findArtiste: true,
       findAlbum: true,
       findMusic: true,
-      searchParams:{},
-      redirectToSearch:false
+      searchParams:{}
     }
     this.searchWindow=this.searchWindow.bind(this);
     this.getAllPlaylists=this.getAllPlaylists.bind(this);
@@ -58,6 +57,7 @@ class App extends Component {
     this.mesPlaylistsWindow=this.mesPlaylistsWindow.bind(this);
     this.playlistWindow=this.playlistWindow.bind(this);
   }
+
   toggle() {
     this.setState({
       popoverOpen: !this.state.popoverOpen
@@ -85,13 +85,14 @@ class App extends Component {
   }
   submitInputValue(evt){
     if(evt.key === "Enter" && evt.target.value.replace(/ /g,"").length>0){
+      this.props.history.push("/");
       evt.target.value="";
       this.setState({searchParams:{
         findArtiste:this.state.findArtiste,
         findAlbum:this.state.findAlbum,
         findMusic:this.state.findMusic
       },
-      artisteList:undefined,albumList:undefined,musicList:undefined,redirectToSearch:true});
+      artisteList:undefined,albumList:undefined,musicList:undefined});
       if(this.state.findMusic)
         this.searchMusic(this.state.inputValue);
       if(this.state.findAlbum)
@@ -153,7 +154,7 @@ class App extends Component {
     return <PlaylistInfoWindow playlistToShow={this.state.playlistInfo} playlist={this.state.playlist} refresh={()=>{this.setState({});}}/>
   }
   mesPlaylistsWindow(){
-    return <PlaylistWindow onPlaylistClick={(ele)=>this.setState({playlistInfo:ele,windowShowed:"playlistWindow",redirectToSearch:true})} playlist={this.state.playlist} refresh={()=>{this.setState({});}}/>
+    return <PlaylistWindow onPlaylistClick={(ele)=>{this.setState({playlistInfo:ele,windowShowed:"playlistWindow"}); this.props.history.push("/");}} playlist={this.state.playlist} refresh={()=>{this.setState({});}}/>
   }
   autresWindow(){
     return <AutresWindow/>
@@ -175,14 +176,9 @@ class App extends Component {
     return <AjoutMusique/>
   }
   render() {
-    if (this.state.redirectToSearch) {
-      this.setState({redirectToSearch:false});
-      return <Router><Redirect push to="/" /></Router>;
-    }
     let show = this[`${this.state.windowShowed}`];
     return (
       <div className="App">
-      <Router>
         <div className="Header">
           <Title onClick={()=>{this.setState({windowShowed:"homeWindow"});}}/>
           <div className="SearchHeaderBlock">
@@ -242,10 +238,10 @@ class App extends Component {
               <MusicPlayerI playlist={this.state.playlist} musicPlayer={this.musicPlayer}/> 
           </div>
         </div>
-        </Router>
+        
       </div>      
     );
   }
 }
 
-export default App;
+export default withRouter(App);
