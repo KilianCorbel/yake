@@ -3,6 +3,10 @@ import './MainContent.css';
 import './Scrollable.css';
 import { Button } from 'reactstrap';
 class PlaylistInfoWindow extends Component{
+    constructor(props){
+        super(props);
+
+    }
     initMusic(sound){
         this.props.playlist.initMusic(sound);
         this.props.refresh();
