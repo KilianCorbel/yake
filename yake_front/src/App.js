@@ -56,6 +56,7 @@ class App extends Component {
     this.updateInputValue = this.updateInputValue.bind(this);
     this.searchMusic = this.searchMusic.bind(this);
     this.mesPlaylistsWindow=this.mesPlaylistsWindow.bind(this);
+    this.playlistWindow=this.playlistWindow.bind(this);
   }
   toggle() {
     this.setState({
