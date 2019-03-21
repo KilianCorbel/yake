@@ -11,8 +11,8 @@ let urlencodedParser = bodyParser.urlencoded({
 });
 let fs = require('fs');
 app.use(urlencodedParser);
-app.use(bodyParser.json());
-
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 // ---- Connect to database
 let database = mongoose.connect("mongodb://localhost:27017/yake",{
     useNewUrlParser: true
@@ -129,7 +129,28 @@ testArtiste.save().then(doc => {
      console.error(err)
    })
 */
+/*
+let squareHammer = new test.Musique({titre:"Square Hammer",note:5,son:'C:/Users/corme/Desktop/Programmation/NodeJs/Projets/YakeProject/musiques/Ghost - Square Hammer.mp3'});
+let square = new test.Album({nom:"Square",couverture:'C:/Users/corme/Desktop/Programmation/NodeJs/Projets/YakeProject/musiques/squareGhost.jpg',musiques:[squareHammer]});
+let ghost = new test.Artiste({nom:"Ghost",biographie:"Ceci est la biographie de Ghost mais je n'ai aucune idée de quoi mettre dedans donc voici un texte sans aucun sens",image:'C:/Users/corme/Desktop/Programmation/NodeJs/Projets/YakeProject/musiques/Ghost.jpg',albums:[square]});
+
+let dontstop = new test.Musique({titre:"Don't stop me now",note:5,son:"C:/Users/corme/Desktop/Programmation/NodeJs/Projets/YakeProject/musiques/07 Don't Stop Me Now.mp3"});
+let queen = new test.Album({nom:"Queen greatest hit",couverture:'C:/Users/corme/Desktop/Programmation/NodeJs/Projets/YakeProject/musiques/queen.jpg',musiques:[dontstop]});
+let queen2=new test.Artiste({nom:"Queen",biographie:"Allez voir le biopic sur Freddie Mercury",image:'C:/Users/corme/Desktop/Programmation/NodeJs/Projets/YakeProject/musiques/queen.jpg',albums:[queen]});
+ghost.save().then(doc => {
+     console.log(doc)
+   })
+   .catch(err => {
+     console.error(err)
+   });
+queen2.save().then(doc => {
+     console.log(doc)
+   })
+   .catch(err => {
+     console.error(err)
+   });*/
 // ---- Define CORS
+app.use(bodyParser.json({limit: '50mb', extended: true}))
 app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
     res.setHeader('Access-Control-Allow-Origin', '*');

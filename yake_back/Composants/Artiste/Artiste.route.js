@@ -8,13 +8,15 @@ let bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : true}));
 app.use(session({secret: 'todotopsecret'}))
-
+let fs = require('fs');
 // -- Load model needed for the project
 require('./Artiste.model');
 
 const getAll = '/';
 const getArtisteById = '/id/:id';
 const getArtisteByName = '/name/:name';
+const addAlbum = '/addAlbum';
+const addMusique='/addMusique';
 const getAlbumById = '/albums/id/:id';
 const getAlbumByName = '/albums/name/:name';
 const getAlbums = '/albums'
@@ -101,6 +103,59 @@ app.get(getMusiques, function(req, res) {
     });
 });
 
+//-POST album
+app.post(addAlbum,function(req,res){
+	let test = require('./Artiste.model.js');
+	let artiste = mongoose.model('Artiste');
+	artiste.findOne({'_id' : req.body.idArtiste}).then((result)=>{
+		req.body.artisteId=undefined;
+		console.log(req.body);
+		console.log(result);
+		let buf = Buffer.from(req.body.couverture.data);
+		fs.writeFile(`C:/Users/corme/Desktop/${result.nom}_${req.body.nom}_couverture`,buf,(err)=>{
+			if(err)
+				return console.log(err);
+			console.log("Fichier sauvĂ©");
+		});
+	req.body.fileName=undefined;
+	req.body.couverture="C:/Users/corme/Desktop/"+result.nom+"_"+req.body.nom+"_couverture";
+	result.albums.push(new test.Album(req.body));
+	result.save((err)=>console.log(err));
+		
+	},(err)=>{res.send(err);});
+});
+
+//POST musique
+
+app.post(addMusique,function(req,res){
+	let test = require('./Artiste.model.js');
+	let artiste = mongoose.model('Artiste');
+	let filePath="";
+	artiste.findOne({'_id' : req.body.idArtiste}).then((result)=>{
+		console.log(req.body.idAlbum);
+		console.log(result.albums.filter((ele)=>ele._id.toString()===req.body.idAlbum));
+	if(result.albums.filter((ele)=>ele._id.toString()===req.body.idAlbum).length>0){
+		let buf = Buffer.from(req.body.son.data);
+		req.body.idArtiste=undefined;
+		req.body.note=undefined;
+		result.albums = result.albums.map(ele=>{
+			if(ele._id.toString()===req.body.idAlbum){
+				filePath=`C:/Users/corme/Desktop/${result.nom}_${ele.nom}_${req.body.titre}_musique`;
+				fs.writeFile(`C:/Users/corme/Desktop/${result.nom}_${ele.nom}_${req.body.titre}_musique`,buf,(err)=>{
+				if(err)
+					return console.log(err);
+				console.log("Fichier sauvĂ©");
+				});
+				req.body.son=filePath;
+				ele.musiques.push(new test.Musique(req.body));
+			}
+			return ele;
+		});
+		req.body.idAlbum=undefined;
+		result.save((err)=>console.log(err));
+	}
+},(err)=>{res.send(err);});
+});
 // -- GET album/:id
 app.get(getAlbumById, function(req, res) {
     let artiste = mongoose.model('Artiste');
@@ -199,6 +254,14 @@ app.get(getMusiqueByTitle, function(req, res) {
 // -- CREATE
 app.post(postArtiste, function (req, res) {
     let Artiste = mongoose.model('Artiste');
+	let buf = Buffer.from(req.body.image.data);
+	fs.writeFile(`C:/Users/corme/Desktop/${req.body.nom}`,buf,(err)=>{
+		if(err)
+			return console.log(err);
+		console.log("Fichier sauvĂ©");
+	});
+	req.body.fileName=undefined;
+	req.body.image="C:/Users/corme/Desktop/"+req.body.nom;
     let newArtiste = new Artiste(req.body);
     //newArtiste.id = newArtiste._id;
     newArtiste.save().then(()=>{

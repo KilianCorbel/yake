@@ -3,6 +3,10 @@ import './MainContent.css';
 import './Scrollable.css';
 import { Button } from 'reactstrap';
 class PlaylistInfoWindow extends Component{
+    constructor(props){
+        super(props);
+
+    }
     initMusic(sound){
         this.props.playlist.initMusic(sound);
         this.props.refresh();
@@ -38,6 +42,7 @@ class PlaylistInfoWindow extends Component{
             <div className="MainContent">
                 <div className="scrollable">
                     <div><h1>{this.props.playlistToShow.nom}</h1></div>
+                    <img src={`api/playlists/playlist/stream/${this.props.playlistToShow._id}`} alt="noImage"/>
                     <div><p>{this.props.playlistToShow.description}</p></div>
                     <Button color="primary" size="sm" onClick={()=>{this.playWholePlaylist();}}>{"Lire cette playlist"}</Button>
                     {musiqueList}

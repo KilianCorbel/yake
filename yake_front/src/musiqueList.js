@@ -1,75 +1,59 @@
 import React, { Component } from 'react';
 import './MainContent.css';
-import { Button } from 'reactstrap';
+import AlbumsBlock from './AlbumsBlock.js';
+import ArtistesBlock from './ArtistesBlock.js';
+import MusiquesBlock from './MusiquesBlock.js';
+import { Spinner } from 'reactstrap';
 class musiqueList extends Component{
-    constructor(props){
-        super(props);
-        this.runMusic = this.runMusic.bind(this);
-        this.play=true;
-        this.source=undefined;
-        this.resume=0;
-        this.context = undefined;
-        this.beginningTime=0;
-    }
-    initMusic(sound){
-        this.props.playlist.initMusic(sound);
-        this.props.refresh();
-    }
-    addNext(sound){
-        this.props.playlist.addNext(sound);
-        this.props.refresh();
-    }
-    runMusic(sound){
-        //console.log(this.play);
-        //this.props.musicPlayer.addNext(sound);
-        this.props.playlist.addNext(sound);
-        this.props.refresh();
-        //this.props.musicPlayer.next();
-    }
     render(){
-        let musiqueList=[];
-        let albumList=[];
-        let artisteList=[];
-        if(this.props.musiqueList.length>0){
-            musiqueList=this.props.musiqueList.map((ele)=>{
-                if(this.props.playlist.isInitialised()){
-                    return(<div className="musicLine" key={`${ele.titre}`}>{`${ele.titre} ---- ${ele.nomAlbum} ---- ${ele.nomGroupe}`}
-                    <Button color="secondary" size="sm" onClick={()=>{this.initMusic(ele);}}>{"Play"}</Button>
-                    </div>);}
+        //sortir le titre de musiquesBlock AlbumsBlock et ArtistesBlock 
+        //afin que chaque personne utilisant les blocks puissent les gérer comme elles veulent
+        let musicBlock;
+        if(this.props.searchParams.findMusic){
+            if(this.props.musiqueList === undefined){
+                musicBlock=<div className="MusicList"><Spinner color="success"/></div>;
+            }
+            else if(this.props.musiqueList.length>0){
+                musicBlock=<MusiquesBlock musiques={this.props.musiqueList} playlist={this.props.playlist} refresh={this.props.refresh}/>;
+            }
             else{
-                return(<div className="musicLine" key={`${ele.titre}`}>{`${ele.titre} ---- ${ele.nomAlbum} ---- ${ele.nomGroupe}`}
-                <Button color="secondary" size="sm" onClick={()=>{this.initMusic(ele);}}>{"Play"}</Button>
-                <Button color="secondary" size="sm" onClick={()=>{this.addNext(ele);}}>{"Add Next"}</Button>
-                </div>);}
-            })
-            musiqueList=(<div><h3>Liste de musique</h3><div className="MusicList">{musiqueList}</div></div>);
+                musicBlock=<div className="MusicList"><p>Aucune musique trouvée</p></div>;
+            }
+            musicBlock=<div><h3>Liste de musique</h3>{musicBlock}</div>;
         }
-        if(this.props.albumList.length>0){
-            albumList=this.props.albumList.map((ele)=>{
-
-                    return(<div className="albumRow" key={`${ele.nom}`} onClick={()=>{this.props.onAlbumClick(ele._id)}}>
-                    <div className="albumRowContentimg"><img height="100" width="100" src={`api/artistes/albums/stream/${ele._id}`} alt="noImage"/></div>
-                    <div className="albumRowContent">{`${ele.nom}`}</div>
-                    </div>);}
-                )
-                albumList=(<div className="AlbumList"><h3>{"Liste d'album"}</h3><div className="AlbumRows"><div className={"AlbumContent"}>{albumList}</div></div></div>);
+        let albumBlock;
+        if(this.props.searchParams.findAlbum){
+            if(this.props.albumList === undefined){
+                albumBlock=<div className="AlbumRows"><Spinner color="success"/></div>;
+            }
+            else if(this.props.albumList.length>0){
+                albumBlock = <AlbumsBlock albums={this.props.albumList} onAlbumClick={this.props.onAlbumClick}/>;
+            }
+            else{
+                albumBlock=<div className="AlbumRows"><p>aucun album trouvé</p></div>;
+            }
+            albumBlock=<div className="AlbumList"><h3>{"Albums"}</h3>{albumBlock}</div>;
         }
-        if(this.props.artisteList.length>0){
-            artisteList=this.props.artisteList.map(ele=>{
-                return(<div className="artisteRow" key={`${ele.nom}`} onClick={()=>{this.props.onArtisteClick(ele._id)}}>
-                        <div className="artisteRowContent"><img height="100" width="100" src={`api/artistes/stream/${ele._id}`} alt="noImage"/></div>
-                        <div className="artisteRowContent">{`${ele.nom}`}</div>
-                    </div>);
-            });
-            artisteList=(<div className="ArtisteList"><h3>{"Liste d'Artistes"}</h3><div className="ArtisteRows"><div className={"ArtisteContent"}>{artisteList}</div></div></div>);
+        let artisteBlock;
+        if(this.props.searchParams.findArtiste){
+            if(this.props.artisteList === undefined){
+                artisteBlock=<div className="ArtisteRows"><Spinner color="success"/></div>;
+            }
+            else if(this.props.artisteList.length>0){
+                artisteBlock = <ArtistesBlock artistes={this.props.artisteList} onArtisteClick={this.props.onArtisteClick}/>;
+            }
+            else{
+                artisteBlock=<div className="ArtisteRows"><p>Aucun artiste trouvé</p></div>;
+            }
+            artisteBlock=<div className="ArtisteList"><h3>{"Liste d'Artistes"}</h3>{artisteBlock}</div>;
         }
         return <div className="MainContent">
                     <div className="scrollable">
-                {musiqueList}
-                {albumList}
-                {artisteList}
+                        {musicBlock}
+                        {albumBlock}
+                        {artisteBlock}
+                    </div>
                 </div>
-        </div>
     }
 }
 export default musiqueList;

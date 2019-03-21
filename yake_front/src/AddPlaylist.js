@@ -7,28 +7,46 @@ class AddPlaylist extends Component{
         this.state = {
             modal: false,
             titleInput:"",
-            descrInput:""
+            descrInput:"",
+            fileChoosen:{}
         };
         this.toggle = this.toggle.bind(this);
         this.save = this.save.bind(this);
     }
     toggle() {
         this.setState({
-            modal:!this.state.modal
+            modal:!this.state.modal,
+            titleInput:"",
+            descrInput:""
         });
+    }
+    toBuffer(ab) {
+        let buf = Buffer.alloc(ab.byteLength);
+        let view = new Uint8Array(ab);
+        for (var i = 0; i < buf.length; ++i) {
+            buf[i] = view[i];
+        }
+        return buf;
     }
     save(){
         console.log("save");
-        let bodyContent={};
-        bodyContent.nom=this.state.titleInput;
-        bodyContent.description=this.state.descrInput;
-        bodyContent.musiques=this.props.playlist.getMusics();
-        fetch('/api/playlists/savePlaylist',{
-            method:'post',
-            headers:{'Content-Type':'application/json'},
-            body:JSON.stringify(bodyContent)
-        });
-        this.toggle();
+        let fileReader = new FileReader();
+        fileReader.onloadend=()=>{
+            console.log(fileReader.result);
+            let bodyContent={};
+            bodyContent.nom=this.state.titleInput;
+            bodyContent.description=this.state.descrInput;
+            bodyContent.musiques=this.props.playlist.getMusics();
+            bodyContent.file=this.toBuffer(fileReader.result);
+            bodyContent.fileName=this.state.fileChoosen.name;
+            fetch('/api/playlists/savePlaylist',{
+                method:'post',
+                headers:{'Content-Type':'application/json'},
+                body:JSON.stringify(bodyContent)
+            });
+            this.toggle();
+        };
+        fileReader.readAsArrayBuffer(this.state.fileChoosen);
     }
     render(){
         let musicList = this.props.playlist.getMusics().map(ele=>(
@@ -36,6 +54,8 @@ class AddPlaylist extends Component{
                 {`${ele.titre}----------${ele.nomAlbum}-------${ele.nomGroupe}`}
             </div>
         ));
+        //let fileReader = new FileReader();
+        //fileReader.onloadend=()=>{console.log(fileReader.result);};fileReader.readAsArrayBuffer(e.target.files[0]);
         return (
             <div className="AddPlaylistContent">
                 <Button className="AddPlaylistButton" color="info" onClick={this.toggle} disabled={this.props.playlist.isEmpty()}>{"+"}</Button>
@@ -43,6 +63,7 @@ class AddPlaylist extends Component{
                         <ModalHeader >Ajouter une playlist</ModalHeader>
                         <ModalBody className="addPlaylistCadre">
                             <Input placeholder="Nom de la playlist" rows={1} value={this.state.titleInput} onChange={evt =>{this.setState({titleInput:evt.target.value});}}/>
+                            <input type="file" onChange={(e)=>{console.log(e.target.files[0]);this.setState({fileChoosen:e.target.files[0]});}}/>
                             <Input placeholder="Description" rows={4} value={this.state.descrInput} onChange={evt =>{this.setState({descrInput:evt.target.value});}}/>
                             <div className="musicCadre">{musicList}</div>
                         </ModalBody>

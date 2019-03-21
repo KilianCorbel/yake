@@ -1,24 +1,33 @@
 import React , { Component } from 'react';
 import './MainContent.css';
 import './Scrollable.css';
+import AlbumsBlock from './AlbumsBlock.js'
+import {Link} from 'react-router-dom';
 class ArtisteWindow extends Component{
+    constructor(props){
+        super(props);
+        this.state={
+            artiste:{}
+        };
+        let params= new URLSearchParams(window.location.href.split("/showArtiste")[1]);
+        this.getArtisteInfo(params.get("id"));
+    }
+    getArtisteInfo(input){
+        fetch(`/api/artistes/id/${input}`)
+        .then(res => res.json())
+        .then(data => {this.setState({artiste : data});})
+        .catch(error => console.log(error));
+      }
     render(){
-        let albumList=[];
-        if(this.props.artiste.albums.length>0){
-            albumList=this.props.artiste.albums.map((ele)=>{
-
-                    return(<div className="albumRow" key={`${ele.nom}`} onClick={()=>{this.props.onAlbumClick(ele._id)}}>
-                    <div className="albumRowContentimg"><img height="100" width="100" src={`api/artistes/albums/stream/${ele._id}`} alt="noImage"/></div>
-                    <div className="albumRowContent">{`${ele.nom}`}</div>
-                    </div>);}
-                )
-                albumList=(<div className="AlbumList"><h3>{"Albums publiés par cet auteur"}</h3><div className="AlbumRows"><div className="AlbumContent">{albumList}</div></div></div>);
-        }
+        
         return(<div className="MainContent">
             <div className="scrollable">
-            <div className="Head"><h1>{this.props.artiste.nom}</h1><img src={`api/artistes/stream/${this.props.artiste._id}`} alt="noImage" key={"artiste"}></img></div>
-            <div className="Content">{this.props.artiste.biographie}</div>    
-                {albumList}
+            <div className="Head"><h1>{this.state.artiste.nom}</h1><img src={`api/artistes/stream/${this.state.artiste._id}`} alt="noImage" key={"artiste"}></img></div>
+            <div className="Content">{this.state.artiste.biographie}</div>  
+            <div className="AlbumList">
+              <h3>{"Albums de l'artiste"}</h3>
+              <AlbumsBlock albums={this.state.artiste.albums} onAlbumClick={this.props.onAlbumClick}/>
+            </div>
             </div>
         </div>);
     }
