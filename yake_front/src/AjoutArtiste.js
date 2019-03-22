@@ -88,16 +88,16 @@ class AjoutArtiste extends Component {
   }
 
   reinitialiserFormulaire(){
+    document.getElementById("image").value="";
     this.setState({
       nom: "",
       dateCreation: "",
       dateFin: "",
       biographie: "",
-      image: "",
       fileChoosen:undefined,
       albums: [],
       error:{}
-    })
+    });
   }
 
   checkIfFileIsCorrect(file){
@@ -105,8 +105,8 @@ class AjoutArtiste extends Component {
     img.onload=()=>{
       let error=this.state.error;
       error.img=undefined;
-      if(img.width>255 || img.height>255){
-        error.img="La taille de l'image ne doit pas dépasser 255x255";
+      if(img.width>260 || img.height>260){
+        error.img="La taille de l'image ne doit pas dépasser 260x260";
       }
       this.setState({fileChoosen:file,error:error});
     }

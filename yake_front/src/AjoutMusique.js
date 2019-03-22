@@ -100,6 +100,7 @@ class AjoutMusique extends Component {
             body
           )
         })
+        .then(()=>{alert("Musique ajoutée");this.reinitialiserFormulaire();})
         .catch(err => alert(err));
       }
       fileReader.readAsArrayBuffer(this.state.fileChoosen);
@@ -107,6 +108,25 @@ class AjoutMusique extends Component {
     else{
       this.setState({error:error});
     }
+  }
+
+  reinitialiserFormulaire(){
+    document.getElementById("musique").value="";
+    this.setState({
+      inputValue: "",
+      nom: "",
+      note:[],
+      musique:undefined,
+      fileChoosen:undefined,
+      artiste: "",
+      album:"",
+      listeArtistes: [],
+      idsArtistes: [],
+      listeAlbums: [],
+      idsAlbums: [],
+      error:{}
+    });
+    this.getArtistes();
   }
 
   creerSelectsArtiste() {
@@ -201,7 +221,7 @@ class AjoutMusique extends Component {
       <div className="MainContent">
       <div className="Scrollable">
       <Form className="formulaire">
-        <h3>Ajout d'un album</h3>
+        <h3>Ajout d'une musique</h3>
         <FormGroup row>
           <Label for="artiste">Artiste </Label>
           <Input

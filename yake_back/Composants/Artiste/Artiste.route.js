@@ -105,6 +105,8 @@ app.get(getMusiques, function(req, res) {
 
 //-POST album
 app.post(addAlbum,function(req,res){
+	let path = require("path");
+	console.log(path.resolve("../../Data/couverture"));
 	let test = require('./Artiste.model.js');
 	let artiste = mongoose.model('Artiste');
 	artiste.findOne({'_id' : req.body.idArtiste}).then((result)=>{
@@ -112,15 +114,15 @@ app.post(addAlbum,function(req,res){
 		console.log(req.body);
 		console.log(result);
 		let buf = Buffer.from(req.body.couverture.data);
-		fs.writeFile(`C:/Users/corme/Desktop/${result.nom}_${req.body.nom}_couverture`,buf,(err)=>{
+		fs.writeFile(`${path.resolve("../../Data/couverture")}/${result.nom}_${req.body.nom}_couverture`,buf,(err)=>{
 			if(err)
 				return console.log(err);
 			console.log("Fichier sauvĂ©");
+			req.body.fileName=undefined;
+			req.body.couverture=path.resolve("../../Data/couverture")+"/"+result.nom+"_"+req.body.nom+"_couverture";
+			result.albums.push(new test.Album(req.body));
+			result.save().then(()=>{res.status(200).json({});console.log("success");});
 		});
-	req.body.fileName=undefined;
-	req.body.couverture="C:/Users/corme/Desktop/"+result.nom+"_"+req.body.nom+"_couverture";
-	result.albums.push(new test.Album(req.body));
-	result.save((err)=>console.log(err));
 		
 	},(err)=>{res.send(err);});
 });
@@ -152,7 +154,7 @@ app.post(addMusique,function(req,res){
 			return ele;
 		});
 		req.body.idAlbum=undefined;
-		result.save((err)=>console.log(err));
+		result.save().then(()=>{res.status(200).json({});console.log("success");});
 	}
 },(err)=>{res.send(err);});
 });
@@ -255,13 +257,14 @@ app.get(getMusiqueByTitle, function(req, res) {
 app.post(postArtiste, function (req, res) {
     let Artiste = mongoose.model('Artiste');
 	let buf = Buffer.from(req.body.image.data);
-	fs.writeFile(`C:/Users/corme/Desktop/${req.body.nom}`,buf,(err)=>{
+	let path = require('path');
+	fs.writeFile(`${path.resolve('../../Data/artiste')}/${req.body.nom}`,buf,(err)=>{
 		if(err)
 			return console.log(err);
 		console.log("Fichier sauvĂ©");
 	});
 	req.body.fileName=undefined;
-	req.body.image="C:/Users/corme/Desktop/"+req.body.nom;
+	req.body.image=path.resolve('../../Data/artiste')+"/"+req.body.nom;
     let newArtiste = new Artiste(req.body);
     //newArtiste.id = newArtiste._id;
     newArtiste.save().then(()=>{
