@@ -132,6 +132,7 @@ app.post(addAlbum,function(req,res){
 app.post(addMusique,function(req,res){
 	let test = require('./Artiste.model.js');
 	let artiste = mongoose.model('Artiste');
+	let path = require('path');
 	let filePath="";
 	artiste.findOne({'_id' : req.body.idArtiste}).then((result)=>{
 		console.log(req.body.idAlbum);
@@ -142,8 +143,8 @@ app.post(addMusique,function(req,res){
 		req.body.note=undefined;
 		result.albums = result.albums.map(ele=>{
 			if(ele._id.toString()===req.body.idAlbum){
-				filePath=`C:/Users/corme/Desktop/${result.nom}_${ele.nom}_${req.body.titre}_musique`;
-				fs.writeFile(`C:/Users/corme/Desktop/${result.nom}_${ele.nom}_${req.body.titre}_musique`,buf,(err)=>{
+				filePath=`${path.resolve("../../Data/musique")}/${result.nom}_${ele.nom}_${req.body.titre}_musique`;
+				fs.writeFile(`${path.resolve("../../Data/musique")}/${result.nom}_${ele.nom}_${req.body.titre}_musique`,buf,(err)=>{
 				if(err)
 					return console.log(err);
 				console.log("Fichier sauvĂ©");
