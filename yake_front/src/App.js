@@ -17,7 +17,9 @@ import { Input, InputGroupAddon, InputGroup, Button, Popover, PopoverHeader, Pop
 import 'bootstrap/dist/css/bootstrap.css';
 import AjoutArtiste from './AjoutArtiste';
 import AjoutAlbum from './AjoutAlbum';
+import AjoutMusique from './AjoutMusique.js';
 import PlaylistInfoWindow from './PlaylistInfoWindow.js'
+import {BrowserRouter as Router,Route,Switch, withRouter} from 'react-router-dom';
 //import {Form} from 'react-bootstrap';
 class App extends Component {
   constructor(props){
@@ -36,11 +38,15 @@ class App extends Component {
       popoverOpen: false,
       findArtiste: true,
       findAlbum: true,
-      findMusic: true
+      findMusic: true,
+      searchParams:{}
     }
+    this.searchWindow=this.searchWindow.bind(this);
     this.getAllPlaylists=this.getAllPlaylists.bind(this);
     this.getAlbumInfo=this.getAlbumInfo.bind(this);
     this.getArtisteInfo=this.getArtisteInfo.bind(this);
+    this.albumWindow=this.albumWindow.bind(this);
+    this.artisteWindow=this.artisteWindow.bind(this);
     this.inputFindAlbumChange=this.inputFindAlbumChange.bind(this);
     this.inputFindMusicChange=this.inputFindMusicChange.bind(this);
     this.inputFindArtisteChange=this.inputFindArtisteChange.bind(this);
@@ -48,7 +54,10 @@ class App extends Component {
     this.submitInputValue = this.submitInputValue.bind(this);
     this.updateInputValue = this.updateInputValue.bind(this);
     this.searchMusic = this.searchMusic.bind(this);
+    this.mesPlaylistsWindow=this.mesPlaylistsWindow.bind(this);
+    this.playlistWindow=this.playlistWindow.bind(this);
   }
+
   toggle() {
     this.setState({
       popoverOpen: !this.state.popoverOpen
@@ -75,9 +84,15 @@ class App extends Component {
     });
   }
   submitInputValue(evt){
-    if(evt.key === "Enter"){
+    if(evt.key === "Enter" && evt.target.value.replace(/ /g,"").length>0){
+      this.props.history.push("/");
       evt.target.value="";
-      this.setState({artisteList:[],albumList:[],musicList:[]});
+      this.setState({searchParams:{
+        findArtiste:this.state.findArtiste,
+        findAlbum:this.state.findAlbum,
+        findMusic:this.state.findMusic
+      },
+      artisteList:undefined,albumList:undefined,musicList:undefined});
       if(this.state.findMusic)
         this.searchMusic(this.state.inputValue);
       if(this.state.findAlbum)
@@ -124,7 +139,7 @@ class App extends Component {
     .catch(error => console.log(error));
   }
   searchWindow(){
-    return <MusiqueList onArtisteClick={this.getArtisteInfo} onAlbumClick={this.getAlbumInfo} refresh={()=>{this.setState({});}} playlist={this.state.playlist} artisteList={this.state.artisteList} albumList={this.state.albumList} musiqueList={this.state.musicList}/>;
+    return <MusiqueList searchParams={this.state.searchParams} onArtisteClick={this.getArtisteInfo} onAlbumClick={this.getAlbumInfo} refresh={()=>{this.setState({});}} playlist={this.state.playlist} artisteList={this.state.artisteList} albumList={this.state.albumList} musiqueList={this.state.musicList}/>;
   }
   homeWindow(){
     return <HomeWindow/>
@@ -139,7 +154,7 @@ class App extends Component {
     return <PlaylistInfoWindow playlistToShow={this.state.playlistInfo} playlist={this.state.playlist} refresh={()=>{this.setState({});}}/>
   }
   mesPlaylistsWindow(){
-    return <PlaylistWindow onPlaylistClick={(ele)=>this.setState({playlistInfo:ele,windowShowed:"playlistWindow"})} playlists={this.state.playlistList} playlist={this.state.playlist} refresh={()=>{this.setState({});}}/>
+    return <PlaylistWindow onPlaylistClick={(ele)=>{this.setState({playlistInfo:ele,windowShowed:"playlistWindow"}); this.props.history.push("/");}} playlist={this.state.playlist} refresh={()=>{this.setState({});}}/>
   }
   autresWindow(){
     return <AutresWindow/>
@@ -157,9 +172,11 @@ class App extends Component {
   ajoutAlbum(){
     return <AjoutAlbum/>
   }
+  ajoutMusique(){
+    return <AjoutMusique/>
+  }
   render() {
-    let show = this[`${this.state.windowShowed}`]();
-   
+    let show = this[`${this.state.windowShowed}`];
     return (
       <div className="App">
         <div className="Header">
@@ -195,22 +212,36 @@ class App extends Component {
         </div>
         <div className="FullBody">
           <div className="LeftMenuBar">
-            <Menu clicable={true} onClick={()=>{this.setState({windowShowed:"mesMusiquesWindow"});}} value="Mes musiques"/>
-            <Menu clicable={true} onClick={()=>{this.setState({windowShowed:"tendancesWindow"});}} value="Tendances"/>
-            <Menu clicable={true} onClick={()=>{this.getAllPlaylists();}} value="Mes playlists"/>
-            <Menu clicable={true} onClick={()=>{this.setState({windowShowed:"autresWindow"});}} value="Autres"/>
-            <Menu onClick={()=>{this.setState({windowShowed:"ajoutArtiste"});}} value="Ajout artiste"/>
-            <Menu onClick={()=>{this.setState({windowShowed:"ajoutAlbum"});}} value="Ajout album"/>
+            <Menu clicable={true} to="/myMusic" value="Mes musiques"/>
+            <Menu clicable={true} to="/tendances" value="Tendances"/>
+            <Menu clicable={true} to="/myPlaylists" value="Mes playlists"/>
+            <Menu clicable={true} to="/others" value="Autres"/>
+            <Menu clicable={true} to="/addArtiste" value="Ajout artiste"/>
+            <Menu clicable={true} to="/addAlbum" value="Ajout album"/>
+            <Menu clicable={true} to="/addMusic" value="Ajout musique"/>
             <Menu clicable={false} onClick={()=>{}} value=""/>
           </div>
           <div className="Body">
-              {show}         
+                <Switch>
+                  <Route path='/showArtiste' component={this.artisteWindow}/>
+                  <Route path='/showAlbum' component={this.albumWindow}/>
+                  <Route path='/showSearch' component={this.searchWindow}/>
+                  <Route path='/addArtiste' component={this.ajoutArtiste}/>
+                  <Route path='/addAlbum' component={this.ajoutAlbum}/>
+                  <Route path='/addMusic' component={this.ajoutMusique}/>
+                  <Route path='/tendances' component={this.tendancesWindow}/>
+                  <Route path='/myMusic' component={this.mesMusiquesWindow}/>
+                  <Route path='/others' component={this.autresWindow}/>
+                  <Route path='/myPlaylists' component={this.mesPlaylistsWindow}/>
+                  <Route path='/' component={show}/>
+                </Switch>     
               <MusicPlayerI playlist={this.state.playlist} musicPlayer={this.musicPlayer}/> 
           </div>
         </div>
+        
       </div>      
     );
   }
 }
 
-export default App;
+export default withRouter(App);

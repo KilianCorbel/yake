@@ -52,7 +52,7 @@
 .AlbumList{
   display:flex;
   flex-flow:column;
-
+  overflow:hidden;
 }
 .artisteRow{
   display:flex;
@@ -83,6 +83,7 @@
 .ArtisteList{
   display:flex;
   flex-flow:column;
+  overflow:hidden;
 }
 .musicLine:hover{
   background-color:#e6e4e4;
