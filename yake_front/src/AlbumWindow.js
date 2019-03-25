@@ -8,10 +8,9 @@ class AlbumWindow extends Component{
     constructor(props){
         super(props);
         this.state={
-            album:{}
+            album:undefined
         };
     }
-
     componentDidMount(){
         let params= new URLSearchParams(window.location.href.split("/showAlbum")[1]);
         this.getAlbumInfo(params.get("id"));
@@ -48,24 +47,24 @@ class AlbumWindow extends Component{
     }
     render(){
         let musiqueList=[];
-        if(this.state.album.musiques!==undefined && this.state.album.musiques.length>0){
-            musiqueList=this.state.album.musiques.map((ele)=>{ele.nomAlbum=this.state.album.nom;ele.idAlbum=this.props.album._id;ele.nomGroupe=this.state.album.nomGroupe;ele.idGroupe=this.state.album.idGroupe;return ele;})
+        let retour;
+        if(this.state.album!==undefined && this.state.album.nom!== undefined && this.state.album.musiques!== undefined && this.state.album.musiques.length>0){
+            musiqueList=this.state.album.musiques.map((ele)=>{ele.nomAlbum=this.state.album.nom;ele.idAlbum=this.state.album._id;ele.nomGroupe=this.state.album.nomGroupe;ele.idGroupe=this.state.album.idGroupe;return ele;})
             musiqueList=musiqueList.map((ele)=>{
-            if(this.props.playlist.isInitialised()){
-                return(<div className="musicLine" key={`${ele.titre}`}>{`${ele.titre} ---- ${ele.nomAlbum} ---- ${ele.nomGroupe}`}
-                <Button color="secondary" size="sm" onClick={()=>{this.initMusic(ele);}}>{"Play"}</Button>
-                </div>);}
-            else{
-                return(<div className="musicLine" key={`${ele.titre}`}>{`${ele.titre} ---- ${ele.nomAlbum} ---- ${ele.nomGroupe}`}
-                <Button color="secondary" size="sm" onClick={()=>{this.initMusic(ele);}}>{"Play"}</Button>
-                <Button color="secondary" size="sm" onClick={()=>{this.addNext(ele);}}>{"Add Next"}</Button>
-                </div>);}
-            })
-            musiqueList=(<div><h3>Musiques contenues dans cet album</h3><div className="MusicList">{musiqueList}</div></div>);
-        }
-        return(
-        <div className="MainContent">
-            <div className="scrollable">
+                if(this.props.playlist.isInitialised()){
+                    return(<div className="musicLine" key={`${ele.titre}`}>{`${ele.titre} ---- ${ele.nomAlbum} ---- ${ele.nomGroupe}`}
+                    <Button color="secondary" size="sm" onClick={()=>{this.initMusic(ele);}}>{"Play"}</Button>
+                    </div>);}
+                else{
+                    return(<div className="musicLine" key={`${ele.titre}`}>{`${ele.titre} ---- ${ele.nomAlbum} ---- ${ele.nomGroupe}`}
+                    <Button color="secondary" size="sm" onClick={()=>{this.initMusic(ele);}}>{"Play"}</Button>
+                    <Button color="secondary" size="sm" onClick={()=>{this.addNext(ele);}}>{"Add Next"}</Button>
+                    </div>);
+                }
+            });
+            musiqueList=(<div><h3>Musiques contenues dans cet album</h3><div className="MusicList">{musiqueList}</div></div>);   
+            retour = (
+                <div className="scrollable">
                 <div className="HeaderAlbumWindow">
                     <div className="AlbumTitle">
                         <h1>{`${this.state.album.nom}`}</h1>
@@ -79,6 +78,16 @@ class AlbumWindow extends Component{
                 <Button color="primary" size="sm" onClick={()=>{this.playWholeAlbum();}}>{"Lire cet album"}</Button>
                 {musiqueList}
             </div>
+            );
+        }  
+        else{
+            retour = (<div className="scrollable">
+                Cet album n'existe pas
+            </div>);
+        }
+        return(
+        <div className="MainContent">
+            {retour}
         </div>);
     }
 }

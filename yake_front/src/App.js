@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import './App.css';
 import Menu from './Menu.js';
 import Title from './Title.js';
-import MusiqueList from './musiqueList.js';
+import SearchPage from './SearchPage.js';
 import MusicPlayerI from './MusicPlayer/MusicPlayerI.js';
 import HomeWindow from './HomeWindow.js';
 import MusicWindow from './MusicWindow.js';
@@ -25,13 +25,6 @@ class App extends Component {
   constructor(props){
     super(props);
     this.state={
-      musicList:[],
-      albumList:[],
-      artisteList:[],
-      playlistList:[],
-      albumInfo:{},
-      artisteInfo:{},
-      playlistInfo:{},
       inputValue:"",
       windowShowed:"homeWindow",
       playlist:new Playlist(),
@@ -42,9 +35,6 @@ class App extends Component {
       searchParams:{}
     }
     this.searchWindow=this.searchWindow.bind(this);
-    this.getAllPlaylists=this.getAllPlaylists.bind(this);
-    this.getAlbumInfo=this.getAlbumInfo.bind(this);
-    this.getArtisteInfo=this.getArtisteInfo.bind(this);
     this.albumWindow=this.albumWindow.bind(this);
     this.artisteWindow=this.artisteWindow.bind(this);
     this.inputFindAlbumChange=this.inputFindAlbumChange.bind(this);
@@ -53,7 +43,6 @@ class App extends Component {
     this.toggle = this.toggle.bind(this);
     this.submitInputValue = this.submitInputValue.bind(this);
     this.updateInputValue = this.updateInputValue.bind(this);
-    this.searchMusic = this.searchMusic.bind(this);
     this.mesPlaylistsWindow=this.mesPlaylistsWindow.bind(this);
     this.playlistWindow=this.playlistWindow.bind(this);
   }
@@ -90,56 +79,16 @@ class App extends Component {
       this.setState({searchParams:{
         findArtiste:this.state.findArtiste,
         findAlbum:this.state.findAlbum,
-        findMusic:this.state.findMusic
+        findMusic:this.state.findMusic,
+        input: this.state.inputValue,
       },
+      windowShowed:"searchWindow",
+      inputValue:"",
       artisteList:undefined,albumList:undefined,musicList:undefined});
-      if(this.state.findMusic)
-        this.searchMusic(this.state.inputValue);
-      if(this.state.findAlbum)
-        this.searchAlbum(this.state.inputValue);
-      if(this.state.findArtiste)
-        this.searchArtiste(this.state.inputValue);
-      this.setState({windowShowed:"searchWindow"});
     }
   }
-  getAllPlaylists(){
-    fetch(`/api/playlists/`)
-    .then(res => res.json())
-    .then(data => {this.setState({playlistList : data,windowShowed:"mesPlaylistsWindow"});})
-    .catch(error => console.log(error));
-  }
-  getAlbumInfo(input){
-    fetch(`/api/artistes/albums/id/${input}`)
-    .then(res => res.json())
-    .then(data => {this.setState({albumInfo : data,windowShowed:"albumWindow"});})
-    .catch(error => console.log(error));
-  }
-  getArtisteInfo(input){
-    fetch(`/api/artistes/id/${input}`)
-    .then(res => res.json())
-    .then(data => {this.setState({artisteInfo : data,windowShowed:"artisteWindow"});})
-    .catch(error => console.log(error));
-  }
-  searchMusic(input){
-    fetch(`/api/artistes/albums/musiques/title/${input}`)
-    .then(res => res.json())
-    .then(data => {this.setState({musicList : data,inputValue:""});})
-    .catch(error => console.log(error));
-  }
-  searchAlbum(input){
-    fetch(`/api/artistes/albums/name/${input}`)
-    .then(res => res.json())
-    .then(data => {this.setState({albumList : data,inputValue:""});})
-    .catch(error => console.log(error));
-  }
-  searchArtiste(input){
-    fetch(`/api/artistes/name/${input}`)
-    .then(res => res.json())
-    .then(data => {this.setState({artisteList : data,inputValue:""});})
-    .catch(error => console.log(error));
-  }
   searchWindow(){
-    return <MusiqueList searchParams={this.state.searchParams} onArtisteClick={this.getArtisteInfo} onAlbumClick={this.getAlbumInfo} refresh={()=>{this.setState({});}} playlist={this.state.playlist} artisteList={this.state.artisteList} albumList={this.state.albumList} musiqueList={this.state.musicList}/>;
+    return <SearchPage searchParams={this.state.searchParams} refresh={()=>{this.setState({});}} playlist={this.state.playlist}/>;
   }
   homeWindow(){
     return <HomeWindow/>
@@ -154,21 +103,20 @@ class App extends Component {
     return <PlaylistInfoWindow playlist={this.state.playlist} refresh={()=>{this.setState({});}}/>
   }
   mesPlaylistsWindow(){
-    return <PlaylistWindow onPlaylistClick={(ele)=>{this.setState({playlistInfo:ele,windowShowed:"playlistWindow"}); this.props.history.push("/");}} playlist={this.state.playlist} refresh={()=>{this.setState({});}}/>
+    return <PlaylistWindow playlist={this.state.playlist} refresh={()=>{this.setState({});}}/>
   }
   autresWindow(){
     return <AutresWindow/>
   }
   artisteWindow(){
-    return <ArtisteWindow artiste={this.state.artisteInfo} onAlbumClick={this.getAlbumInfo}/>
+    return <ArtisteWindow/>
   }
   albumWindow(){
-    return <AlbumWindow onArtisteClick={this.getArtisteInfo} refresh={()=>{this.setState({});}} album={this.state.albumInfo} playlist={this.state.playlist}/>
+    return <AlbumWindow refresh={()=>{this.setState({});}} playlist={this.state.playlist}/>
   }
   ajoutArtiste(){
     return <AjoutArtiste/>
   }
-
   ajoutAlbum(){
     return <AjoutAlbum/>
   }
@@ -190,7 +138,7 @@ class App extends Component {
                 </Button>
               </InputGroupAddon>
               </InputGroup>
-              <Popover className="paramSearch" placement="bottom" isOpen={this.state.popoverOpen} target="searchParamSup" toggle={this.toggle}>
+              <Popover trigger="focus" className="paramSearch" placement="bottom" isOpen={this.state.popoverOpen} target="searchParamSup" toggle={this.toggle}>
                 <PopoverHeader>Paramètres de recherche</PopoverHeader>
                 <PopoverBody>
                 <label> 

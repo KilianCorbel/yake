@@ -22,16 +22,28 @@ class ArtisteWindow extends Component{
         .catch(error => console.log(error));
       }
     render(){
-        
+        let retour;
+        if(this.state.artiste!==undefined && this.state.artiste.nom!==undefined){
+            retour=(
+                <div className="scrollable">
+                    <div className="Head"><h1>{this.state.artiste.nom}</h1><img src={`api/artistes/stream/${this.state.artiste._id}`} alt="noImage" key={"artiste"}></img></div>
+                    <div className="Content">{this.state.artiste.biographie}</div>  
+                    <div className="AlbumList">
+                    <h3>{"Albums de l'artiste"}</h3>
+                    <AlbumsBlock albums={this.state.artiste.albums} onAlbumClick={this.props.onAlbumClick}/>
+                    </div>
+                </div>
+            );
+        }
+        else{
+            retour=(
+                <div className="scrollable">
+                    <p>Cet artiste n'existe pas</p>
+                </div>
+            );
+        }
         return(<div className="MainContent">
-            <div className="scrollable">
-            <div className="Head"><h1>{this.state.artiste.nom}</h1><img src={`api/artistes/stream/${this.state.artiste._id}`} alt="noImage" key={"artiste"}></img></div>
-            <div className="Content">{this.state.artiste.biographie}</div>  
-            <div className="AlbumList">
-              <h3>{"Albums de l'artiste"}</h3>
-              <AlbumsBlock albums={this.state.artiste.albums} onAlbumClick={this.props.onAlbumClick}/>
-            </div>
-            </div>
+            {retour}
         </div>);
     }
 }
