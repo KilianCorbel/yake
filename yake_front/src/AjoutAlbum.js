@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./ajoutAlbum.css";
-import "./Scrollable.css";
 import "./MainContent.css";
+import "./Scrollable.css";
 import "./ErrorColor.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Badge, InputGroup,InputGroupAddon,Button, Form, FormGroup, Label, Input } from "reactstrap";
@@ -215,7 +215,7 @@ class AjoutAlbum extends Component {
     let errorGenres = this.state.error.genres!==undefined?(<Badge color="danger">{this.state.error.genres}</Badge>):undefined;
     return (
       <div className="MainContent">
-      <div className="Scrollable">
+      <div className="scrollable">
       <Form className="formulaire">
         <h3>Ajout d'un album</h3>
         <FormGroup row>

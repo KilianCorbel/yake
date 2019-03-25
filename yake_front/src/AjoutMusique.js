@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./ajoutAlbum.css";
-import "./Scrollable.css";
 import "./MainContent.css";
+import "./Scrollable.css";
 import "./ErrorColor.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Badge,Button, Form, FormGroup, Label, Input } from "reactstrap";
@@ -224,7 +224,7 @@ class AjoutMusique extends Component {
     let errorNom = this.state.error.nom!==undefined?(<Badge color="danger">{this.state.error.nom}</Badge>):undefined;
     return (
       <div className="MainContent">
-      <div className="Scrollable">
+      <div className="scrollable">
       <Form className="formulaire">
         <h3>Ajout d'une musique</h3>
         <FormGroup row>
