@@ -2,16 +2,19 @@ import React , { Component } from 'react';
 import './MainContent.css';
 import './Scrollable.css';
 import AlbumsBlock from './AlbumsBlock.js'
-import {Link} from 'react-router-dom';
 class ArtisteWindow extends Component{
     constructor(props){
         super(props);
         this.state={
             artiste:{}
         };
+    }
+
+    componentDidMount(){
         let params= new URLSearchParams(window.location.href.split("/showArtiste")[1]);
         this.getArtisteInfo(params.get("id"));
     }
+
     getArtisteInfo(input){
         fetch(`/api/artistes/id/${input}`)
         .then(res => res.json())

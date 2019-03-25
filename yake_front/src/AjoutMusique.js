@@ -23,8 +23,13 @@ class AjoutMusique extends Component {
       idsAlbums: [],
       error:{}
     };
+    
+  }
+
+  componentDidMount(){
     this.getArtistes();
   }
+
 
   getArtistes() {
     fetch("/api/artistes/", {
@@ -134,14 +139,14 @@ class AjoutMusique extends Component {
     for (let i = 0; i < this.state.listeArtistes.length; i++) {
         if(i===0){
         selects.push(
-            <option value={this.state.idsArtistes[i]} disabled selected>
+            <option value={this.state.idsArtistes[i]} disabled key={`ajoutMusiqueArtiste${i}`}>
             {this.state.listeArtistes[i]}
             </option>
         );
         }
         else{
             selects.push(
-        <option value={this.state.idsArtistes[i]}>
+        <option value={this.state.idsArtistes[i]} key={`ajoutMusiqueArtiste${i}`}>
           {this.state.listeArtistes[i]}
         </option>
       );
@@ -154,14 +159,14 @@ class AjoutMusique extends Component {
     for (let i = 0; i < this.state.listeAlbums.length; i++) {
       if(i===0){
           selects.push(
-        <option value={this.state.idsAlbums[i]} disabled selected>
+        <option value={this.state.idsAlbums[i]} disabled key={`ajoutMusiqueAlbum${i}`}>
           {this.state.listeAlbums[i]}
         </option>
       );
       }
       else{
           selects.push(
-        <option value={this.state.idsAlbums[i]}>
+        <option value={this.state.idsAlbums[i]} key={`ajoutMusiqueAlbum${i}`}>
           {this.state.listeAlbums[i]}
         </option>
       );
@@ -225,6 +230,7 @@ class AjoutMusique extends Component {
         <FormGroup row>
           <Label for="artiste">Artiste </Label>
           <Input
+            value={this.state.artiste}
             className={`${this.state.error.artiste===undefined?"":"errorInput"}`}
             type="select"
             id="artiste"
@@ -237,6 +243,7 @@ class AjoutMusique extends Component {
         <FormGroup row>
           <Label for="album">Album </Label>
           <Input
+            value={this.state.album}
             className={`${this.state.error.album===undefined?"":"errorInput"}`}
             type="select"
             id="album"

@@ -10,8 +10,10 @@ class AlbumWindow extends Component{
         this.state={
             album:{}
         };
+    }
+
+    componentDidMount(){
         let params= new URLSearchParams(window.location.href.split("/showAlbum")[1]);
-        //console.log();
         this.getAlbumInfo(params.get("id"));
     }
     getAlbumInfo(input){

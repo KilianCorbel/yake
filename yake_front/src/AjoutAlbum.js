@@ -114,14 +114,14 @@ class AjoutAlbum extends Component {
     for (let i = 0; i < this.state.listeArtistes.length; i++) {
       if(i===0){
         selects.push(
-          <option value={this.state.idsArtistes[i]} selected disabled>
+          <option value={this.state.idsArtistes[i]} disabled key={`ajoutAlbumArtiste${i}`}>
             {this.state.listeArtistes[i]}
           </option>
         );
       }
       else{
         selects.push(
-          <option value={this.state.idsArtistes[i]}>
+          <option value={this.state.idsArtistes[i]} key={`ajoutAlbumArtiste${i}`}>
             {this.state.listeArtistes[i]}
           </option>
         );
@@ -144,6 +144,9 @@ class AjoutAlbum extends Component {
       idsArtistes: [],
       error:{}
     });
+  }
+
+  componentDidMount(){
     this.getArtistes();
   }
 
@@ -218,6 +221,7 @@ class AjoutAlbum extends Component {
         <FormGroup row>
           <Label for="artiste">Artiste </Label>
           <Input
+            value={this.state.artiste}
             className={`${this.state.error.artiste===undefined?"":"errorInput"}`}
             type="select"
             id="artiste"

@@ -19,7 +19,7 @@ import AjoutArtiste from './AjoutArtiste';
 import AjoutAlbum from './AjoutAlbum';
 import AjoutMusique from './AjoutMusique.js';
 import PlaylistInfoWindow from './PlaylistInfoWindow.js'
-import {BrowserRouter as Router,Route,Switch, withRouter} from 'react-router-dom';
+import {Route,Switch, withRouter} from 'react-router-dom';
 //import {Form} from 'react-bootstrap';
 class App extends Component {
   constructor(props){
@@ -151,7 +151,7 @@ class App extends Component {
     return <TendancesWindow/>
   }
   playlistWindow(){
-    return <PlaylistInfoWindow playlistToShow={this.state.playlistInfo} playlist={this.state.playlist} refresh={()=>{this.setState({});}}/>
+    return <PlaylistInfoWindow playlist={this.state.playlist} refresh={()=>{this.setState({});}}/>
   }
   mesPlaylistsWindow(){
     return <PlaylistWindow onPlaylistClick={(ele)=>{this.setState({playlistInfo:ele,windowShowed:"playlistWindow"}); this.props.history.push("/");}} playlist={this.state.playlist} refresh={()=>{this.setState({});}}/>
@@ -226,6 +226,7 @@ class App extends Component {
                   <Route path='/showArtiste' component={this.artisteWindow}/>
                   <Route path='/showAlbum' component={this.albumWindow}/>
                   <Route path='/showSearch' component={this.searchWindow}/>
+                  <Route path='/showPlaylist' component={this.playlistWindow}/>
                   <Route path='/addArtiste' component={this.ajoutArtiste}/>
                   <Route path='/addAlbum' component={this.ajoutAlbum}/>
                   <Route path='/addMusic' component={this.ajoutMusique}/>
