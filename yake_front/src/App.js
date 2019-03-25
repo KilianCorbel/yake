@@ -138,21 +138,30 @@ class App extends Component {
                 </Button>
               </InputGroupAddon>
               </InputGroup>
-              <Popover trigger="focus" className="paramSearch" placement="bottom" isOpen={this.state.popoverOpen} target="searchParamSup" toggle={this.toggle}>
+              <Popover trigger="legacy" className="paramSearch" placement="bottom" isOpen={this.state.popoverOpen} target="searchParamSup" toggle={this.toggle}>
                 <PopoverHeader>Paramètres de recherche</PopoverHeader>
-                <PopoverBody>
+                <PopoverBody className="searchPopOver">
+                <div>
                 <label> 
                   {"Musique :  "}
                   <input  name="findMusic"  type="checkbox" checked={this.state.findMusic}  onChange={this.inputFindMusicChange} />
                 </label>
+                </div>
+                
+                <div>
                 <label> 
                   {"Album :  "}
                   <input  name="findAlbum"  type="checkbox" checked={this.state.findAlbum}  onChange={this.inputFindAlbumChange} />
                 </label>
+                </div>
+                
+                <div>
                 <label> 
                   {"Artiste :  "}
                   <input  name="findArtiste"  type="checkbox" checked={this.state.findArtiste}  onChange={this.inputFindArtisteChange} />
                 </label>
+                </div>
+                
                 </PopoverBody>
               </Popover>
           </div>
