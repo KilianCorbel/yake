@@ -16,7 +16,7 @@ class PlaylistInfoWindow extends Component{
     }
 
     getPlaylistInfo(playlistId){
-        fetch(`/api/playlists/id/${playlistId}`)
+        fetch(`/api/playlists/getPlaylist?id=${playlistId}`)
         .then(res => res.json())
         .then(data => {this.setState({playlist : data});})
         .catch(error => console.log(error));

@@ -70,6 +70,7 @@ class AlbumWindow extends Component{
                         <h1>{`${this.state.album.nom}`}</h1>
                         {`Publié en ${this.state.album.datePublication} par :`}
                         <Link style={{textDecoration:'none',color:'black'}} to={`/showArtiste?id=${this.state.album.idGroupe}`}><h5 className="clicable">{`${this.state.album.nomGroupe}`}</h5></Link>
+                        <p>{this.state.album.genres.reduce((accu,ele,ind)=>this.state.album.genres.length-1===ind?accu+ele:accu+ele+",","")}</p>
                     </div>
                     <div className="AlbumImg">
                         <img src={`api/artistes/albums/stream/${this.state.album._id}`} alt="noImage" key={"album"}></img>

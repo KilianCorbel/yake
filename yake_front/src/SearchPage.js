@@ -63,19 +63,31 @@ class SearchPage extends Component{
    
 
     searchMusic(){
-        fetch(`/api/artistes/albums/musiques/title/${this.props.searchParams.input}`)
+        let genreFilter="";
+        if(this.props.searchParams.genreFilter.length>0){
+            genreFilter = '?genres='+this.props.searchParams.genreFilter.reduce((accu,ele,ind)=>{if(ind===this.props.searchParams.genreFilter.length-1)return accu+ele;return accu+','+ele;},"")
+        }
+        fetch(`/api/artistes/albums/musiques/title/${this.props.searchParams.input}${genreFilter}`)
         .then(res => res.json())
         .then(data => {this.setState({musicList : data});})
         .catch(error => console.log(error));
     }
     searchAlbum(){
-        fetch(`/api/artistes/albums/name/${this.props.searchParams.input}`)
+        let genreFilter="";
+        if(this.props.searchParams.genreFilter.length>0){
+            genreFilter = '?genres='+this.props.searchParams.genreFilter.reduce((accu,ele,ind)=>{if(ind===this.props.searchParams.genreFilter.length-1)return accu+ele;return accu+','+ele;},"")
+        }
+        fetch(`/api/artistes/albums/name/${this.props.searchParams.input}${genreFilter}`)
         .then(res => res.json())
         .then(data => {this.setState({albumList : data});})
         .catch(error => console.log(error));
     }
     searchArtiste(){
-        fetch(`/api/artistes/name/${this.props.searchParams.input}`)
+        let genreFilter="";
+        if(this.props.searchParams.genreFilter.length>0){
+            genreFilter = '?genres='+this.props.searchParams.genreFilter.reduce((accu,ele,ind)=>{if(ind===this.props.searchParams.genreFilter.length-1)return accu+ele;return accu+','+ele;},"")
+        }
+        fetch(`/api/artistes/name/${this.props.searchParams.input}${genreFilter}`)
         .then(res => res.json())
         .then(data => {this.setState({artisteList : data});})
         .catch(error => console.log(error));

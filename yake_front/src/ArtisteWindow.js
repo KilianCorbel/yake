@@ -24,9 +24,15 @@ class ArtisteWindow extends Component{
     render(){
         let retour;
         if(this.state.artiste!==undefined && this.state.artiste.nom!==undefined){
+            let genresArtiste = this.state.artiste.albums.reduce((accu,ele)=>accu.concat(ele.genres),[])
+            .reduce((accu,ele)=>{if(!accu.includes(ele))accu.push(ele);return accu;},[]);
             retour=(
                 <div className="scrollable">
-                    <div className="Head"><h1>{this.state.artiste.nom}</h1><img src={`api/artistes/stream/${this.state.artiste._id}`} alt="noImage" key={"artiste"}></img></div>
+                    <div className="Head"><h1>{this.state.artiste.nom}</h1>
+                    <img src={`api/artistes/stream/${this.state.artiste._id}`} alt="noImage" key={"artiste"}></img></div>
+                    <p>{
+                        genresArtiste.reduce((accu,ele,ind)=>genresArtiste.length-1===ind?accu+ele:accu+ele+",","")}
+                        </p>
                     <div className="Content">{this.state.artiste.biographie}</div>  
                     <div className="AlbumList">
                     <h3>{"Albums de l'artiste"}</h3>

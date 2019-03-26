@@ -15,7 +15,7 @@ require('./Playlist.model');
 
 lienErreur = '/error';
 const getAll = '/';
-const getPlaylistById = '/id/:id';
+const getPlaylistById = '/getPlaylist';
 const getPlaylistByName = '/name/:name';
 const getPlaylistByUser = '/user/:user';
 const postPlaylist = '/savePlaylist';
@@ -43,8 +43,9 @@ app.get(getAll, function (req, res) {
 
 // -- GET playlist/:id
 app.get(getPlaylistById, function (req, res) {
-    mongoose.model('Playlist').findOne({_id : req.params.id}).then((playlist)=>{
+    mongoose.model('Playlist').findOne({_id : req.query.id}).then((playlist)=>{
         if(playlist){
+			playlist.image=undefined;
             res.send(playlist);
         }else{
             res.status(404).json({message : "404 not found"});

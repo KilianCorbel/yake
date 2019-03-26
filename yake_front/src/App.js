@@ -32,7 +32,8 @@ class App extends Component {
       findArtiste: true,
       findAlbum: true,
       findMusic: true,
-      searchParams:{}
+      searchParams:{},
+      genreFilter:""
     }
     this.searchWindow=this.searchWindow.bind(this);
     this.albumWindow=this.albumWindow.bind(this);
@@ -45,6 +46,7 @@ class App extends Component {
     this.updateInputValue = this.updateInputValue.bind(this);
     this.mesPlaylistsWindow=this.mesPlaylistsWindow.bind(this);
     this.playlistWindow=this.playlistWindow.bind(this);
+    this.inputGenreFilterChange=this.inputGenreFilterChange.bind(this);
   }
 
   toggle() {
@@ -72,6 +74,9 @@ class App extends Component {
       inputValue: evt.target.value
     });
   }
+  inputGenreFilterChange(evt){
+    this.setState({genreFilter:evt.target.value});
+  }
   submitInputValue(evt){
     if(evt.key === "Enter" && evt.target.value.replace(/ /g,"").length>0){
       this.props.history.push("/");
@@ -81,6 +86,7 @@ class App extends Component {
         findAlbum:this.state.findAlbum,
         findMusic:this.state.findMusic,
         input: this.state.inputValue,
+        genreFilter:(this.state.genreFilter===""?[]:[this.state.genreFilter])
       },
       windowShowed:"searchWindow",
       inputValue:"",
@@ -160,6 +166,12 @@ class App extends Component {
                   {"Artiste :  "}
                   <input  name="findArtiste"  type="checkbox" checked={this.state.findArtiste}  onChange={this.inputFindArtisteChange} />
                 </label>
+                </div>
+                <div>
+                  <label>
+                    {"Genre : "}
+                    <input name="genreFilter" type="text" value={this.state.genreFilter} onChange={this.inputGenreFilterChange}/>
+                  </label>
                 </div>
                 
                 </PopoverBody>
