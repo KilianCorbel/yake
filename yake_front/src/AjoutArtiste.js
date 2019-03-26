@@ -20,6 +20,8 @@ class AjoutArtiste extends Component {
     };
     this.ajouterArtiste = this.ajouterArtiste.bind(this);
   }
+
+  
   toBuffer(ab) {
     let buf = Buffer.alloc(ab.byteLength);
     let view = new Uint8Array(ab);

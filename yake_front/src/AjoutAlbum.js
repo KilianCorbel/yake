@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./ajoutAlbum.css";
-import "./Scrollable.css";
 import "./MainContent.css";
+import "./Scrollable.css";
 import "./ErrorColor.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Badge, InputGroup,InputGroupAddon,Button, Form, FormGroup, Label, Input } from "reactstrap";
@@ -114,14 +114,14 @@ class AjoutAlbum extends Component {
     for (let i = 0; i < this.state.listeArtistes.length; i++) {
       if(i===0){
         selects.push(
-          <option value={this.state.idsArtistes[i]} selected disabled>
+          <option value={this.state.idsArtistes[i]} disabled key={`ajoutAlbumArtiste${i}`}>
             {this.state.listeArtistes[i]}
           </option>
         );
       }
       else{
         selects.push(
-          <option value={this.state.idsArtistes[i]}>
+          <option value={this.state.idsArtistes[i]} key={`ajoutAlbumArtiste${i}`}>
             {this.state.listeArtistes[i]}
           </option>
         );
@@ -144,6 +144,9 @@ class AjoutAlbum extends Component {
       idsArtistes: [],
       error:{}
     });
+  }
+
+  componentDidMount(){
     this.getArtistes();
   }
 
@@ -212,12 +215,13 @@ class AjoutAlbum extends Component {
     let errorGenres = this.state.error.genres!==undefined?(<Badge color="danger">{this.state.error.genres}</Badge>):undefined;
     return (
       <div className="MainContent">
-      <div className="Scrollable">
+      <div className="scrollable">
       <Form className="formulaire">
         <h3>Ajout d'un album</h3>
         <FormGroup row>
           <Label for="artiste">Artiste </Label>
           <Input
+            value={this.state.artiste}
             className={`${this.state.error.artiste===undefined?"":"errorInput"}`}
             type="select"
             id="artiste"

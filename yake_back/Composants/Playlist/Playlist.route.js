@@ -15,7 +15,7 @@ require('./Playlist.model');
 
 lienErreur = '/error';
 const getAll = '/';
-const getPlaylistById = '/id/:id';
+const getPlaylistById = '/getPlaylist';
 const getPlaylistByName = '/name/:name';
 const getPlaylistByUser = '/user/:user';
 const postPlaylist = '/savePlaylist';
@@ -43,8 +43,9 @@ app.get(getAll, function (req, res) {
 
 // -- GET playlist/:id
 app.get(getPlaylistById, function (req, res) {
-    mongoose.model('Playlist').findOne({_id : req.params.id}).then((playlist)=>{
+    mongoose.model('Playlist').findOne({_id : req.query.id}).then((playlist)=>{
         if(playlist){
+			playlist.image=undefined;
             res.send(playlist);
         }else{
             res.status(404).json({message : "404 not found"});
@@ -79,21 +80,26 @@ app.get(getPlaylistByUser, function (req, res) {
 // -- CREATE
 app.post(postPlaylist, function (req, res) {
     let playlist = mongoose.model('Playlist');
+	let path = require('path');
 	console.log(req.body);
-	let buf = Buffer.from(req.body.file.data);
-	fs.writeFile(`C:/Users/corme/Desktop/${req.body.fileName}`,buf,(err)=>{
+	let filename = req.body.fileName;
+	let file = req.body.file;
+	req.body.image=undefined;
+	req.body.fileName=undefined;
+	req.body.file=undefined;
+	let newPlaylist = new playlist(req.body);
+	let buf = Buffer.from(file.data);
+	fs.writeFile(`${path.resolve('../../Data/playlist')}/${req.body.nom.replace(/ /gi,"")}_${newPlaylist._id}`,buf,(err)=>{
 		if(err)
 			return console.log(err);
 		console.log("Fichier sauvé");
 	});
-	req.body.file=undefined;
-	req.body.image="C:/Users/corme/Desktop/"+req.body.fileName;
-	req.body.fileName=undefined;
-    let newPLaylist = new playlist(req.body);
+	newPlaylist.image=`${path.resolve('../../Data/playlist')}/${req.body.nom.replace(/ /gi,"")}_${newPlaylist._id}`;
+	
     //newPLaylist.id = newPLaylist._id;
 
-    newPLaylist.save().then(()=>{
-        res.send(newPLaylist);
+    newPlaylist.save().then(()=>{
+        res.send(newPlaylist);
     },(err)=>{
         res.send(err);
     })

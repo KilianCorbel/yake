@@ -19,7 +19,7 @@ let AlbumSchema = new Schema({
     nom : String,
     couverture : String,
     datePublication : Date,
-    genres : [],
+    genres : [String],
     musiques : [MusiqueSchema]
 });
 

@@ -35,6 +35,11 @@
   align-items: center;
 }
 
+.SearchPopOver{
+  display:flex;
+  flex-flow:column;
+}
+
 .Recherche{
   border:none;
   flex:1 0 0;
