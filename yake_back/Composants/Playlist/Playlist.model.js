@@ -4,7 +4,6 @@ const mongoose 	= require('mongoose'),
 
 // ---- Artiste schema
 let PlaylistSchema = new Schema({
-    id : Number,
     nom : String,
     image : String,
     description : String,
@@ -18,8 +17,12 @@ let PlaylistSchema = new Schema({
     },
     musiques : [
         {
+			id: String,
             titre : String,
-            note : Number
+			idAlbum : String,
+			idArtiste: String,
+			nomAlbum : String,
+			nomGroupe:String
         }
     ]
 });

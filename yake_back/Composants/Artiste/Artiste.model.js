@@ -5,7 +5,7 @@ const mongoose 	= require('mongoose'),
 // ---- Musique schema
 let MusiqueSchema = new Schema({
     titre : String,
-    son : Buffer,
+    son : String,
     note : Number
 })
 
@@ -19,7 +19,7 @@ let AlbumSchema = new Schema({
     nom : String,
     couverture : String,
     datePublication : Date,
-    genres : [GenreSchema],
+    genres : [String],
     musiques : [MusiqueSchema]
 });
 
@@ -36,4 +36,4 @@ let ArtisteSchema = new Schema({
 let artiste = mongoose.model('Artiste', ArtisteSchema);
 let album = mongoose.model('Album', AlbumSchema);
 let musique = mongoose.model('Musique', MusiqueSchema);
-module.exports = artiste, album, musique;
+module.exports = {Artiste: artiste, Album: album, Musique: musique};

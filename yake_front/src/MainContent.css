@@ -3,4 +3,88 @@
     align-content: stretch;
     flex:8 0 0;
     flex-flow:column;
-  }
+}
+
+.musicLine{
+  flex-flow:row;
+  display:flex;
+  justify-content:center;
+}
+
+.flex{
+  flex : 0 0 auto;
+}
+
+.albumRow{
+  display:flex;
+  flex: 1 1 0;
+  flex-flow: column;
+  max-width:150px;
+}
+
+.albumRow:hover{
+  background-color: #6e8f8f;
+}
+
+.albumRowContentimg{
+  flex: 1 1 0;
+}
+.albumRowContent{
+  flex-grow:1;
+  flex-shrink:1;
+  flex-basis:0px;
+}
+.AlbumRows{
+  /*flex-grow:1;
+  flex-shrink:1;
+  flex-basis:0px;*/
+  overflow-x:auto;
+}
+.AlbumContent{
+  display:flex;
+  /*flex-grow:1;
+  flex-shrink:1;
+  flex-basis:0px;*/
+  flex-flow:row;
+  border: 1px solid #000000;
+  justify-content:space-evenly;
+}
+.AlbumList{
+  display:flex;
+  flex-flow:column;
+  overflow:hidden;
+}
+.artisteRow{
+  display:flex;
+  flex: 1 1 0;
+  flex-flow: column;
+  max-width:150px;
+}
+
+.artisteRow:hover{
+  background-color: #6e8f8f;
+}
+
+.artisteRowContent{
+  flex-grow:1;
+    flex-shrink:1;
+    flex-basis:0px;
+}
+.ArtisteRows{
+
+  overflow-x:auto;
+}
+.ArtisteContent{
+  display:flex;
+  flex-flow:row;
+  border: 1px solid #000000;
+  justify-content:space-evenly;
+}
+.ArtisteList{
+  display:flex;
+  flex-flow:column;
+  overflow:hidden;
+}
+.musicLine:hover{
+  background-color:#e6e4e4;
+}

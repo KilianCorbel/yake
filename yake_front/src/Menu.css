@@ -1,6 +1,6 @@
-.MenuBarre{
+.MenuBarreClicable{
     flex:1 0 0;
-    text-align: center;
+    text-align: left;
     background-color: #188021;
     color: #ffffff;
     border : 2px solid #6d6e6c;
@@ -8,4 +8,24 @@
     display: flex;
     justify-content: center;
     flex-flow: column;
+    cursor: pointer;
+    transition: all 1s ease;
+}
+
+.MenuBarre{
+    flex:1 0 0;
+    text-align: left;
+    background-color: #188021;
+    color: #ffffff;
+    border : 2px solid #6d6e6c;
+    overflow:hidden;
+    display: flex;
+    justify-content: center;
+    flex-flow: column;
+
+}
+
+.MenuBarreClicable:hover{
+    text-align: center;
+    background-color: #798018;
 }

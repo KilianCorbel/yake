@@ -1,0 +1,16 @@
+.AddPlaylistButton{
+    
+}
+.AddPlaylistContent{
+}
+
+.musicCadre{
+    border : 1px solid #000000;
+    overflow:auto;
+    height:50%;
+}
+.addPlaylistCadre{
+    overflow:hidden;
+    min-height: 50vh;
+    max-height:60vh;
+}
