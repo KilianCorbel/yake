@@ -13,7 +13,7 @@ import AutresWindow from './AutresWindow.js';
 import ArtisteWindow from './ArtisteWindow.js';
 import AlbumWindow from './AlbumWindow.js';
 import Playlist from './MusicPlayer/Playlist.js';
-import { Input, InputGroupAddon, InputGroup, Button, Popover, PopoverHeader, PopoverBody } from 'reactstrap';
+import { Badge, Input, InputGroupAddon, InputGroup, Button, Popover, PopoverHeader, PopoverBody } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 import AjoutArtiste from './AjoutArtiste';
 import AjoutAlbum from './AjoutAlbum';
@@ -33,7 +33,8 @@ class App extends Component {
       findAlbum: true,
       findMusic: true,
       searchParams:{},
-      genreFilter:""
+      genreFilterInput:"",
+      genreFilter:[]
     }
     this.searchWindow=this.searchWindow.bind(this);
     this.albumWindow=this.albumWindow.bind(this);
@@ -47,6 +48,8 @@ class App extends Component {
     this.mesPlaylistsWindow=this.mesPlaylistsWindow.bind(this);
     this.playlistWindow=this.playlistWindow.bind(this);
     this.inputGenreFilterChange=this.inputGenreFilterChange.bind(this);
+    this.submitInputValueGenre=this.submitInputValueGenre.bind(this);
+    this.addGenre=this.addGenre.bind(this);
   }
 
   toggle() {
@@ -75,7 +78,7 @@ class App extends Component {
     });
   }
   inputGenreFilterChange(evt){
-    this.setState({genreFilter:evt.target.value});
+    this.setState({genreFilterInput:evt.target.value});
   }
   submitInputValue(evt){
     if(evt.key === "Enter" && evt.target.value.replace(/ /g,"").length>0){
@@ -92,6 +95,33 @@ class App extends Component {
       inputValue:"",
       artisteList:undefined,albumList:undefined,musicList:undefined});
     }
+  }
+
+  addGenre(){
+    if(this.state.genreFilterInput.replace(" ","").length>0 && this.state.genreFilter.length<5){
+      let genre = this.state.genreFilter;
+      genre.push(this.state.genreFilterInput.replace(" ",""));
+      this.setState({genreFilterInput:"",genreFilter:genre});
+    }
+    else{
+      this.setState({genreFilterInput:""});
+    }
+  }
+
+  submitInputValueGenre(evt){
+    if(evt.key === " "){
+      evt.target.value="";
+      this.addGenre();
+    }
+  }
+  generateGenreBadge(){
+    return this.state.genreFilter.map((ele,i)=>(
+    <Badge size="sm" color="secondary" id={`BadgeGenreFilter${i}`} key={`BadgeGenreFilter${i}`}>
+      <div key={`divGenreFilter${i}`}>
+        {this.state.genreFilter[i]}
+        <Button size="sm" close id={`boutonClose${i}`} key={`boutonCloseGenreFilter${i}`} onClick={()=>{this.setState({genreFilter:this.state.genreFilter.filter((_,j)=>i!==j)})}}></Button>
+      </div>
+    </Badge>));
   }
   searchWindow(){
     return <SearchPage searchParams={this.state.searchParams} refresh={()=>{this.setState({});}} playlist={this.state.playlist}/>;
@@ -149,28 +179,29 @@ class App extends Component {
                 <PopoverBody className="searchPopOver">
                 <div>
                 <label> 
-                  {"Musique :  "}
+                  {"Afficher des musiques :  "}
                   <input  name="findMusic"  type="checkbox" checked={this.state.findMusic}  onChange={this.inputFindMusicChange} />
                 </label>
                 </div>
                 
                 <div>
                 <label> 
-                  {"Album :  "}
+                  {"Afficher des albums :  "}
                   <input  name="findAlbum"  type="checkbox" checked={this.state.findAlbum}  onChange={this.inputFindAlbumChange} />
                 </label>
                 </div>
                 
                 <div>
                 <label> 
-                  {"Artiste :  "}
+                  {"Afficher des artistes :  "}
                   <input  name="findArtiste"  type="checkbox" checked={this.state.findArtiste}  onChange={this.inputFindArtisteChange} />
                 </label>
                 </div>
                 <div>
                   <label>
                     {"Genre : "}
-                    <input name="genreFilter" type="text" value={this.state.genreFilter} onChange={this.inputGenreFilterChange}/>
+                    {this.generateGenreBadge()}
+                    <input placeholder="Entrez vos genres" name="genreFilter" type="text" value={this.state.genreFilterInput} onChange={this.inputGenreFilterChange} onKeyPress={this.submitInputValueGenre}/>
                   </label>
                 </div>
                 

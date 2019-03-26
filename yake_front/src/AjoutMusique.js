@@ -254,7 +254,7 @@ class AjoutMusique extends Component {
           {errorAlbum}
         </FormGroup>
         <FormGroup row>
-          <Label for="nom">Nom </Label>
+          <Label for="nom">Titre de la musique </Label>
           <Input
             className={`${this.state.error.nom===undefined?"":"errorInput"}`}
             type="Text"
