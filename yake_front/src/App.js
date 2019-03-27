@@ -34,7 +34,8 @@ class App extends Component {
       findMusic: true,
       searchParams:{},
       genreFilterInput:"",
-      genreFilter:[]
+      genreFilter:[],
+      hasSearch:false
     }
     this.searchWindow=this.searchWindow.bind(this);
     this.albumWindow=this.albumWindow.bind(this);
@@ -89,8 +90,9 @@ class App extends Component {
         findAlbum:this.state.findAlbum,
         findMusic:this.state.findMusic,
         input: this.state.inputValue,
-        genreFilter:(this.state.genreFilter===""?[]:[this.state.genreFilter])
+        genreFilter:(this.state.genreFilter===""?[]:this.state.genreFilter)
       },
+      hasSearch:true,
       windowShowed:"searchWindow",
       inputValue:"",
       artisteList:undefined,albumList:undefined,musicList:undefined});
@@ -123,8 +125,15 @@ class App extends Component {
       </div>
     </Badge>));
   }
+  hasSearch(){
+    if(this.state.hasSearch){
+      this.setState({hasSearch:false});
+      return true;
+    }
+    return false;
+  }
   searchWindow(){
-    return <SearchPage searchParams={this.state.searchParams} refresh={()=>{this.setState({});}} playlist={this.state.playlist}/>;
+    return <SearchPage change={this.hasSearch()} searchParams={this.state.searchParams} refresh={()=>{this.setState({});}} playlist={this.state.playlist}/>;
   }
   homeWindow(){
     return <HomeWindow/>
