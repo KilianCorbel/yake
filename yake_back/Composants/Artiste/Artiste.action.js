@@ -8,8 +8,10 @@ const express = require('express'),
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : true}));
-app.use(session({secret: 'todotopsecret'}))
 
+//??
+app.use(session({secret: 'todotopsecret'}))
+const Model = require('./Artiste.model');
 // -- Load model needed for the project
 // const Artiste = require('./Artiste.model');
 
@@ -45,4 +47,29 @@ const getAlbum = function() {
     });
 }
 
-module.exports = getAll, getAlbum, getArtiste;
+exports.getArtisteByName = function(genres,name){
+	let artiste = mongoose.model('Artiste');
+	let genreFilter = new RegExp('^.*$');
+	if(genres !== undefined && genres.length>0){
+		genreFilter=genres.split(',').map(ele=>new RegExp('^'+ele+'$','i'));
+	}	
+	return artiste.find({'nom' : new RegExp('^.*'+name+'.*$', "i"),'albums.genres':{$in : genreFilter}});
+};
+
+exports.formatageBlocsArtistepourEnvoi = function(artistes){
+	let result = artistes;
+		result = result.map(ele=>{
+            ele.image=undefined;
+			ele.albums=ele.albums.map(album=>{
+				album.couverture=undefined;
+				album.musiques = album.musiques.map(musique=>{
+					musique.son=undefined;
+					return musique;
+				});
+				return album;
+			});
+			return ele;
+	});
+	let objetRenvoi=result.map(ele=>{let obj = {}; obj._id=ele._id;obj.nom=ele.nom;return obj;});
+	return objetRenvoi;
+}

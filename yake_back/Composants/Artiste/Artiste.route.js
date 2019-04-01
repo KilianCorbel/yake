@@ -9,9 +9,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : true}));
 app.use(session({secret: 'todotopsecret'}))
 let fs = require('fs');
+let process = require('./Artiste.process.js');
 // -- Load model needed for the project
 require('./Artiste.model');
-
 const getAll = '/';
 const getArtisteById = '/id/:id';
 const getArtisteByName = '/name/:name';
@@ -56,28 +56,10 @@ app.get(getAll, function (req, res) {
 
 //Find Artiste byName
 app.get(getArtisteByName, function (req, res) {
-    let artiste = mongoose.model('Artiste');
-	let genreFilter = new RegExp('^.*$');
-	if(req.query.genres !== undefined && req.query.genres.length>0){
-		genreFilter=req.query.genres.split(',').map(ele=>new RegExp('^'+ele+'$','i'));
-	}	
-    artiste.find({'nom' : new RegExp('^.*'+req.params.name+'.*$', "i"),'albums.genres':{$in : genreFilter}}).then((artistes)=>{
-        let result = artistes;
-		result = result.map(ele=>{
-            ele.image=undefined;
-			ele.albums=ele.albums.map(album=>{
-				album.couverture=undefined;
-				album.musiques = album.musiques.map(musique=>{
-					musique.son=undefined;
-					return musique;
-				});
-				return album;
-			});
-			return ele;
-		});
-		let objetRenvoi=result.map(ele=>{let obj = {}; obj._id=ele._id;obj.nom=ele.nom;return obj;});
-        res.send(objetRenvoi);
+	process.findArtisteByName(req.query.genres,req.params.name).then((artistes)=>{
+        res.send(artistes);
     })
+	.catch(err=>{res.send([]);});
 });
 
 // -- GET albums
