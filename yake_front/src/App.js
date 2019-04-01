@@ -20,6 +20,7 @@ import AjoutAlbum from './AjoutAlbum';
 import AjoutMusique from './AjoutMusique.js';
 import PlaylistInfoWindow from './PlaylistInfoWindow.js'
 import {Route,Switch, withRouter} from 'react-router-dom';
+// import FooterMenu from './FooterMenu.js';
 //import {Form} from 'react-bootstrap';
 class App extends Component {
   constructor(props){
@@ -229,6 +230,7 @@ class App extends Component {
             <Menu clicable={true} to="/addAlbum" value="Ajout album"/>
             <Menu clicable={true} to="/addMusic" value="Ajout musique"/>
             <Menu clicable={false} onClick={()=>{}} value=""/>
+            {/* <FooterMenu/> */}
           </div>
           <div className="Body">
                 <Switch>
