@@ -4,7 +4,7 @@ import "./MainContent.css";
 import "./Scrollable.css";
 import "./ErrorColor.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Badge, InputGroup,InputGroupAddon,Button, Form, FormGroup, Label, Input } from "reactstrap";
+import { Alert,Badge, InputGroup,InputGroupAddon,Button, Form, FormGroup, Label, Input } from "reactstrap";
 
 class AjoutAlbum extends Component {
   constructor(props) {
@@ -19,10 +19,13 @@ class AjoutAlbum extends Component {
       artiste: "",
       listeArtistes: [],
       idsArtistes: [],
-      error:{}
+      error:{},
+      ajoutOk : false,
+      ajoutKo : false
     };
-    this.getArtistes();
     this.submitInputValue=this.submitInputValue.bind(this);
+    this.dismissKoAlert=this.dismissKoAlert.bind(this);
+    this.dismissOkAlert=this.dismissOkAlert.bind(this);
   }
 
   getArtistes() {
@@ -99,8 +102,9 @@ class AjoutAlbum extends Component {
             body
           )
         })
-        .then(()=>{alert("album ajouté");this.reinitialiserFormulaire();})
-        .catch(err => alert(err));
+        .then((d)=>{this.reinitialiserFormulaire();if(!d.ok){throw Error("Erreur ajout album")}})
+        .then(()=>{this.setState({ajoutOk : true,ajoutKo:false});})
+        .catch(err =>{this.setState({ajoutKo : true,ajoutOk:false});});
       }
       fileReader.readAsArrayBuffer(this.state.fileChoosen);
     }
@@ -208,6 +212,15 @@ class AjoutAlbum extends Component {
     temp[`${e.target.id}`]=e.target.value;
     this.setState(temp);
   }
+
+  dismissOkAlert(){
+    this.setState({ajoutOk:false});
+  }
+
+  dismissKoAlert(){
+    this.setState({ajoutKo:false});
+  }
+
   render() {
     let errorArtiste=this.state.error.artiste!==undefined?(<Badge color="danger">{this.state.error.artiste}</Badge>):undefined;
     let errorImg = this.state.error.img!==undefined?(<Badge color="danger">{this.state.error.img}</Badge>):undefined;
@@ -218,6 +231,12 @@ class AjoutAlbum extends Component {
       <div className="scrollable">
       <Form className="formulaire">
         <h3>Ajout d'un album</h3>
+        <Alert color="success" isOpen={this.state.ajoutOk} toggle={this.dismissOkAlert}>
+          Votre album a bien été ajouté
+        </Alert>
+        <Alert color="danger" isOpen={this.state.ajoutKo} toggle={this.dismissKoAlert}>
+          Echec de l'ajout de votre album
+        </Alert>
         <FormGroup row>
           <Label for="artiste">Artiste </Label>
           <Input

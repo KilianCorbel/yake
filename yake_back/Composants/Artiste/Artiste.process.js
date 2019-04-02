@@ -42,17 +42,17 @@ exports.getAllMusic = function(){
 
 exports.addAlbum = function(body){
 	return new Promise(function(resolve,reject){
-	Actions.getArtisteById(body.idArtiste)
-	.then((result)=>{
-		return Actions.saveCouverture(body,result);
-	}
-	)
-	.then(result=>{
-		return Actions.saveAlbumInDatabase(result.body,result.artiste);
-	}
-	)
-	.then(result=>resolve(result))
-	.catch(err=>reject(result));
+		Actions.getArtisteById(body.idArtiste)
+		.then((result)=>{
+			return Actions.saveCouverture(body,result);
+		}
+		)
+		.then(result=>{
+			return Actions.saveAlbumInDatabase(result.body,result.artiste);
+		}
+		)
+		.then(result=>resolve(result))
+		.catch(err=>reject(result));
 	});
 }
 
