@@ -64,56 +64,23 @@ app.get(getArtisteByName, function (req, res) {
 
 // -- GET albums
 app.get(getAlbums, function(req, res) {
-    let artiste = mongoose.model('Artiste');
-
-    artiste.find({}, 'albums').then((albums)=>{
-        if(albums){
-            res.send(albums);
-        }else{
-            res.status(404).json({message : "404 not found"});
-        }
-    },(err)=>{
-        res.send(err);
-    });
+	process.getAllAlbum()
+	.then(albums=>res.send(albums))
+	.catch(err=>res.status(404).json({message : "404 not found"}));
 });
 
 // -- GET musiques
 app.get(getMusiques, function(req, res) {
-    let artiste = mongoose.model('Artiste');
-
-    artiste.find({}, 'albums.musiques').then((musiques)=>{
-        if(musiques){
-            res.send(musiques);
-        }else{
-            res.status(404).json({message : "404 not found"});
-        }
-    },(err)=>{
-        res.send(err);
-    });
+	process.getAllMusic()
+	.then(musics=>res.send(musics))
+	.catch(err=>res.status(404).json({message : "404 not found"}));
 });
 
 //-POST album
 app.post(addAlbum,function(req,res){
-	let path = require("path");
-	console.log(path.resolve("../../Data/couverture"));
-	let test = require('./Artiste.model.js');
-	let artiste = mongoose.model('Artiste');
-	artiste.findOne({'_id' : req.body.idArtiste}).then((result)=>{
-		req.body.artisteId=undefined;
-		console.log(req.body);
-		console.log(result);
-		let buf = Buffer.from(req.body.couverture.data);
-		fs.writeFile(`${path.resolve("../../Data/couverture")}/${result.nom}_${req.body.nom}_couverture`,buf,(err)=>{
-			if(err)
-				return console.log(err);
-			console.log("Fichier sauvĂ©");
-			req.body.fileName=undefined;
-			req.body.couverture=path.resolve("../../Data/couverture")+"/"+result.nom+"_"+req.body.nom+"_couverture";
-			result.albums.push(new test.Album(req.body));
-			result.save().then(()=>{res.status(200).json({});console.log("success");});
-		});
-		
-	},(err)=>{res.send(err);});
+	process.addAlbum(req.body)
+	.then(result=>res.status(200).json({}))
+	.catch(err=>res.status(300).json({}));
 });
 
 //POST musique

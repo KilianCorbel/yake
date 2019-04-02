@@ -56,6 +56,12 @@ exports.getArtisteByName = function(genres,name){
 	return artiste.find({'nom' : new RegExp('^.*'+name+'.*$', "i"),'albums.genres':{$in : genreFilter}});
 };
 
+exports.getArtisteById = function(id){
+	console.log("test");
+	let artiste = mongoose.model('Artiste');
+	return artiste.findOne({'_id' : id});
+};
+
 exports.formatageBlocsArtistepourEnvoi = function(artistes){
 	let result = artistes;
 		result = result.map(ele=>{
@@ -72,4 +78,32 @@ exports.formatageBlocsArtistepourEnvoi = function(artistes){
 	});
 	let objetRenvoi=result.map(ele=>{let obj = {}; obj._id=ele._id;obj.nom=ele.nom;return obj;});
 	return objetRenvoi;
+};
+
+exports.saveCouverture = function(body,artiste){
+	return new Promise(function(resolve,reject){
+	console.log("saveCouverture");
+	let path = require("path");
+	let fs = require("fs");
+	let buf = Buffer.from(body.couverture.data);
+	fs.writeFile(`${path.resolve("../../Data/couverture")}/${artiste.nom}_${body.nom}_couverture`,buf,(err)=>{
+			if(err)
+				reject(err);
+			else{
+				body.couverture=`${path.resolve("../../Data/couverture")}/${artiste.nom}_${body.nom}_couverture`;
+				let returnObject = {};
+				returnObject.body=body;
+				returnObject.artiste = artiste;
+				resolve(returnObject);
+			}
+	});
+	});
+};
+
+exports.saveAlbumInDatabase = function(body,artiste){
+	let test = require('./Artiste.model.js');
+	body.idArtiste=undefined;	
+	body.fileName=undefined;
+	artiste.albums.push(new test.Album(body));
+	return artiste.save();
 }
