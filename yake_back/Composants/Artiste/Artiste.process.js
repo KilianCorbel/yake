@@ -10,9 +10,75 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : true}));
 app.use(session({secret: 'todotopsecret'}))
 
-const Routes = require('./Artiste.route');
 const Actions = require('./Artiste.action');
 const Model = require('./Artiste.model');
+
+exports.findArtisteByName = function(genres,name){
+	return new Promise(function(resolve,reject){
+		if(name===undefined ||name.length===0){
+			reject(404);
+		}
+		else{
+		Actions.getArtisteByName(genres,name)
+		.then(artistes=>{
+				artistes = Actions.formatageBlocsArtistepourEnvoi(artistes);
+				resolve(artistes);
+			})
+		.catch((err)=>{reject(404);});
+		}
+	});
+}
+
+exports.getAllAlbum = function(){
+	let artiste = mongoose.model('Artiste');
+	return artiste.find({}, 'albums');
+}
+
+exports.getAllMusic = function(){
+	let artiste = mongoose.model('Artiste');
+
+    return artiste.find({}, 'albums.musiques');
+}
+
+exports.addAlbum = function(body){
+	return new Promise(function(resolve,reject){
+		Actions.getArtisteById(body.idArtiste)
+		.then((result)=>{
+			return Actions.saveCouverture(body,result);
+		}
+		)
+		.then(result=>{
+			return Actions.saveArtisteInDatabase(result.artiste);
+		}
+		)
+		.then(result=>resolve(result))
+		.catch(err=>reject(result));
+	});
+}
+
+exports.addMusique = function(body){
+	return new Promise(function(resolve,reject){
+		Actions.getArtisteById(body.idArtiste)
+		.then((result)=>Actions.saveMusiqueAndEditArtiste(body,result))
+		.then((result)=>Actions.saveArtisteInDatabase(result.artiste))
+		.then(result=>resolve(result))
+		.catch((err)=>reject(err));
+	});
+}
+
+exports.addArtiste = function(body){
+	return new Promise(function(resolve,reject){
+		let Artiste = mongoose.model('Artiste');
+		Actions.saveImageArtiste(body)
+		.then((result)=>new Artiste(result))
+		.then((result)=>Actions.saveArtisteInDatabase(result))
+		.then(result=>resolve(result))
+		.catch(err=>reject(err));
+	});
+	
+}
+
+
 
 // app.get(, function(req, res) {
 // })

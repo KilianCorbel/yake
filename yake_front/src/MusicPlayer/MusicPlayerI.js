@@ -69,9 +69,9 @@ componentWillMount(){
                 <AddPlaylist playlist={this.props.playlist}/>
                 </div>
                 <div className="MusicBar">
-                    <Button color="success" onClick={()=>{this.previous();}}>{"<"}</Button>
+                    <Button color="info" onClick={()=>{this.previous();}}>{"<"}</Button>
                     {show}
-                    <Button color="success" onClick={()=>{this.next();}}>{">"}</Button>
+                    <Button color="info" onClick={()=>{this.next();}}>{">"}</Button>
                 </div>
             </div>
         );

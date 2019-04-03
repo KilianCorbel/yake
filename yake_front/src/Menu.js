@@ -5,7 +5,7 @@ class Menu extends Component {
   render() {
     let menu;
     if(this.props.clicable){
-      menu = (<Link onClick={()=>{if(this.props.onClick!==undefined)this.props.onClick();}} to={this.props.to} style={{textDecoration:'none',color:'white'}} className={`MenuBarre${this.props.clicable?"Clicable":""}`}>
+      menu = (<Link onClick={()=>{if(this.props.onClick!==undefined)this.props.onClick();}} to={this.props.to} style={{textDecoration:'none'}} className={`MenuBarre${this.props.clicable?"Clicable":""}`}>
       {
           this.props.value
       }

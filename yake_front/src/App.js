@@ -20,6 +20,7 @@ import AjoutAlbum from './AjoutAlbum';
 import AjoutMusique from './AjoutMusique.js';
 import PlaylistInfoWindow from './PlaylistInfoWindow.js'
 import {Route,Switch, withRouter} from 'react-router-dom';
+// import FooterMenu from './FooterMenu.js';
 //import {Form} from 'react-bootstrap';
 class App extends Component {
   constructor(props){
@@ -34,7 +35,8 @@ class App extends Component {
       findMusic: true,
       searchParams:{},
       genreFilterInput:"",
-      genreFilter:[]
+      genreFilter:[],
+      hasSearch:false
     }
     this.searchWindow=this.searchWindow.bind(this);
     this.albumWindow=this.albumWindow.bind(this);
@@ -89,8 +91,9 @@ class App extends Component {
         findAlbum:this.state.findAlbum,
         findMusic:this.state.findMusic,
         input: this.state.inputValue,
-        genreFilter:(this.state.genreFilter===""?[]:[this.state.genreFilter])
+        genreFilter:(this.state.genreFilter===""?[]:this.state.genreFilter)
       },
+      hasSearch:true,
       windowShowed:"searchWindow",
       inputValue:"",
       artisteList:undefined,albumList:undefined,musicList:undefined});
@@ -123,8 +126,15 @@ class App extends Component {
       </div>
     </Badge>));
   }
+  hasSearch(){
+    if(this.state.hasSearch){
+      this.setState({hasSearch:false});
+      return true;
+    }
+    return false;
+  }
   searchWindow(){
-    return <SearchPage searchParams={this.state.searchParams} refresh={()=>{this.setState({});}} playlist={this.state.playlist}/>;
+    return <SearchPage change={this.hasSearch()} searchParams={this.state.searchParams} refresh={()=>{this.setState({});}} playlist={this.state.playlist}/>;
   }
   homeWindow(){
     return <HomeWindow/>
@@ -220,6 +230,7 @@ class App extends Component {
             <Menu clicable={true} to="/addAlbum" value="Ajout album"/>
             <Menu clicable={true} to="/addMusic" value="Ajout musique"/>
             <Menu clicable={false} onClick={()=>{}} value=""/>
+            {/* <FooterMenu/> */}
           </div>
           <div className="Body">
                 <Switch>

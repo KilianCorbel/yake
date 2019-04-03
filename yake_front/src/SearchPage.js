@@ -3,7 +3,7 @@ import './MainContent.css';
 import AlbumsBlock from './AlbumsBlock.js';
 import ArtistesBlock from './ArtistesBlock.js';
 import MusiquesBlock from './MusiquesBlock.js';
-import { Spinner } from 'reactstrap';
+import { Collapse, Spinner } from 'reactstrap';
 class SearchPage extends Component{
     constructor(props){
         super(props);
@@ -11,7 +11,9 @@ class SearchPage extends Component{
             musicList:undefined,
             albumList:undefined,
             artisteList:undefined,
-            searchParams:{}
+            musicCollapse : true,
+            albumCollapse : true,
+            artisteCollapse :true
         };
         this.equalsSearch=this.equalsSearch.bind(this);
     }
@@ -28,14 +30,15 @@ class SearchPage extends Component{
             this.searchArtiste();
         }
     }
-
     componentDidUpdate(){
-        if(!this.equalsSearch()){
+        if(this.props.change){
             this.setState({
                 musicList:undefined,
                 albumList:undefined,
                 artisteList:undefined,
-                searchParams:this.props.searchParams
+                musicCollapse : true,
+                albumCollapse : true,
+                artisteCollapse :true
             });
             if(this.props.searchParams.findMusic){
                 this.searchMusic();
@@ -51,9 +54,7 @@ class SearchPage extends Component{
     equalsSearch(){
         if(Object.keys(this.state.searchParams).length===Object.keys(this.props.searchParams).length){
             return Object.keys(this.state.searchParams).reduce((accu,ele)=>{
-                if(!accu)
-                    return false;
-                if(this.state.searchParams[`${ele}`]===this.props.searchParams[`${ele}`])
+                if(accu && this.state.searchParams[`${ele}`]===this.props.searchParams[`${ele}`])
                     return true;
                 return false;
             },true)
@@ -107,7 +108,7 @@ class SearchPage extends Component{
             else{
                 musicBlock=<div className="MusicList"><p>Aucune musique trouvée</p></div>;
             }
-            musicBlock=<div><h3>Liste de musique</h3>{musicBlock}</div>;
+            musicBlock=<div><h3 className="clicable" onClick={()=>this.setState({musicCollapse: !this.state.musicCollapse})}>{`Liste de musique   ${this.state.musicCollapse?"v":">"}`}</h3><Collapse isOpen={this.state.musicCollapse}>{musicBlock}</Collapse></div>;
         }
         let albumBlock;
         if(this.props.searchParams.findAlbum){
@@ -120,7 +121,7 @@ class SearchPage extends Component{
             else{
                 albumBlock=<div className="AlbumRows"><p>aucun album trouvé</p></div>;
             }
-            albumBlock=<div className="AlbumList"><h3>{"Albums"}</h3>{albumBlock}</div>;
+            albumBlock=<div className="AlbumList"><h3 className="clicable" onClick={()=>this.setState({albumCollapse:!this.state.albumCollapse})}>{`Albums    ${this.state.albumCollapse?"v":">"}`}</h3><Collapse isOpen={this.state.albumCollapse}>{albumBlock}</Collapse></div>;
         }
         let artisteBlock;
         if(this.props.searchParams.findArtiste){
@@ -133,7 +134,7 @@ class SearchPage extends Component{
             else{
                 artisteBlock=<div className="ArtisteRows"><p>Aucun artiste trouvé</p></div>;
             }
-            artisteBlock=<div className="ArtisteList"><h3>{"Liste d'Artistes"}</h3>{artisteBlock}</div>;
+            artisteBlock=<div className="ArtisteList"><h3 className="clicable" onClick={()=>this.setState({artisteCollapse:!this.state.artisteCollapse})}>{`Liste d'Artistes  ${this.state.artisteCollapse?"v":">"}`}</h3><Collapse isOpen={this.state.artisteCollapse} >{artisteBlock}</Collapse></div>;
         }
         return <div className="MainContent">
                     <div className="scrollable">
