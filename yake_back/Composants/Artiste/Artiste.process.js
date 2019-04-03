@@ -29,6 +29,15 @@ exports.findArtisteByName = function(genres,name){
 	});
 }
 
+exports.getAlbumById = function(params){
+	return new Promise(function(resolve,reject){
+		Actions.getArtisteHavingAlbumWithId(params.id)
+		.then(result=>Actions.formatageBlocAlbumPourEnvoi(result,params.id))
+		.then(result=>resolve(result))
+		.catch(err=>reject(err));
+	});
+}
+
 exports.getAllAlbum = function(){
 	let artiste = mongoose.model('Artiste');
 	return artiste.find({}, 'albums');

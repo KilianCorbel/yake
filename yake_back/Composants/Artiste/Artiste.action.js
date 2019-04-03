@@ -66,6 +66,27 @@ exports.getArtisteById = function(id){
 	return artiste.findOne({'_id' : id});
 };
 
+exports.getArtisteHavingAlbumWithId = function(id){
+	let artiste = mongoose.model('Artiste');
+	return artiste.find({'albums._id' : id});
+};
+
+exports.formatageBlocAlbumPourEnvoi = function(artiste,id){
+	return new Promise(function(resolve,reject){
+		if(artiste){
+				artiste = artiste.map(arti=>{arti.albums=arti.albums.filter(album=>album._id.toString()===id);return arti;});
+				artiste = artiste.map(arti=>
+					arti.albums.map(alb=>{let retour = {};retour.musiques=alb.musiques;retour.genres=alb.genres;retour.datePublication=alb.datePublication;retour._id=alb._id;retour.nom = alb.nom;retour.nomGroupe = arti.nom;retour.idGroupe=arti._id;return retour})
+					.reduce((prev,ele)=>prev.concat(ele),[])
+				).reduce((prev,ele)=>prev.concat(ele),[])[0];
+				resolve(artiste);
+		}
+		else{
+			reject("Aucun album trouve");
+		}
+	});
+};
+
 exports.formatageBlocsArtistepourEnvoi = function(artistes){
 	let result = artistes;
 		result = result.map(ele=>{
