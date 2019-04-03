@@ -1,9 +1,9 @@
 .MenuBarreClicable{
     flex:1 0 0;
+    text-align: center;
+    background-color: #415042;
     color: #ffffff;
-    /* border : 2px solid #6d6e6c; */
-    font-family: 'Muli', sans-serif;
-    font-size:  1.5em;
+    /*border : 2px solid #6d6e6c;*/
     overflow:hidden;
     display: flex;
     justify-content: center;
@@ -23,10 +23,8 @@ img {
 .MenuBarre{
     flex:1 0 0;
     text-align: center;
-    background-color: rgb(65, 80, 66);
-    
+    background-color: #415042;
     color: #ffffff;
-    /* border : 2px solid #6d6e6c; */
     overflow:hidden;
     display: flex;
     justify-content: center;
@@ -35,17 +33,15 @@ img {
 }
 
 .MenuBarreClicable:hover{
-    text-align: center;
     background-color: #fff;
-    color: #000;
+    color:#000;
 }
 
 .MenuBarreClicable:focus{
-    text-align: center;
     background-color: #fff;
-    color: #000;
+    color:#000;
+    outline: none;
 }
-
 
 
 /*=========================

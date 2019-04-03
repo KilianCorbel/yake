@@ -16,6 +16,15 @@ class MusicPlayerI extends Component{
         this.previous = this.previous.bind(this);
         this.init=this.init.bind(this);
     }
+
+componentWillMount(){
+    if(this.state.addEventOnce===true){
+        this.props.playlist.addEventListener("change",this.updateSource);
+        this.props.playlist.addEventListener("init",this.init);
+        this.setState({addEventOnce:false});
+    }
+}
+
     updateSource(){ 
         let audio = document.getElementById('audioContent');
         audio.load();
@@ -47,11 +56,6 @@ class MusicPlayerI extends Component{
             couverture=(<div className="Couverture"><img height="100px" width="100px" key={`${this.props.playlist.getActualIdAlbum()}`}className="playlistCouverture" src={`api/artistes/albums/stream/${this.props.playlist.getActualIdAlbum()}`} alt="noImage"></img></div>);
         }
         else{
-            if(this.state.addEventOnce===true){
-                this.props.playlist.addEventListener("change",this.updateSource);
-                this.props.playlist.addEventListener("init",this.init);
-                this.setState({addEventOnce:false});
-            }
             show=(<audio controls id="audioContent">
              </audio>)
         }
@@ -65,9 +69,9 @@ class MusicPlayerI extends Component{
                 <AddPlaylist playlist={this.props.playlist}/>
                 </div>
                 <div className="MusicBar">
-                    <Button color="success" onClick={()=>{this.previous();}}>{"<"}</Button>
+                    <Button color="info" onClick={()=>{this.previous();}}>{"<"}</Button>
                     {show}
-                    <Button color="success" onClick={()=>{this.next();}}>{">"}</Button>
+                    <Button color="info" onClick={()=>{this.next();}}>{">"}</Button>
                 </div>
             </div>
         );

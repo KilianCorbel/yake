@@ -22,7 +22,7 @@
   flex-flow: row;
   align-items: center;
   align-content: stretch;
-  background-color: rgb(65, 80, 66);
+  background-color: #415042;
   color: #ffffff;
 }
 
@@ -33,6 +33,11 @@
   flex-flow: row;
   align-content: stretch;
   align-items: center;
+}
+
+.SearchPopOver{
+  display:flex;
+  flex-flow:column;
 }
 
 .Recherche{

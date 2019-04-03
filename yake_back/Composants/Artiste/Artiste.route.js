@@ -8,13 +8,15 @@ let bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : true}));
 app.use(session({secret: 'todotopsecret'}))
-
+let fs = require('fs');
+let process = require('./Artiste.process.js');
 // -- Load model needed for the project
 require('./Artiste.model');
-
 const getAll = '/';
 const getArtisteById = '/id/:id';
 const getArtisteByName = '/name/:name';
+const addAlbum = '/addAlbum';
+const addMusique='/addMusique';
 const getAlbumById = '/albums/id/:id';
 const getAlbumByName = '/albums/name/:name';
 const getAlbums = '/albums'
@@ -54,53 +56,40 @@ app.get(getAll, function (req, res) {
 
 //Find Artiste byName
 app.get(getArtisteByName, function (req, res) {
-    let artiste = mongoose.model('Artiste');
-    artiste.find({'nom' : new RegExp('^.*'+req.params.name+'.*$', "i")}).then((artistes)=>{
-        let result = artistes;
-		result = result.map(ele=>{
-            ele.image=undefined;
-			ele.albums=ele.albums.map(album=>{
-				album.couverture=undefined;
-				album.musiques = album.musiques.map(musique=>{
-					musique.son=undefined;
-					return musique;
-				});
-			return album;
-		});return ele;});
+	process.findArtisteByName(req.query.genres,req.params.name).then((artistes)=>{
         res.send(artistes);
     })
+	.catch(err=>{res.send([]);});
 });
 
 // -- GET albums
 app.get(getAlbums, function(req, res) {
-    let artiste = mongoose.model('Artiste');
-
-    artiste.find({}, 'albums').then((albums)=>{
-        if(albums){
-            res.send(albums);
-        }else{
-            res.status(404).json({message : "404 not found"});
-        }
-    },(err)=>{
-        res.send(err);
-    });
+	process.getAllAlbum()
+	.then(albums=>res.send(albums))
+	.catch(err=>res.status(404).json({message : "404 not found"}));
 });
 
 // -- GET musiques
 app.get(getMusiques, function(req, res) {
-    let artiste = mongoose.model('Artiste');
-
-    artiste.find({}, 'albums.musiques').then((musiques)=>{
-        if(musiques){
-            res.send(musiques);
-        }else{
-            res.status(404).json({message : "404 not found"});
-        }
-    },(err)=>{
-        res.send(err);
-    });
+	process.getAllMusic()
+	.then(musics=>res.send(musics))
+	.catch(err=>res.status(404).json({message : "404 not found"}));
 });
 
+//-POST album
+app.post(addAlbum,function(req,res){
+	process.addAlbum(req.body)
+	.then(result=>res.status(200).json({}))
+	.catch(err=>res.status(500).json({}));
+});
+
+//POST musique
+
+app.post(addMusique,function(req,res){
+	process.addMusique(req.body)
+	.then(result=>res.status(200).json({}))
+	.catch(err=>res.status(500).json({}));
+});
 // -- GET album/:id
 app.get(getAlbumById, function(req, res) {
     let artiste = mongoose.model('Artiste');
@@ -120,14 +109,24 @@ app.get(getAlbumById, function(req, res) {
 
 // -- GET album/:name
 // Rajouter tolower / toupper pour les regexp
+
+
 app.get(getAlbumByName, function(req, res) {
     let artiste = mongoose.model('Artiste');
-
-    artiste.find({'albums.nom' : new RegExp('^.*'+req.params.name+'.*$', "ig")}).then((art)=>{
-        if(art){
-			art = art.map(arti=>{arti.albums=arti.albums.filter(album=>album.nom.toLowerCase().includes(req.params.name.toLowerCase()));return arti;});
+	let genreFilter = new RegExp('^.*$');
+	if(req.query.genres !== undefined && req.query.genres.length>0){
+		genreFilter=req.query.genres.split(',').map(ele=>new RegExp('^'+ele+'$','i'));
+	}	
+    artiste.find({'albums.nom' : new RegExp('^.*'+req.params.name+'.*$', "ig"),'albums.genres':{$in : genreFilter}}).then((art)=>{
+		if(art){
+			let genre = undefined;
+			if(req.query.genres !== undefined && req.query.genres.length>0){
+				genre=req.query.genres.split(',').map(ele=>ele.toLowerCase());
+			}
+			art = art.map(arti=>{arti.albums=arti.albums.filter(album=>{if(genre===undefined)return true;return containsAtLeastOne(album.genres,genre);}).filter(album=>album.nom.toLowerCase().includes(req.params.name.toLowerCase()));return arti;});
 			art = art.map(arti=>arti.albums.map(alb=>{let retour = {};retour.musiques=alb.musiques;retour._id=alb._id;retour.nom = alb.nom;retour.nomGroupe = arti.nom;retour.idGroupe=arti._id;return retour}).reduce((prev,ele)=>prev.concat(ele),[])).reduce((prev,ele)=>prev.concat(ele),[]);
-            res.send(art);
+            art = art.map(ele=>{let obj = {}; obj._id=ele._id;obj.nom=ele.nom;return obj;});
+			res.send(art);
         }else{
             res.status(404).json({message : "404 not found"});
         }
@@ -138,7 +137,7 @@ app.get(getAlbumByName, function(req, res) {
 
 // -- GET musique/:id
 app.get(getMusiqueById, function(req, res) {
-    let artiste = mongoose.model('Artiste');
+    let artiste = mongoose.model('Artiste')
 
     artiste.find({'albums.musiques._id' : req.params.id}, 'albums.musiques').then((musique)=>{
         if(musique){
@@ -155,11 +154,25 @@ app.get(getMusiqueById, function(req, res) {
     });
 });
 
+function containsAtLeastOne(tab,referenceTab){
+	return tab.reduce((accu,ele)=>{if(accu)return true;return referenceTab.includes(ele.toLowerCase());},false);
+}
+
 // -- GET musique/:title
 app.get(getMusiqueByTitle, function(req, res) {
     let artiste = mongoose.model('Artiste');
-
-    artiste.find({'albums.musiques.titre' : new RegExp('^.*'+req.params.title+'.*$', "ig")}).then((art)=>{
+	let genreFilter = new RegExp('^.*$');
+	if(req.query.genres !== undefined && req.query.genres.length>0){
+		if(req.query.genres){
+			genreFilter=req.query.genres.split(',');
+			genreFilter = genreFilter.map(ele=>new RegExp('^'+ele+'$','i'));
+		}
+	}	
+    artiste.find({'albums.musiques.titre' : new RegExp('^.*'+req.params.title+'.*$', "ig"),'albums.genres':{$in : genreFilter}}).then((art)=>{
+		let genre = undefined;
+		if(req.query.genres !== undefined && req.query.genres.length>0){
+			genre=req.query.genres.split(',').map(ele=>ele.toLowerCase());
+		}
         if(art){
 			console.log(art);
 			albums = art.map(arti=>arti.albums.map(alb=>{
@@ -169,6 +182,7 @@ app.get(getMusiqueByTitle, function(req, res) {
                 retour.nom = alb.nom;
                 retour.nomGroupe = arti.nom;
                 retour.idGroupe=arti._id;
+				retour.genres=alb.genres;
                 return retour})
                 .reduce((prev,ele)=>prev.concat(ele),[]))
                 .reduce((prev,ele)=>prev.concat(ele),[]);
@@ -176,12 +190,13 @@ app.get(getMusiqueByTitle, function(req, res) {
 				let musicObj={};
 				musicObj.nomGroupe=alb.nomGroupe;
 				musicObj.idAlbum=alb._id;
+				musicObj.genres=alb.genres;
 				musicObj.nomAlbum=alb.nom;
 				musicObj.idGoupe = alb.idGroupe;
 				musicObj.titre=mus.titre;
                 musicObj._id=mus._id;
 				return musicObj;
-			}).reduce((prev,ele)=>prev.concat(ele),[])).reduce((prev,ele)=>prev.concat(ele),[]).filter(ele=>ele.titre.toLowerCase().includes(req.params.title.toLowerCase()));
+			}).reduce((prev,ele)=>prev.concat(ele),[])).reduce((prev,ele)=>prev.concat(ele),[]).filter(ele=>{if(genre===undefined)return true;return containsAtLeastOne(ele.genres,genre)}).filter(ele=>ele.titre.toLowerCase().includes(req.params.title.toLowerCase()));
 			
 			//res.send(art);
 			/*art=art.filter(ele=>ele.albums.filter(album=>album.musiques.filter(mus=>mus.titre.includes(req.params.title))).length>0);
@@ -198,13 +213,9 @@ app.get(getMusiqueByTitle, function(req, res) {
 
 // -- CREATE
 app.post(postArtiste, function (req, res) {
-    let Artiste = mongoose.model('Artiste');
-    let newArtiste = new Artiste(req.body);
-    //newArtiste.id = newArtiste._id;
-    newArtiste.save().then(()=>{
-        res.send(newArtiste);
-    })
-    .catch(err=>console.log(err));
+    process.addArtiste(req.body)
+	.then(result=>res.status(200).json({}))
+	.catch(err=>res.status(500).json({}));
 });
 
 

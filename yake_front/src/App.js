@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import './App.css';
 import Menu from './Menu.js';
 import Title from './Title.js';
-import MusiqueList from './musiqueList.js';
+import SearchPage from './SearchPage.js';
 import MusicPlayerI from './MusicPlayer/MusicPlayerI.js';
 import HomeWindow from './HomeWindow.js';
 import MusicWindow from './MusicWindow.js';
@@ -13,45 +13,47 @@ import AutresWindow from './AutresWindow.js';
 import ArtisteWindow from './ArtisteWindow.js';
 import AlbumWindow from './AlbumWindow.js';
 import Playlist from './MusicPlayer/Playlist.js';
-import { Input, InputGroupAddon, InputGroup, Button, Popover, PopoverHeader, PopoverBody } from 'reactstrap';
+import { Badge, Input, InputGroupAddon, InputGroup, Button, Popover, PopoverHeader, PopoverBody } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 import AjoutArtiste from './AjoutArtiste';
 import AjoutAlbum from './AjoutAlbum';
+import AjoutMusique from './AjoutMusique.js';
 import PlaylistInfoWindow from './PlaylistInfoWindow.js'
-import ConnectWindow from './ConnectWindow.js';
-import FooterMenu from './FooterMenu.js';
-
+import {Route,Switch, withRouter} from 'react-router-dom';
+// import FooterMenu from './FooterMenu.js';
 //import {Form} from 'react-bootstrap';
 class App extends Component {
   constructor(props){
     super(props);
     this.state={
-      musicList:[],
-      albumList:[],
-      artisteList:[],
-      playlistList:[],
-      albumInfo:{},
-      artisteInfo:{},
-      playlistInfo:{},
       inputValue:"",
       windowShowed:"homeWindow",
       playlist:new Playlist(),
       popoverOpen: false,
       findArtiste: true,
       findAlbum: true,
-      findMusic: true
+      findMusic: true,
+      searchParams:{},
+      genreFilterInput:"",
+      genreFilter:[],
+      hasSearch:false
     }
-    this.getAllPlaylists=this.getAllPlaylists.bind(this);
-    this.getAlbumInfo=this.getAlbumInfo.bind(this);
-    this.getArtisteInfo=this.getArtisteInfo.bind(this);
+    this.searchWindow=this.searchWindow.bind(this);
+    this.albumWindow=this.albumWindow.bind(this);
+    this.artisteWindow=this.artisteWindow.bind(this);
     this.inputFindAlbumChange=this.inputFindAlbumChange.bind(this);
     this.inputFindMusicChange=this.inputFindMusicChange.bind(this);
     this.inputFindArtisteChange=this.inputFindArtisteChange.bind(this);
     this.toggle = this.toggle.bind(this);
     this.submitInputValue = this.submitInputValue.bind(this);
     this.updateInputValue = this.updateInputValue.bind(this);
-    this.searchMusic = this.searchMusic.bind(this);
+    this.mesPlaylistsWindow=this.mesPlaylistsWindow.bind(this);
+    this.playlistWindow=this.playlistWindow.bind(this);
+    this.inputGenreFilterChange=this.inputGenreFilterChange.bind(this);
+    this.submitInputValueGenre=this.submitInputValueGenre.bind(this);
+    this.addGenre=this.addGenre.bind(this);
   }
+
   toggle() {
     this.setState({
       popoverOpen: !this.state.popoverOpen
@@ -77,57 +79,62 @@ class App extends Component {
       inputValue: evt.target.value
     });
   }
+  inputGenreFilterChange(evt){
+    this.setState({genreFilterInput:evt.target.value});
+  }
   submitInputValue(evt){
-    if(evt.key === "Enter"){
+    if(evt.key === "Enter" && evt.target.value.replace(/ /g,"").length>0){
+      this.props.history.push("/");
       evt.target.value="";
-      this.setState({artisteList:[],albumList:[],musicList:[]});
-      if(this.state.findMusic)
-        this.searchMusic(this.state.inputValue);
-      if(this.state.findAlbum)
-        this.searchAlbum(this.state.inputValue);
-      if(this.state.findArtiste)
-        this.searchArtiste(this.state.inputValue);
-      this.setState({windowShowed:"searchWindow"});
+      this.setState({searchParams:{
+        findArtiste:this.state.findArtiste,
+        findAlbum:this.state.findAlbum,
+        findMusic:this.state.findMusic,
+        input: this.state.inputValue,
+        genreFilter:(this.state.genreFilter===""?[]:this.state.genreFilter)
+      },
+      hasSearch:true,
+      windowShowed:"searchWindow",
+      inputValue:"",
+      artisteList:undefined,albumList:undefined,musicList:undefined});
     }
   }
-  getAllPlaylists(){
-    fetch(`/api/playlists/`)
-    .then(res => res.json())
-    .then(data => {this.setState({playlistList : data,windowShowed:"mesPlaylistsWindow"});})
-    .catch(error => console.log(error));
+
+  addGenre(){
+    if(this.state.genreFilterInput.replace(" ","").length>0 && this.state.genreFilter.length<5){
+      let genre = this.state.genreFilter;
+      genre.push(this.state.genreFilterInput.replace(" ",""));
+      this.setState({genreFilterInput:"",genreFilter:genre});
+    }
+    else{
+      this.setState({genreFilterInput:""});
+    }
   }
-  getAlbumInfo(input){
-    fetch(`/api/artistes/albums/id/${input}`)
-    .then(res => res.json())
-    .then(data => {this.setState({albumInfo : data,windowShowed:"albumWindow"});})
-    .catch(error => console.log(error));
+
+  submitInputValueGenre(evt){
+    if(evt.key === " "){
+      evt.target.value="";
+      this.addGenre();
+    }
   }
-  getArtisteInfo(input){
-    fetch(`/api/artistes/id/${input}`)
-    .then(res => res.json())
-    .then(data => {this.setState({artisteInfo : data,windowShowed:"artisteWindow"});})
-    .catch(error => console.log(error));
+  generateGenreBadge(){
+    return this.state.genreFilter.map((ele,i)=>(
+    <Badge size="sm" color="secondary" id={`BadgeGenreFilter${i}`} key={`BadgeGenreFilter${i}`}>
+      <div key={`divGenreFilter${i}`}>
+        {this.state.genreFilter[i]}
+        <Button size="sm" close id={`boutonClose${i}`} key={`boutonCloseGenreFilter${i}`} onClick={()=>{this.setState({genreFilter:this.state.genreFilter.filter((_,j)=>i!==j)})}}></Button>
+      </div>
+    </Badge>));
   }
-  searchMusic(input){
-    fetch(`/api/artistes/albums/musiques/title/${input}`)
-    .then(res => res.json())
-    .then(data => {this.setState({musicList : data,inputValue:""});})
-    .catch(error => console.log(error));
-  }
-  searchAlbum(input){
-    fetch(`/api/artistes/albums/name/${input}`)
-    .then(res => res.json())
-    .then(data => {this.setState({albumList : data,inputValue:""});})
-    .catch(error => console.log(error));
-  }
-  searchArtiste(input){
-    fetch(`/api/artistes/name/${input}`)
-    .then(res => res.json())
-    .then(data => {this.setState({artisteList : data,inputValue:""});})
-    .catch(error => console.log(error));
+  hasSearch(){
+    if(this.state.hasSearch){
+      this.setState({hasSearch:false});
+      return true;
+    }
+    return false;
   }
   searchWindow(){
-    return <MusiqueList onArtisteClick={this.getArtisteInfo} onAlbumClick={this.getAlbumInfo} refresh={()=>{this.setState({});}} playlist={this.state.playlist} artisteList={this.state.artisteList} albumList={this.state.albumList} musiqueList={this.state.musicList}/>;
+    return <SearchPage change={this.hasSearch()} searchParams={this.state.searchParams} refresh={()=>{this.setState({});}} playlist={this.state.playlist}/>;
   }
   homeWindow(){
     return <HomeWindow/>
@@ -139,35 +146,31 @@ class App extends Component {
     return <TendancesWindow/>
   }
   playlistWindow(){
-    return <PlaylistInfoWindow playlistToShow={this.state.playlistInfo} playlist={this.state.playlist} refresh={()=>{this.setState({});}}/>
+    return <PlaylistInfoWindow playlist={this.state.playlist} refresh={()=>{this.setState({});}}/>
   }
   mesPlaylistsWindow(){
-    return <PlaylistWindow onPlaylistClick={(ele)=>this.setState({playlistInfo:ele,windowShowed:"playlistWindow"})} playlists={this.state.playlistList} playlist={this.state.playlist} refresh={()=>{this.setState({});}}/>
+    return <PlaylistWindow playlist={this.state.playlist} refresh={()=>{this.setState({});}}/>
   }
   autresWindow(){
     return <AutresWindow/>
   }
   artisteWindow(){
-    return <ArtisteWindow artiste={this.state.artisteInfo} onAlbumClick={this.getAlbumInfo}/>
+    return <ArtisteWindow/>
   }
   albumWindow(){
-    return <AlbumWindow onArtisteClick={this.getArtisteInfo} refresh={()=>{this.setState({});}} album={this.state.albumInfo} playlist={this.state.playlist}/>
+    return <AlbumWindow refresh={()=>{this.setState({});}} playlist={this.state.playlist}/>
   }
   ajoutArtiste(){
     return <AjoutArtiste/>
   }
-
   ajoutAlbum(){
     return <AjoutAlbum/>
   }
-
-  connectWindow(){
-    return <ConnectWindow/>
+  ajoutMusique(){
+    return <AjoutMusique/>
   }
-  
   render() {
-    let show = this[`${this.state.windowShowed}`]();
-    let test = new FileReader();
+    let show = this[`${this.state.windowShowed}`];
     return (
       <div className="App">
         <div className="Header">
@@ -186,21 +189,37 @@ class App extends Component {
                 </Button>
               </InputGroupAddon>
               </InputGroup>
-              <Popover className="paramSearch" placement="bottom" isOpen={this.state.popoverOpen} target="searchParamSup" toggle={this.toggle}>
+              <Popover trigger="legacy" className="paramSearch" placement="bottom" isOpen={this.state.popoverOpen} target="searchParamSup" toggle={this.toggle}>
                 <PopoverHeader>Paramètres de recherche</PopoverHeader>
-                <PopoverBody>
+                <PopoverBody className="searchPopOver">
+                <div>
                 <label> 
-                  {"Musique :  "}
+                  {"Afficher des musiques :  "}
                   <input  name="findMusic"  type="checkbox" checked={this.state.findMusic}  onChange={this.inputFindMusicChange} />
                 </label>
+                </div>
+                
+                <div>
                 <label> 
-                  {"Album :  "}
+                  {"Afficher des albums :  "}
                   <input  name="findAlbum"  type="checkbox" checked={this.state.findAlbum}  onChange={this.inputFindAlbumChange} />
                 </label>
+                </div>
+                
+                <div>
                 <label> 
-                  {"Artiste :  "}
+                  {"Afficher des artistes :  "}
                   <input  name="findArtiste"  type="checkbox" checked={this.state.findArtiste}  onChange={this.inputFindArtisteChange} />
                 </label>
+                </div>
+                <div>
+                  <label>
+                    {"Genre : "}
+                    {this.generateGenreBadge()}
+                    <input placeholder="Entrez vos genres" name="genreFilter" type="text" value={this.state.genreFilterInput} onChange={this.inputGenreFilterChange} onKeyPress={this.submitInputValueGenre}/>
+                  </label>
+                </div>
+                
                 </PopoverBody>
               </Popover>
           </div>
@@ -210,23 +229,38 @@ class App extends Component {
         </div>
         <div className="FullBody">
           <div className="LeftMenuBar">
-            <Menu clicable={true} onClick={()=>{this.setState({windowShowed:"mesMusiquesWindow"});}} value="Mes musiques"/>
-            <Menu clicable={true} onClick={()=>{this.setState({windowShowed:"tendancesWindow"});}} value="Tendances"/>
-            <Menu clicable={true} onClick={()=>{this.getAllPlaylists();}} value="Mes playlists"/>
-            <Menu clicable={true} onClick={()=>{this.setState({windowShowed:"ajoutArtiste"});}} value="Ajout artiste"/>
-            <Menu clicable={true} onClick={()=>{this.setState({windowShowed:"ajoutAlbum"});}} value="Ajout album"/>
-            <Menu clicable={false}  value=""/>
-            <Menu clicable={false}  value=""/>
-            <FooterMenu />
+            <Menu clicable={true} to="/myMusic" value="Mes musiques"/>
+            <Menu clicable={true} to="/tendances" value="Tendances"/>
+            <Menu clicable={true} to="/myPlaylists" value="Mes playlists"/>
+            <Menu clicable={true} to="/others" value="Autres"/>
+            <Menu clicable={true} to="/addArtiste" value="Ajout artiste"/>
+            <Menu clicable={true} to="/addAlbum" value="Ajout album"/>
+            <Menu clicable={true} to="/addMusic" value="Ajout musique"/>
+            <Menu clicable={false} onClick={()=>{}} value=""/>
+            {/* <FooterMenu/> */}
           </div>
           <div className="Body">
-              {show}        
+                <Switch>
+                  <Route path='/showArtiste' component={this.artisteWindow}/>
+                  <Route path='/showAlbum' component={this.albumWindow}/>
+                  <Route path='/showSearch' component={this.searchWindow}/>
+                  <Route path='/showPlaylist' component={this.playlistWindow}/>
+                  <Route path='/addArtiste' component={this.ajoutArtiste}/>
+                  <Route path='/addAlbum' component={this.ajoutAlbum}/>
+                  <Route path='/addMusic' component={this.ajoutMusique}/>
+                  <Route path='/tendances' component={this.tendancesWindow}/>
+                  <Route path='/myMusic' component={this.mesMusiquesWindow}/>
+                  <Route path='/others' component={this.autresWindow}/>
+                  <Route path='/myPlaylists' component={this.mesPlaylistsWindow}/>
+                  <Route path='/' component={show}/>
+                </Switch>     
               <MusicPlayerI playlist={this.state.playlist} musicPlayer={this.musicPlayer}/> 
           </div>
         </div>
+        
       </div>      
     );
   }
 }
 
-export default App;
+export default withRouter(App);
