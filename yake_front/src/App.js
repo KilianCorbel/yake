@@ -18,6 +18,9 @@ import 'bootstrap/dist/css/bootstrap.css';
 import AjoutArtiste from './AjoutArtiste';
 import AjoutAlbum from './AjoutAlbum';
 import PlaylistInfoWindow from './PlaylistInfoWindow.js'
+import ConnectWindow from './ConnectWindow.js';
+import FooterMenu from './FooterMenu.js';
+
 //import {Form} from 'react-bootstrap';
 class App extends Component {
   constructor(props){
@@ -157,12 +160,22 @@ class App extends Component {
   ajoutAlbum(){
     return <AjoutAlbum/>
   }
+
+  connectWindow(){
+    return <ConnectWindow/>
+  }
+  
   render() {
     let show = this[`${this.state.windowShowed}`]();
     let test = new FileReader();
     return (
       <div className="App">
         <div className="Header">
+        <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css" />
+        <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+        <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet"></link>
+        <link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet"></link>
           <Title onClick={()=>{this.setState({windowShowed:"homeWindow"});}}/>
           <div className="SearchHeaderBlock">
           <InputGroup>
@@ -191,17 +204,20 @@ class App extends Component {
                 </PopoverBody>
               </Popover>
           </div>
-          <div className="RightHeaderBlock">{"Connexion"}</div>
+          <div className="RightHeaderBlock">
+            <Menu clicable={true} onClick={()=>{this.setState({windowShowed:"connectWindow"});}} value="Connexion"/>
+          </div>
         </div>
         <div className="FullBody">
           <div className="LeftMenuBar">
             <Menu clicable={true} onClick={()=>{this.setState({windowShowed:"mesMusiquesWindow"});}} value="Mes musiques"/>
             <Menu clicable={true} onClick={()=>{this.setState({windowShowed:"tendancesWindow"});}} value="Tendances"/>
             <Menu clicable={true} onClick={()=>{this.getAllPlaylists();}} value="Mes playlists"/>
-            <Menu clicable={true} onClick={()=>{this.setState({windowShowed:"autresWindow"});}} value="Autres"/>
             <Menu clicable={true} onClick={()=>{this.setState({windowShowed:"ajoutArtiste"});}} value="Ajout artiste"/>
             <Menu clicable={true} onClick={()=>{this.setState({windowShowed:"ajoutAlbum"});}} value="Ajout album"/>
-            <Menu clicable={false} onClick={()=>{}} value=""/>
+            <Menu clicable={false}  value=""/>
+            <Menu clicable={false}  value=""/>
+            <FooterMenu />
           </div>
           <div className="Body">
               {show}        
