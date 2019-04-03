@@ -47,13 +47,18 @@ const getAlbum = function() {
     });
 }
 
+
+//modifs Baptiste
 exports.getArtisteByName = function(genres,name){
 	let artiste = mongoose.model('Artiste');
 	let genreFilter = new RegExp('^.*$');
+	let findObject = {};
+	findObject.nom = new RegExp('^.*'+name+'.*$', "i");
 	if(genres !== undefined && genres.length>0){
 		genreFilter=genres.split(',').map(ele=>new RegExp('^'+ele+'$','i'));
-	}	
-	return artiste.find({'nom' : new RegExp('^.*'+name+'.*$', "i"),'albums.genres':{$in : genreFilter}});
+		findObject['albums.genres']={$in : genreFilter};
+	}
+	return artiste.find(findObject);
 };
 
 exports.getArtisteById = function(id){
@@ -139,6 +144,21 @@ exports.saveMusiqueAndEditArtiste = function(body,artiste){
 		}
 	});
 }
+
+exports.saveImageArtiste = function(body){
+	return new Promise(function(resolve,reject){
+		let buf = Buffer.from(body.image.data);
+		let path = require('path');
+		let fs = require('fs');
+		fs.writeFile(`${path.resolve('../../Data/artiste')}/${body.nom}`,buf,(err)=>{
+			if(err)
+				reject(err);
+		});
+		body.fileName=undefined;
+		body.image=path.resolve('../../Data/artiste')+"/"+body.nom;
+		resolve(body);
+	});
+};
 
 exports.saveArtisteInDatabase = function(artiste){
 	return artiste.save();

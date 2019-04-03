@@ -4,7 +4,7 @@ import "./MainContent.css";
 import "./Scrollable.css";
 import "./ErrorColor.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Badge,Button, Form, FormGroup, Label, Input } from "reactstrap";
+import { Alert, Badge,Button, Form, FormGroup, Label, Input } from "reactstrap";
 
 class AjoutMusique extends Component {
   constructor(props) {
@@ -21,9 +21,12 @@ class AjoutMusique extends Component {
       idsArtistes: [],
       listeAlbums: [],
       idsAlbums: [],
-      error:{}
+      error:{},
+      ajoutOk : false,
+      ajoutKo : false
     };
-    
+    this.dismissKoAlert=this.dismissKoAlert.bind(this);
+    this.dismissOkAlert=this.dismissOkAlert.bind(this);
   }
 
   componentDidMount(){
@@ -106,8 +109,8 @@ class AjoutMusique extends Component {
           )
         })
         .then((data)=>{this.reinitialiserFormulaire();if(!data.ok){throw Error("Erreur ajout musique")}})
-        .then(()=>{alert("Musique ajoutée");})
-        .catch(err => alert(err));
+        .then(()=>{this.setState({ajoutOk : true,ajoutKo:false});})
+        .catch(err =>{this.setState({ajoutKo : true,ajoutOk:false});});
       }
       fileReader.readAsArrayBuffer(this.state.fileChoosen);
     }
@@ -218,6 +221,13 @@ class AjoutMusique extends Component {
         })
     .catch(err => console.log(err));
   }
+  dismissOkAlert(){
+    this.setState({ajoutOk:false});
+  }
+
+  dismissKoAlert(){
+    this.setState({ajoutKo:false});
+  }
   render() {
     let errorImg = this.state.error.img!==undefined?(<Badge color="danger">{this.state.error.img}</Badge>):undefined;
     let errorArtiste = this.state.error.artiste!==undefined?(<Badge color="danger">{this.state.error.artiste}</Badge>):undefined;
@@ -228,6 +238,12 @@ class AjoutMusique extends Component {
       <div className="scrollable">
       <Form className="formulaire">
         <h3>Ajout d'une musique</h3>
+        <Alert color="success" isOpen={this.state.ajoutOk} toggle={this.dismissOkAlert}>
+          Votre musique a bien été ajoutée
+        </Alert>
+        <Alert color="danger" isOpen={this.state.ajoutKo} toggle={this.dismissKoAlert}>
+          Echec de l'ajout de votre musique
+        </Alert>
         <FormGroup row>
           <Label for="artiste">Artiste </Label>
           <Input

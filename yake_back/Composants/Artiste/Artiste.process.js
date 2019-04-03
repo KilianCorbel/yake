@@ -61,8 +61,21 @@ exports.addMusique = function(body){
 		Actions.getArtisteById(body.idArtiste)
 		.then((result)=>Actions.saveMusiqueAndEditArtiste(body,result))
 		.then((result)=>Actions.saveArtisteInDatabase(result.artiste))
-		.catch((err)=>reject(err))
+		.then(result=>resolve(result))
+		.catch((err)=>reject(err));
 	});
+}
+
+exports.addArtiste = function(body){
+	return new Promise(function(resolve,reject){
+		let Artiste = mongoose.model('Artiste');
+		Actions.saveImageArtiste(body)
+		.then((result)=>new Artiste(result))
+		.then((result)=>Actions.saveArtisteInDatabase(result))
+		.then(result=>resolve(result))
+		.catch(err=>reject(err));
+	});
+	
 }
 
 

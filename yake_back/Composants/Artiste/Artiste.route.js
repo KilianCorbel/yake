@@ -213,22 +213,9 @@ app.get(getMusiqueByTitle, function(req, res) {
 
 // -- CREATE
 app.post(postArtiste, function (req, res) {
-    let Artiste = mongoose.model('Artiste');
-	let buf = Buffer.from(req.body.image.data);
-	let path = require('path');
-	fs.writeFile(`${path.resolve('../../Data/artiste')}/${req.body.nom}`,buf,(err)=>{
-		if(err)
-			return console.log(err);
-		console.log("Fichier sauvĂ©");
-	});
-	req.body.fileName=undefined;
-	req.body.image=path.resolve('../../Data/artiste')+"/"+req.body.nom;
-    let newArtiste = new Artiste(req.body);
-    //newArtiste.id = newArtiste._id;
-    newArtiste.save().then(()=>{
-        res.send(newArtiste);
-    })
-    .catch(err=>console.log(err));
+    process.addArtiste(req.body)
+	.then(result=>res.status(200).json({}))
+	.catch(err=>res.status(500).json({}));
 });
 
 
