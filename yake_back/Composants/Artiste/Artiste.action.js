@@ -57,7 +57,6 @@ exports.getArtisteByName = function(genres,name){
 };
 
 exports.getArtisteById = function(id){
-	console.log("test");
 	let artiste = mongoose.model('Artiste');
 	return artiste.findOne({'_id' : id});
 };
@@ -91,6 +90,10 @@ exports.saveCouverture = function(body,artiste){
 				reject(err);
 			else{
 				body.couverture=`${path.resolve("../../Data/couverture")}/${artiste.nom}_${body.nom}_couverture`;
+				body.idArtiste=undefined;	
+				body.fileName=undefined;
+				let test = require('./Artiste.model.js');
+				artiste.albums.push(new test.Album(body));
 				let returnObject = {};
 				returnObject.body=body;
 				returnObject.artiste = artiste;
@@ -100,10 +103,43 @@ exports.saveCouverture = function(body,artiste){
 	});
 };
 
-exports.saveAlbumInDatabase = function(body,artiste){
-	let test = require('./Artiste.model.js');
-	body.idArtiste=undefined;	
-	body.fileName=undefined;
-	artiste.albums.push(new test.Album(body));
+exports.saveMusiqueAndEditArtiste = function(body,artiste){
+	return new Promise(function(resolve,reject){
+		let path = require('path');
+		let fs = require('fs');
+		let filePath="";
+		console.log("test");
+		console.log(artiste);
+		if(artiste.albums.filter((ele)=>ele._id.toString()===body.idAlbum).length>0){
+			let buf = Buffer.from(body.son.data);
+			body.idArtiste=undefined;
+			body.note=undefined;
+			artiste.albums = artiste.albums.map(ele=>{
+				if(ele._id.toString()===body.idAlbum){
+					filePath=`${path.resolve("../../Data/musique")}/${artiste.nom}_${ele.nom}_${body.titre}_musique`;
+					fs.writeFile(`${path.resolve("../../Data/musique")}/${artiste.nom}_${ele.nom}_${body.titre}_musique`,buf,(err)=>{
+						if(err)
+							reject(artiste);
+						}
+					);
+					body.son=filePath;
+					let test = require('./Artiste.model.js');
+					ele.musiques.push(new test.Musique(body));
+				}
+				return ele;
+			});
+			body.idAlbum=undefined;
+			let returnedObject = {};
+			returnedObject.body = body;
+			returnedObject.artiste = artiste;
+			resolve(returnedObject);
+		}
+		else{
+			reject("L'album n'existe pas");
+		}
+	});
+}
+
+exports.saveArtisteInDatabase = function(artiste){
 	return artiste.save();
 }

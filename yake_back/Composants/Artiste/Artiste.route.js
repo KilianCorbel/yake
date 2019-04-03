@@ -86,34 +86,9 @@ app.post(addAlbum,function(req,res){
 //POST musique
 
 app.post(addMusique,function(req,res){
-	let test = require('./Artiste.model.js');
-	let artiste = mongoose.model('Artiste');
-	let path = require('path');
-	let filePath="";
-	artiste.findOne({'_id' : req.body.idArtiste}).then((result)=>{
-		console.log(req.body.idAlbum);
-		console.log(result.albums.filter((ele)=>ele._id.toString()===req.body.idAlbum));
-	if(result.albums.filter((ele)=>ele._id.toString()===req.body.idAlbum).length>0){
-		let buf = Buffer.from(req.body.son.data);
-		req.body.idArtiste=undefined;
-		req.body.note=undefined;
-		result.albums = result.albums.map(ele=>{
-			if(ele._id.toString()===req.body.idAlbum){
-				filePath=`${path.resolve("../../Data/musique")}/${result.nom}_${ele.nom}_${req.body.titre}_musique`;
-				fs.writeFile(`${path.resolve("../../Data/musique")}/${result.nom}_${ele.nom}_${req.body.titre}_musique`,buf,(err)=>{
-				if(err)
-					return console.log(err);
-				console.log("Fichier sauvĂ©");
-				});
-				req.body.son=filePath;
-				ele.musiques.push(new test.Musique(req.body));
-			}
-			return ele;
-		});
-		req.body.idAlbum=undefined;
-		result.save().then(()=>{res.status(200).json({});console.log("success");});
-	}
-},(err)=>{res.send(err);});
+	process.addMusique(req.body)
+	.then(result=>res.status(200).json({}))
+	.catch(err=>res.status(500).json({}));
 });
 // -- GET album/:id
 app.get(getAlbumById, function(req, res) {

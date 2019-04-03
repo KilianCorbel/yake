@@ -105,7 +105,8 @@ class AjoutMusique extends Component {
             body
           )
         })
-        .then(()=>{alert("Musique ajoutée");this.reinitialiserFormulaire();})
+        .then((data)=>{this.reinitialiserFormulaire();if(!data.ok){throw Error("Erreur ajout musique")}})
+        .then(()=>{alert("Musique ajoutée");})
         .catch(err => alert(err));
       }
       fileReader.readAsArrayBuffer(this.state.fileChoosen);

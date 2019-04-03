@@ -48,11 +48,20 @@ exports.addAlbum = function(body){
 		}
 		)
 		.then(result=>{
-			return Actions.saveAlbumInDatabase(result.body,result.artiste);
+			return Actions.saveArtisteInDatabase(result.artiste);
 		}
 		)
 		.then(result=>resolve(result))
 		.catch(err=>reject(result));
+	});
+}
+
+exports.addMusique = function(body){
+	return new Promise(function(resolve,reject){
+		Actions.getArtisteById(body.idArtiste)
+		.then((result)=>Actions.saveMusiqueAndEditArtiste(body,result))
+		.then((result)=>Actions.saveArtisteInDatabase(result.artiste))
+		.catch((err)=>reject(err))
 	});
 }
 
