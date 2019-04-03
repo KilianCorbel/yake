@@ -16,6 +16,7 @@ import Playlist from './MusicPlayer/Playlist.js';
 import { Badge, Input, InputGroupAddon, InputGroup, Button, Popover, PopoverHeader, PopoverBody } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 import AjoutArtiste from './AjoutArtiste';
+import ModifArtiste from './ModifArtiste';
 import AjoutAlbum from './AjoutAlbum';
 import AjoutMusique from './AjoutMusique.js';
 import PlaylistInfoWindow from './PlaylistInfoWindow.js'
@@ -159,6 +160,11 @@ class App extends Component {
   ajoutMusique(){
     return <AjoutMusique/>
   }
+  modifArtiste(){
+    return <ModifArtiste/>
+  }
+
+
   render() {
     let show = this[`${this.state.windowShowed}`];
     return (
@@ -219,6 +225,7 @@ class App extends Component {
             <Menu clicable={true} to="/addArtiste" value="Ajout artiste"/>
             <Menu clicable={true} to="/addAlbum" value="Ajout album"/>
             <Menu clicable={true} to="/addMusic" value="Ajout musique"/>
+            <Menu clicable={true} to="/updateArtiste" value="Modif artiste"/>
             <Menu clicable={false} onClick={()=>{}} value=""/>
           </div>
           <div className="Body">
@@ -232,6 +239,7 @@ class App extends Component {
                   <Route path='/addMusic' component={this.ajoutMusique}/>
                   <Route path='/tendances' component={this.tendancesWindow}/>
                   <Route path='/myMusic' component={this.mesMusiquesWindow}/>
+                  <Route path='/updateArtiste' component={this.modifArtiste}/>
                   <Route path='/others' component={this.autresWindow}/>
                   <Route path='/myPlaylists' component={this.mesPlaylistsWindow}/>
                   <Route path='/' component={show}/>
