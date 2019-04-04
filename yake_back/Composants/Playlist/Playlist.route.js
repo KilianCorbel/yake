@@ -12,6 +12,7 @@ app.use(session({secret: 'todotopsecret'}))
 
 // -- Load model needed for the project
 require('./Playlist.model');
+const process = require('./Playlist.process');
 
 lienErreur = '/error';
 const getAll = '/';
@@ -28,11 +29,6 @@ lienGetCover = '/playlist/stream/:id';
 pageErreur ='';
 pagePlaylist = '';
 
-// -- ERROR
-app.get(lienErreur, function(req, res) {
-    res.render(pageErreur);
-})
-
 // -- GET all
 app.get(getAll, function (req, res) {
     let playlist = mongoose.model('Playlist');
@@ -43,27 +39,16 @@ app.get(getAll, function (req, res) {
 
 // -- GET playlist/:id
 app.get(getPlaylistById, function (req, res) {
-    mongoose.model('Playlist').findOne({_id : req.query.id}).then((playlist)=>{
-        if(playlist){
-			playlist.image=undefined;
-            res.send(playlist);
-        }else{
-            res.status(404).json({message : "404 not found"});
-        }
-    },(err)=>{
-        res.send(err);
-    });
+    process.findPlaylistById(req.params.id)
+    .then(result=>res.status(200).json({}))
+    .catch(err=>res.status(500).json({}));
 });
 
 // -- GET playlist/:name
 app.get(getPlaylistByName, function (req, res) {
-    let playlist = mongoose.model('Playlist');
-    
-    playlist.find({'nom' : new RegExp('^.*'+req.params.name+'.*$', "ig")}).then((playl)=>{
-        res.send(playl);
-    },(err)=>{
-        res.send(err);
-    });
+    process.findPlaylistByName(req.params.name)
+    .then(result=>res.status(200).json({}))
+    .catch(err=>res.status(500).json({}));
 });
 
 // -- GET playlist/:user

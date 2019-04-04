@@ -77,8 +77,3 @@ exports.addArtiste = function(body){
 	});
 	
 }
-
-
-
-// app.get(, function(req, res) {
-// })
