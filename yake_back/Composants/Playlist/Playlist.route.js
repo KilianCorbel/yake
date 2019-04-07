@@ -8,13 +8,12 @@ let fs = require('fs');
 let bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : true}));
-app.use(session({secret: 'todotopsecret'}))
 
 // -- Load model needed for the project
 require('./Playlist.model');
 const process = require('./Playlist.process');
 
-lienErreur = '/error';
+// -- routes declaration
 const getAll = '/';
 const getPlaylistById = '/getPlaylist';
 const getPlaylistByName = '/name/:name';
@@ -25,10 +24,7 @@ lienSupprimer = '/playlist/:id';
 lienGet = '/playlist/:id';
 lienGetCover = '/playlist/stream/:id';
 
-// routes vers le front react
-pageErreur ='';
-pagePlaylist = '';
-
+// ---- 
 // -- GET all
 app.get(getAll, function (req, res) {
     let playlist = mongoose.model('Playlist');
@@ -53,42 +49,19 @@ app.get(getPlaylistByName, function (req, res) {
 
 // -- GET playlist/:user
 app.get(getPlaylistByUser, function (req, res) {
-    let playlist = mongoose.model('Playlist');
-    
-    playlist.find({'utilisateur._id' : req.params.user}).then((playl)=>{
-        res.send(playl);
-    },(err)=>{
-        res.send(err);
-    });
+    process.findPlaylistByUser(req.params.user)
+    .then(result=>res.status(200).json({}))
+    .catch(err=>res.status(500).json({}));
 });
 
 // -- CREATE
 app.post(postPlaylist, function (req, res) {
-    let playlist = mongoose.model('Playlist');
-	let path = require('path');
-	console.log(req.body);
-	let filename = req.body.fileName;
-	let file = req.body.file;
-	req.body.image=undefined;
-	req.body.fileName=undefined;
-	req.body.file=undefined;
-	let newPlaylist = new playlist(req.body);
-	let buf = Buffer.from(file.data);
-	fs.writeFile(`${path.resolve('../../Data/playlist')}/${req.body.nom.replace(/ /gi,"")}_${newPlaylist._id}`,buf,(err)=>{
-		if(err)
-			return console.log(err);
-		console.log("Fichier sauvé");
-	});
-	newPlaylist.image=`${path.resolve('../../Data/playlist')}/${req.body.nom.replace(/ /gi,"")}_${newPlaylist._id}`;
-	
-    //newPLaylist.id = newPLaylist._id;
-
-    newPlaylist.save().then(()=>{
-        res.send(newPlaylist);
-    },(err)=>{
-        res.send(err);
-    })
+    process.savePlaylist(req.body)
+    .then(result=>res.status(200).json({}))
+    .catch(err=>res.status(500).json({}));
 });
+
+// -- GET COVER playlist/stream/:id
 app.get(lienGetCover,function (req,res){
 	let playlist = mongoose.model('Playlist');
 	playlist.find({'_id' : req.params.id}).then((pla)=>{
@@ -108,23 +81,16 @@ app.get(lienGetCover,function (req,res){
 });
 // -- UPDATE
 app.put(lienModifier, function (req, res) {
-    mongoose.model('Playlist').updateOne({_id : req.body.id}, {$set : req.body}, (err, updatedPlaylist)=>{
-       if(err){
-            res.send(err);
-       }else{
-            res.send(updatedPlaylist);
-       }
-    });
+    process.updatePlaylist(req.body)
+    .then(result=>res.status(200).json({}))
+    .catch(err=>res.status(500).json({}));
 });
 
 // -- DELETE
 app.delete(lienSupprimer, function (req, res) {
-    let playlist = mongoose.model('Playlist');
-    playlist.find({_id : req.params.id}).deleteOne().then(()=>{
-        res.send(playlist);
-    },(err)=>{
-        res.send(err);
-    });
+    process.deletePlaylist(req.params.id)
+    .then(result=>res.status(200).json({}))
+    .catch(err=>res.status(500).json({}));
 });
 
 module.exports = app;
