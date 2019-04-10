@@ -1,36 +1,36 @@
-let express = require('express'),
+// -- Load dependencies
+const express = require('express'),
     app = express(),
     mongoose = require('mongoose'),
-    session = require('cookie-session');
-let fs = require('fs');
+    session = require('cookie-session'),
+    fs = require('fs');
+
 // --- middleware
 // - body-parser needed to catch and to treat information inside req.body
-let bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : true}));
 
-// -- Load model needed for the project
-require('./Playlist.model');
+// -- Load process
 const process = require('./Playlist.process');
 
-// -- routes declaration
+// -- Routes declaration
 const getAll = '/';
 const getPlaylistById = '/getPlaylist';
 const getPlaylistByName = '/name/:name';
 const getPlaylistByUser = '/user/:user';
 const postPlaylist = '/savePlaylist';
-lienModifier = '/playlist/:id';
-lienSupprimer = '/playlist/:id';
-lienGet = '/playlist/:id';
-lienGetCover = '/playlist/stream/:id';
+const lienModifier = '/playlist/:id';
+const lienSupprimer = '/playlist/:id';
+const lienGet = '/playlist/:id';
+const lienGetCover = '/playlist/stream/:id';
 
 // ---- 
 // -- GET all
 app.get(getAll, function (req, res) {
-    let playlist = mongoose.model('Playlist');
-    playlist.find().then((playlists)=>{
-        res.send(playlists);
-    })
+    process.getAllPlaylists()
+    .then(result=>res.status(200).json({}))
+    .catch(err=>res.status(500).json({}));
 });
 
 // -- GET playlist/:id
@@ -63,21 +63,9 @@ app.post(postPlaylist, function (req, res) {
 
 // -- GET COVER playlist/stream/:id
 app.get(lienGetCover,function (req,res){
-	let playlist = mongoose.model('Playlist');
-	playlist.find({'_id' : req.params.id}).then((pla)=>{
-        if(pla){
-			let fs = require('fs');
-			pla=pla[0].image;
-			if(pla.length>0){
-				let rstream = fs.createReadStream(pla);
-				rstream.pipe(res);
-			}
-        }else{
-            res.status(404).json({message : "404 not found"});
-        }
-    },(err)=>{
-        res.send(err);
-    });
+    process.findPlaylistCover(req.params.id)
+    .then(result=>res.status(200).json({}))
+    .catch(err=>res.status(500).json({}));
 });
 // -- UPDATE
 app.put(lienModifier, function (req, res) {

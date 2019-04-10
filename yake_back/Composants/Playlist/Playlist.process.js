@@ -1,22 +1,29 @@
-let express = require('express'),
+// - Load Dependencies
+const express = require('express'),
     app = express(),
     mongoose = require('mongoose'),
-    session = require('cookie-session');
+    session = require('cookie-session'),
+    fs = require('fs');
 
 // --- middleware
 // - body-parser needed to catch and to treat information inside req.body
-let bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : true}));
-app.use(session({secret: 'todotopsecret'}))
 
 const Actions = require('./Playlist.action');
-const Model = require('./Playlist.model');
 
 
 exports.getAllPlaylists = function () {
-    let playlist = mongoose.model('Playlist');
-    return playlist.find({}, 'playlists');   
+    return new Promise(function(resolve, reject) {
+        Actions.getAllPlaylists()
+        .then(playlists => {
+            resolve(playlists);
+        })
+        .catch(err => {
+            reject(404);
+        })
+    })
 }
 
 exports.findPlaylistByName = function(name) {
@@ -80,8 +87,9 @@ exports.savePlaylist = function(playlist) {
             .then(playlists=>{
                 resolve(playlists);
             })
-            .catch((err)=>
-            reject(404));
+            .catch((err)=> {
+                reject(404);
+            })           
         }
     })
 }
@@ -116,6 +124,28 @@ exports.updatePlaylist = function(body) {
                 resolve(playlist);
             })
             .catch(err=> {
+                reject(404);
+            })
+        }
+    })
+}
+
+exports.findPlaylistCover = function(id) {
+    return new Promise(function(resolve, reject) {
+        if (id === undefined || id === 0){
+            reject(404);
+        }
+        else {
+            Actions.getCoverPlaylist(id)
+            .then(playlist => {
+                if (playlist.length > 0) {
+                    // ouvre le stream avec le fichier
+                    let rstream = fs.createReadStream(playlist);
+                    // retourne la référence vers le fichier
+                    resolve(rstream.pipe(playlist));
+                }
+            })
+            .catch(err => {
                 reject(404);
             })
         }

@@ -1,3 +1,4 @@
+// -- Load Dependencies
 const express = require('express'),
     app = express(),
     mongoose = require('mongoose'),
@@ -9,14 +10,13 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : true}));
 
-// -- Model
+// -- Load model
 const Model = require('./Playlist.model');
 
-const getAllPlaylists = function(res){
+exports.getAllPlaylists = function(res){
     let playlist = mongoose.model('Playlist');
-    playlist.find().then((playlists)=>{
-        res.send(playlists);
-    });
+    
+    return playlist.find({}, 'playlists');
 }
 
 exports.getPlaylistById = function(id){
@@ -24,9 +24,10 @@ exports.getPlaylistById = function(id){
     return playlist.findOne({_id : id});
 }
 
-exports.getPlaylistByName = function(name){
+exports.getPlaylistByName = function(name) {
     let playlist = mongoose.model('Playlist');
-     return playlist.find({'nom' : new RegExp('^.*'+name+'.*$', "ig")});
+
+    return playlist.find({'nom' : new RegExp('^.*'+name+'.*$', "ig")});
 }
 
 exports.getPlaylistByUser = function(user) {
@@ -45,7 +46,8 @@ exports.savePlaylist = function(req) {
 	body.fileName=undefined;
 	body.file=undefined;
 	let newPlaylist = new playlist(body);
-	let buf = Buffer.from(file.data);
+    let buf = Buffer.from(file.data);
+    // à corriger & modifier
 	fs.writeFile(`${path.resolve('../../Data/playlist')}/${body.nom.replace(/ /gi,"")}_${newPlaylist._id}`,buf,(err)=>{
 		if(err)
 			return console.log(err);
@@ -66,4 +68,10 @@ exports.deletePlaylist = function(id) {
     let playlist = mongoose.model('Playlist');
 
     return playlist.find({_id : id}).deleteOne();
+}
+
+exports.getCoverPlaylist = function(id) {
+    let playlist = mongoose.model('Playlist');
+
+	return playlist.find({'_id' : id});
 }
