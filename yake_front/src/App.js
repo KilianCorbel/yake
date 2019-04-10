@@ -19,6 +19,7 @@ import AjoutArtiste from './AjoutArtiste';
 import AjoutAlbum from './AjoutAlbum';
 import AjoutMusique from './AjoutMusique.js';
 import PlaylistInfoWindow from './PlaylistInfoWindow.js'
+import ModifArtiste from './ModifArtiste.js';
 import {Route,Switch, withRouter} from 'react-router-dom';
 // import FooterMenu from './FooterMenu.js';
 //import {Form} from 'react-bootstrap';
@@ -51,6 +52,7 @@ class App extends Component {
     this.playlistWindow=this.playlistWindow.bind(this);
     this.inputGenreFilterChange=this.inputGenreFilterChange.bind(this);
     this.submitInputValueGenre=this.submitInputValueGenre.bind(this);
+    this.modifArtiste = this.modifArtiste.bind(this);
     this.addGenre=this.addGenre.bind(this);
   }
 
@@ -145,6 +147,9 @@ class App extends Component {
   tendancesWindow(){
     return <TendancesWindow/>
   }
+  modifArtiste(){
+    return <ModifArtiste/>
+  }
   playlistWindow(){
     return <PlaylistInfoWindow playlist={this.state.playlist} refresh={()=>{this.setState({});}}/>
   }
@@ -229,6 +234,7 @@ class App extends Component {
             <Menu clicable={true} to="/addArtiste" value="Ajout artiste"/>
             <Menu clicable={true} to="/addAlbum" value="Ajout album"/>
             <Menu clicable={true} to="/addMusic" value="Ajout musique"/>
+            <Menu clicable={true} to="/modifyArtiste" value="Modification artiste"/>
             <Menu clicable={false} onClick={()=>{}} value=""/>
             {/* <FooterMenu/> */}
           </div>
@@ -245,6 +251,7 @@ class App extends Component {
                   <Route path='/myMusic' component={this.mesMusiquesWindow}/>
                   <Route path='/others' component={this.autresWindow}/>
                   <Route path='/myPlaylists' component={this.mesPlaylistsWindow}/>
+                  <Route path='/modifyArtiste' component={this.modifArtiste}/>
                   <Route path='/' component={show}/>
                 </Switch>     
               <MusicPlayerI playlist={this.state.playlist} musicPlayer={this.musicPlayer}/> 
