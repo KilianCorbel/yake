@@ -16,7 +16,7 @@ import Playlist from './MusicPlayer/Playlist.js';
 import { Badge, Input, InputGroupAddon, InputGroup, Button, Popover, PopoverHeader, PopoverBody } from 'reactstrap';
 import 'bootstrap/dist/css/bootstrap.css';
 import AjoutArtiste from './AjoutArtiste';
-import ModifArtiste from './ModifArtiste';
+import NewModifArtiste from './NewModifArtiste';
 import AjoutAlbum from './AjoutAlbum';
 import AjoutMusique from './AjoutMusique.js';
 import PlaylistInfoWindow from './PlaylistInfoWindow.js'
@@ -161,7 +161,7 @@ class App extends Component {
     return <AjoutMusique/>
   }
   modifArtiste(){
-    return <ModifArtiste/>
+    return <NewModifArtiste/>
   }
 
 
