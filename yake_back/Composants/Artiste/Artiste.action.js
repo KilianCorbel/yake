@@ -61,9 +61,117 @@ exports.getArtisteByName = function(genres,name){
 	return artiste.find(findObject);
 };
 
+exports.getAlbumByName = function(genres,name){
+	let artiste = mongoose.model('Artiste');
+	let genreFilter = new RegExp('^.*$');
+	let findObject = {};
+	findObject['albums.nom'] = new RegExp('^.*'+name+'.*$', "i");
+	if(genres !== undefined && genres.length>0){
+		genreFilter=genres.split(',').map(ele=>new RegExp('^'+ele+'$','i'));
+		findObject['albums.genres']={$in : genreFilter};
+	}
+    return artiste.find(findObject);	
+}
+
+exports.getMusiqueByTitle = function(genres,name){
+	let artiste = mongoose.model('Artiste');
+	let genreFilter = new RegExp('^.*$');
+	let findObject = {};
+	findObject['albums.musiques.titre'] = new RegExp('^.*'+name+'.*$', "i");
+	if(genres !== undefined && genres.length>0){
+		genreFilter=genres.split(',').map(ele=>new RegExp('^'+ele+'$','i'));
+		findObject['albums.genres']={$in : genreFilter};
+	}
+    return artiste.find(findObject);
+	
+}
+
+exports.filterMusiqueFromResult = function(artiste,genres,name){
+	return new Promise(function (resolve,reject){
+		let genre = undefined;
+		if(genres !== undefined && genres.length>0){
+			genre=req.query.genres.split(',').map(ele=>ele.toLowerCase());
+		}
+		if(artiste){
+				console.log(artiste);
+				albums = artiste.map(arti=>arti.albums.map(alb=>{
+					let retour = {};
+					retour.musiques=alb.musiques;
+					retour._id=alb._id;
+					retour.nom = alb.nom;
+					retour.nomGroupe = arti.nom;
+					retour.idGroupe=arti._id;
+					retour.genres=alb.genres;
+					return retour})
+					.reduce((prev,ele)=>prev.concat(ele),[]))
+					.reduce((prev,ele)=>prev.concat(ele),[]);
+				mus = albums.map(alb=>alb.musiques.map(mus=>{
+					let musicObj={};
+					musicObj.nomGroupe=alb.nomGroupe;
+					musicObj.idAlbum=alb._id;
+					musicObj.genres=alb.genres;
+					musicObj.nomAlbum=alb.nom;
+					musicObj.idGroupe = alb.idGroupe;
+					musicObj.titre=mus.titre;
+					musicObj._id=mus._id;
+					return musicObj;
+				}).reduce((prev,ele)=>prev.concat(ele),[])).reduce((prev,ele)=>prev.concat(ele),[]).filter(ele=>{if(genre===undefined)return true;return containsAtLeastOne(ele.genres,genre)}).filter(ele=>ele.titre.toLowerCase().includes(name.toLowerCase()));
+				resolve(mus);
+		}
+		else{
+			reject("Erreur lors du filtrage des musiques");
+		}
+	});
+}
+
+exports.getMusiqueById = function(id){
+	let artiste = mongoose.model('Artiste');
+    return artiste.find({'albums.musiques._id' : id}, 'albums.musiques');
+};
+
+exports.formatageMusiquePourRenvoi = function(artiste){
+	return new Promise(function(resolve,reject){
+	if(artiste){
+            artiste=artiste[0].albums.reduce((prev,ele)=>prev.concat(ele),[])
+            .reduce((prev,ele)=>prev.concat(ele.musiques),[])
+            .filter(ele=>ele._id.toString()===req.params.id)[0];
+            resolve(artiste);
+        }
+	else{
+           reject("Aucune musique trouvée");
+    }	
+	});
+};
+
+function containsAtLeastOne(tab,referenceTab){
+	return tab.reduce((accu,ele)=>{if(accu)return true;return referenceTab.includes(ele.toLowerCase());},false);
+}
+
+exports.filterAlbumFromResult = function(artiste,genres,name){
+	console.log(artiste);
+	if(artiste){
+		let genre = undefined;
+		if(genres !== undefined && genres.length>0){
+			genre=genres.split(',').map(ele=>ele.toLowerCase());
+		}
+		artiste = artiste.map(arti=>{arti.albums=arti.albums.filter(album=>{if(genre===undefined)return true;return containsAtLeastOne(album.genres,genre);}).filter(album=>album.nom.toLowerCase().includes(name.toLowerCase()));return arti;});
+		artiste = artiste.map(arti=>arti.albums.map(alb=>{let retour = {};retour.musiques=alb.musiques;retour._id=alb._id;retour.nom = alb.nom;retour.nomGroupe = arti.nom;retour.idGroupe=arti._id;return retour}).reduce((prev,ele)=>prev.concat(ele),[])).reduce((prev,ele)=>prev.concat(ele),[]);
+		artiste = artiste.map(ele=>{let obj = {}; obj._id=ele._id;obj.nom=ele.nom;return obj;});
+		return (artiste);
+	}
+	else{
+		throw Error("Erreur recherche");
+	}
+};
+
 exports.getArtisteById = function(id){
 	let artiste = mongoose.model('Artiste');
 	return artiste.findOne({'_id' : id});
+};
+
+exports.getAlbumById = function(id){
+	let artiste = mongoose.model('Artiste');
+	return artiste.findOne({'albums._id' : id});
 };
 
 exports.getArtisteHavingAlbumWithId = function(id){
@@ -72,6 +180,7 @@ exports.getArtisteHavingAlbumWithId = function(id){
 };
 
 exports.formatageBlocAlbumPourEnvoi = function(artiste,id){
+	console.log(artiste);
 	return new Promise(function(resolve,reject){
 		if(artiste){
 				artiste = artiste.map(arti=>{arti.albums=arti.albums.filter(album=>album._id.toString()===id);return arti;});
@@ -164,7 +273,7 @@ exports.saveMusiqueAndEditArtiste = function(body,artiste){
 			reject("L'album n'existe pas");
 		}
 	});
-}
+};
 
 exports.saveImageArtiste = function(body){
 	return new Promise(function(resolve,reject){
@@ -183,4 +292,40 @@ exports.saveImageArtiste = function(body){
 
 exports.saveArtisteInDatabase = function(artiste){
 	return artiste.save();
-}
+};
+
+exports.cheminMusiquePourLecture = function(artiste,id){
+	if(artiste){
+		artiste=artiste[0].albums.reduce((prev,ele)=>prev.concat(ele),[])
+        .reduce((prev,ele)=>prev.concat(ele.musiques),[])
+        .filter(ele=>ele._id.toString()===id)[0].son;
+		return artiste;
+	}
+	else{
+		throw Error("Pas de musique retourn�e");
+	}
+};
+
+exports.cheminCouvertureAlbum = function(artiste,id){
+	if(artiste){
+		artiste=artiste.albums.filter(ele=>ele._id.toString()===id)[0].couverture;
+		return artiste;
+	}else{
+		throw Error("Pas d'album trouv�");
+	}
+};
+
+exports.cheminCouvertureArtiste = function(artiste,id){
+	if(artiste){
+		artiste=artiste.image;
+		return artiste;
+	}else{
+		throw Error("Pas d'artiste trouv�");
+	}
+};
+
+exports.createPipeStreamFromPath = function(path){
+	let fs = require('fs');
+	//V�rifier si le chemin existe
+	return fs.createReadStream(path);
+};
