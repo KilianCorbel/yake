@@ -16,16 +16,33 @@ class MusiquesBlock extends Component{
             musiqueList=this.props.musiques.map((ele)=>{
                 let buttonAddNext;
                 if(!this.props.playlist.isInitialised()){
-                    buttonAddNext = (<Button color="secondary" size="sm" onClick={()=>{this.addNext(ele);}}>{"Add Next"}</Button>);
+                    buttonAddNext = (<Button key={`${ele.titre}addNextButton`} color="secondary" size="sm" onClick={()=>{this.addNext(ele);}} className="playNextMusicLine">{"Add Next"}</Button>);
                 }
-                return(<div className="musicLine" key={`${ele.titre}`}>
-                <div key={`${ele.titre}titre`}style={{textDecoration:'none',color:'black'}}>{ele.titre}</div>
-                <Link to={`/showAlbum?id=${ele.idAlbum}`} key={`${ele.titre}album`}style={{textDecoration:'none',color:'black'}}>{ele.nomAlbum}</Link>
-                <Link to={`/showArtiste?id=${ele.idGroupe}`} key={`${ele.titre}groupe`} style={{textDecoration:'none',color:'black'}}>{ele.nomGroupe}</Link>
-                <Button color="secondary" size="sm" onClick={()=>{this.initMusic(ele);}}>{"Play"}</Button>
-                {buttonAddNext}
+                return(
+                <div key={`${ele.titre}mainDiv`} className='musicLineContent'>
+                    <div className="musicLine" key={`${ele.titre}`}>
+                        <div key={`${ele.titre}titre`}style={{textDecoration:'none',color:'black'}} className="titleMusicLine">{ele.titre}</div>
+                        <Link to={`/showAlbum?id=${ele.idAlbum}`} key={`${ele.titre}album`}style={{textDecoration:'none',color:'black'}} className="albumMusicLine">{ele.nomAlbum}</Link>
+                        <Link to={`/showArtiste?id=${ele.idGroupe}`} key={`${ele.titre}groupe`} style={{textDecoration:'none',color:'black'}} className="groupeMusicLine">{ele.nomGroupe}</Link>
+                        <Button color="secondary" size="sm" onClick={()=>{this.initMusic(ele);}} className="playButtonMusicLine">{"Play"}</Button>
+                        {buttonAddNext}
+                    </div>
                 </div>);})
-            musiqueList=(<div className="MusicList">{musiqueList}</div>);
+            musiqueList=(<div className="MusicList">
+                            <div className='headMusicLine'>
+                                <div className="musicLine">
+                                    <div className="titleMusicLine">Titre</div>
+                                    <div className="albumMusicLine">Album</div>
+                                    <div className="groupeMusicLine">Groupe</div>
+                                </div>
+                            </div>
+                            <div className='headMusicLine'>
+                                <div className="musicLine">
+                                        <div className="titleMusicLine"><br/></div>
+                                </div>
+                            </div>
+                            {musiqueList}
+                        </div>);
         }
         return (musiqueList);
     }

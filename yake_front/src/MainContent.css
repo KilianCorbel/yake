@@ -5,10 +5,71 @@
     flex-flow:column;
 }
 
-.musicLine{
+.MusicList{
+  display: flex;
+  flex : 1 1 auto;
+  flex-flow : row;
+  flex-wrap : wrap;
+  justify-content: center;
+
+}
+.headMusicLine{
+  flex : 1 1 auto;
   flex-flow:row;
   display:flex;
-  justify-content:space-around;
+  width : 100%;
+  justify-content: space-around;
+}
+.titleMusicLine{
+  grid-area: a;
+  align-items: center;
+}
+.albumMusicLine{
+  grid-area: b;
+}
+.groupeMusicLine{
+  grid-area: c;
+}
+.playButtonMusicLine{
+  grid-area: d;
+}
+.playNextMusicLine{
+  grid-area: e;
+}
+.musicLineContent:hover{
+  background-color:#e6e4e4;
+}
+.musicLineContent{
+  flex : 1 1 auto;
+  flex-flow:row;
+  display:flex;
+  width : 100%;
+  justify-content: space-around;
+}
+
+.playlistLine{
+  flex-flow:row;
+  display:flex;
+  justify-content:center;
+}
+
+.playlistLine:hover{
+  background-color:#e6e4e4;
+}
+
+.musicLine{
+  /*width : 70%;
+  flex-flow:row;
+  display:flex;
+  justify-content:space-evenly;*/
+  width : 70%;
+  display : grid;
+  grid-template-areas:"a b c d e";
+  align-items: start;
+  grid-gap:10px;
+  grid-auto-columns: 150px;
+  justify-content: space-between;
+
 }
 
 .flex{
@@ -84,7 +145,4 @@
   display:flex;
   flex-flow:column;
   overflow:hidden;
-}
-.musicLine:hover{
-  background-color:#e6e4e4;
 }

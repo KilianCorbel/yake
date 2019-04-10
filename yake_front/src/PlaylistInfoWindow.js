@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './MainContent.css';
 import './Scrollable.css';
+import MusiquesBlock from './MusiquesBlock.js';
 import { Button } from 'reactstrap';
 class PlaylistInfoWindow extends Component{
     constructor(props){
@@ -41,17 +42,8 @@ class PlaylistInfoWindow extends Component{
         let retour;
         if(this.state.playlist !== undefined && this.state.playlist.musiques !== undefined && this.state.playlist.musiques.length>0){
             musiqueList=this.state.playlist.musiques;
-            musiqueList=musiqueList.map((ele,index)=>{
-            if(this.props.playlist.isInitialised()){
-                return(<div className="musicLine" key={`${ele.titre}${index}`}>{`${ele.titre} ---- ${ele.nomAlbum} ---- ${ele.nomGroupe}`}
-                <Button color="secondary" size="sm" onClick={()=>{this.initMusic(ele);}}>{"Play"}</Button>
-                </div>);}
-            else{
-                return(<div className="musicLine" key={`${ele.titre}${index}`}>{`${ele.titre} ---- ${ele.nomAlbum} ---- ${ele.nomGroupe}`}
-                <Button color="secondary" size="sm" onClick={()=>{this.initMusic(ele);}}>{"Play"}</Button>
-                <Button color="secondary" size="sm" onClick={()=>{this.addNext(ele);}}>{"Add Next"}</Button>
-                </div>);}
-            })
+            musiqueList = (<MusiquesBlock refresh={this.props.refresh} musiques={musiqueList} playlist={this.props.playlist}/>);
+            
             musiqueList=(<div><h3>Musiques contenues dans cette playlist</h3><div className="MusicList">{musiqueList}</div></div>);
             retour =(
                 <div className="scrollable">

@@ -2,6 +2,7 @@ import React , { Component } from 'react';
 import './MainContent.css';
 import './Scrollable.css';
 import './AlbumWindow.css';
+import MusiquesBlock from './MusiquesBlock.js';
 import { Button } from 'reactstrap';
 import {Link} from 'react-router-dom';
 class AlbumWindow extends Component{
@@ -51,18 +52,7 @@ class AlbumWindow extends Component{
         if(this.state.album!==undefined && this.state.album.nom!== undefined && this.state.album.musiques!== undefined ){
             if(this.state.album.musiques.length>0){
                 musiqueList=this.state.album.musiques.map((ele)=>{ele.nomAlbum=this.state.album.nom;ele.idAlbum=this.state.album._id;ele.nomGroupe=this.state.album.nomGroupe;ele.idGroupe=this.state.album.idGroupe;return ele;})
-                musiqueList=musiqueList.map((ele)=>{
-                    if(this.props.playlist.isInitialised()){
-                        return(<div className="musicLine" key={`${ele.titre}`}>{`${ele.titre} ---- ${ele.nomAlbum} ---- ${ele.nomGroupe}`}
-                        <Button color="secondary" size="sm" onClick={()=>{this.initMusic(ele);}}>{"Play"}</Button>
-                        </div>);}
-                    else{
-                        return(<div className="musicLine" key={`${ele.titre}`}>{`${ele.titre} ---- ${ele.nomAlbum} ---- ${ele.nomGroupe}`}
-                        <Button color="secondary" size="sm" onClick={()=>{this.initMusic(ele);}}>{"Play"}</Button>
-                        <Button color="secondary" size="sm" onClick={()=>{this.addNext(ele);}}>{"Add Next"}</Button>
-                        </div>);
-                    }
-                });
+                musiqueList = (<MusiquesBlock refresh={this.props.refresh} musiques={this.state.album.musiques} playlist={this.props.playlist}/>);
             }
             musiqueList=(<div><h3>Musiques contenues dans cet album</h3><div className="MusicList">{musiqueList}</div></div>);   
             retour = (
