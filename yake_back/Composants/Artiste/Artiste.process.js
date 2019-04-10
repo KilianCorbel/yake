@@ -27,6 +27,43 @@ exports.findArtisteByName = function(genres,name){
 		.catch((err)=>{reject(404);});
 		}
 	});
+
+}
+
+exports.findMusiqueByTitle = function(genres,name){
+	return new Promise(function (resolve,reject){
+		Actions.getMusiqueByTitle(genres,name)
+		.then(result=>Actions.filterMusiqueFromResult(result,genres,name))
+		.then(result=>resolve(result))
+		.catch(err=>reject(err));
+	});
+}
+
+exports.findAlbumByName = function(genres,name){
+	return new Promise(function(resolve,reject){
+		Actions.getAlbumByName(genres,name)
+		.then(result=>Actions.filterAlbumFromResult(result,genres,name))
+		.then(result=>resolve(result), () => reject('Promesse rejetée'))
+		.catch(err=>reject(err));
+	});
+};
+
+exports.findMusiqueById = function(id){
+	return new Promise(function(resolve,reject){
+		Actions.getMusiqueById(id)
+		.then(result=>Actions.formatageMusiquePourRenvoi(result))
+		.then(result=>resolve(result))
+		.catch(err=>reject(err));
+	});
+};
+
+exports.getAlbumById = function(params){
+	return new Promise(function(resolve,reject){
+		Actions.getArtisteHavingAlbumWithId(params.id)
+		.then(result=>Actions.formatageBlocAlbumPourEnvoi(result,params.id))
+		.then(result=>resolve(result))
+		.catch(err=>reject(err));
+	});
 }
 
 exports.getAllAlbum = function(){
@@ -78,7 +115,42 @@ exports.addArtiste = function(body){
 	
 }
 
+exports.readAMusique = function(id){
+	return new Promise(function(resolve,reject){
+		Actions.getMusiqueById(id)
+		.then(result=>Actions.cheminMusiquePourLecture(result,id),err=>reject(err))
+		.then(result=>Actions.createPipeStreamFromPath(result),err=>reject(err))
+		.then(result=>resolve(result))
+		.catch(err=>reject(err));
+	});
+}
 
+exports.getAlbumCover = function(id){
+	return new Promise(function(resolve,reject){
+		Actions.getAlbumById(id)
+		.then(result=>Actions.cheminCouvertureAlbum(result,id),err=>reject(err))
+		.then(result=>Actions.createPipeStreamFromPath(result),err=>reject(err))
+		.then(result=>resolve(result))
+		.catch(err=>reject(err));
+	});
+}
 
+exports.getArtisteCover = function(id){
+	return new Promise(function(resolve,reject){
+		Actions.getArtisteById(id)
+		.then(result=>Actions.cheminCouvertureArtiste(result,id),err=>reject(err))
+		.then(result=>Actions.createPipeStreamFromPath(result),err=>reject(err))
+		.then(result=>resolve(result))
+		.catch(err=>reject(err));
+	});
+}
+
+exports.findArtisteById = function(id){
+	return new Promise(function(resolve,reject){
+		Actions.getArtisteById(id)
+		.then(result=>resolve(result))
+		.catch(err=>reject(err));
+	});	
+}
 // app.get(, function(req, res) {
 // })

@@ -27,7 +27,7 @@ class PlaylistWindow extends Component{
     render(){
         let playlists=this.state.playlists.map(ele=>{
             return(
-            <Link to={`/showPlaylist?id=${ele._id}`} style={{textDecoration:'none',color:'black'}} className="musicLine" key={`${ele.nom}`}>
+            <Link to={`/showPlaylist?id=${ele._id}`} style={{textDecoration:'none',color:'black'}} className="playlistLine" key={`${ele.nom}`}>
             <div className="flex clicable" onClick={()=>{(this.props.onPlaylistClick!==undefined?this.props.onPlaylistClick:()=>{})(ele);}}>{`${ele.nom}`}</div>
                 <Button className="flex" color="secondary" size="sm" onClick={()=>{this.runPlaylist(ele);}}>{"Play"}</Button>
                 </Link>);});
