@@ -6,7 +6,12 @@ const mongoose 	= require('mongoose'),
 let MusiqueSchema = new Schema({
     titre : String,
     son : String,
-    note : Number
+    notes : [
+		{
+			userId : String,
+			note : Number
+		}
+	]
 })
 
 // ---- Genre schema

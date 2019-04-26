@@ -1,28 +1,30 @@
 import React, { Component } from "react";
 import "./modifArtiste.css";
+import 'react-widgets/dist/css/react-widgets.css';
 import "./MainContent.css";
 import "./Scrollable.css";
 import "./ErrorColor.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Badge, Button, Form, FormGroup, Label, Input } from "reactstrap";
-class ModifArtiste extends Component {
+import { DropdownList } from "react-widgets";
+class NewModifArtiste extends Component {
   constructor(props) {
     super(props);
     this.state = {
       _id: "",
       nom: "",
+      nouveauNom: "",
       dateCreation: "",
       dateFin: "",
       biographie: "",
       fileChoosen: undefined,
       albums: [],
       error: {},
-      listeArtistes: [],
-      idsArtistes: []
+      artistes: []
     };
 
     this.getArtistes();
-    this.creerSelects();
+    //this.creerSelects();
   }
 
   convertirDate(date) {
@@ -80,14 +82,33 @@ class ModifArtiste extends Component {
       .then(res => res.json())
       .then(data =>
         this.setState({
-          listeArtistes: ["Choisissez un artiste"].concat(
-            data.map(ele => ele.nom)
-          ),
-          idsArtistes: [""].concat(data.map(ele => ele._id))
+          artistes:
+            data.map(ele => {
+              let retour = {};
+              retour.id = ele._id;
+              retour.nom = ele.nom;
+              return retour;
+            })
+          
+          //idsArtistes: [""].concat(data.map(ele => ele._id))
         })
       )
       .catch(err => console.log(err));
   }
+
+  /*getArtistes() {
+    fetch("/api/artistes/", {
+      method: "GET",
+      headers: new Headers({
+        "Content-Type": "application/json"
+      })
+    })
+      .then(res => res.json())
+      .then(data =>
+        this.setState({artistes:[...this.state.artistes, {data._id, data.nom}], 
+      )
+      .catch(err => console.log(err));
+  }*/
 
   creerSelects() {
     let selects = [];
@@ -114,7 +135,7 @@ class ModifArtiste extends Component {
   }
 
   chargerDonneesArtiste(e) {
-    fetch(`/api/artistes/id/${e.target.value}`, {
+    fetch(`/api/artistes/id/${e}`, {
       method: "GET",
       headers: new Headers({
         "Content-Type": "application/json"
@@ -124,6 +145,7 @@ class ModifArtiste extends Component {
       .then(data =>
         this.setState({
           _id: data._id,
+          nouveauNom:"",
           nom: data.nom,
           dateCreation: this.convertirDate(data.dateCreation),
           dateFin: this.convertirDate(data.dateFin),
@@ -142,7 +164,7 @@ class ModifArtiste extends Component {
       }),
       body: JSON.stringify({
         _id: this.state._id,
-        nom: this.state.nom,
+        nom: this.state.nouveauNom,
         dateCreation: this.state.dateCreation,
         dateFin: this.state.dateFin,
         biographie: this.state.biographie
@@ -187,6 +209,32 @@ class ModifArtiste extends Component {
     img.src = URL.createObjectURL(file);
   }
   render() {
+
+    let toto = (<FormGroup row>
+      <Label for="nom">Artiste </Label>
+      {/* <Input
+        className={`${
+          this.state.error.nom === undefined ? "" : "errorInput"
+        }`}
+        type="select"
+        id="nom"
+        //value={this.state.nom}
+        onChange={e => this.chargerDonneesArtiste(e)}
+      >
+        {this.creerSelects()}
+      </Input> */}
+      <DropdownList filter
+        className="dropdown"
+        data={this.state.artistes}
+        valueField="_id"
+        textField="nom"
+        placeholder = "Sélectionnez un artiste"
+        //onChange={() => this.chargerDonneesArtiste(this.valueField)}
+        onChange={e => this.chargerDonneesArtiste(e.id)}
+      />
+      {errorNom}
+    </FormGroup>)
+
     let errorNom =
       this.state.error.nom !== undefined ? (
         <Badge color="danger">{this.state.error.nom}</Badge>
@@ -205,28 +253,27 @@ class ModifArtiste extends Component {
       ) : (
         undefined
       );
+
     return (
       <div className="MainContent">
         <div className="scrollable">
           <Form className="formulaire">
             <h2>Modification d'un artiste</h2>
-            <FormGroup row>
-              <Label for="nom">Artiste </Label>
-              <Input
-                className={`${
-                  this.state.error.nom === undefined ? "" : "errorInput"
-                }`}
-                type="select"
-                id="nom"
-                //value={this.state.nom}
-                onChange={e => this.chargerDonneesArtiste(e)}
-              >
-                {this.creerSelects()}
-              </Input>
-              {errorNom}
-            </FormGroup>
+            
+            {toto}
 
             <hr />
+            <hr />
+
+            <FormGroup row>
+              <Label for="nouveauNom">Nouveau nom</Label>
+              <Input
+                type="text"
+                id="nouveauNom"
+                value={this.state.nouveauNom}
+                onChange={e => this.modifierState(e)}
+              />
+            </FormGroup>
 
             <FormGroup row>
               <Label for="dateCr">Date de création</Label>
@@ -301,4 +348,4 @@ class ModifArtiste extends Component {
   }
 }
 
-export default ModifArtiste;
+export default NewModifArtiste;

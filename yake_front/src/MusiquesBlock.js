@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Button } from 'reactstrap';
 import {Link} from 'react-router-dom';
+import NoteBlock from './NoteBlock.js'
 class MusiquesBlock extends Component{
     initMusic(sound){
         this.props.playlist.initMusic(sound);
@@ -24,6 +25,9 @@ class MusiquesBlock extends Component{
                         <div key={`${ele.titre}titre`}style={{textDecoration:'none',color:'black'}} className="titleMusicLine">{ele.titre}</div>
                         <Link to={`/showAlbum?id=${ele.idAlbum}`} key={`${ele.titre}album`}style={{textDecoration:'none',color:'black'}} className="albumMusicLine">{ele.nomAlbum}</Link>
                         <Link to={`/showArtiste?id=${ele.idGroupe}`} key={`${ele.titre}groupe`} style={{textDecoration:'none',color:'black'}} className="groupeMusicLine">{ele.nomGroupe}</Link>
+                        <div key={`${ele.titre}note`} className="noteMusicLine">
+                            <NoteBlock note={ele.note} id={ele._id} idAlbum={ele.idAlbum} idArtiste={ele.idGroupe} token={this.props.token} connected={this.props.token!==undefined && this.props.token!==""}name={`${ele.titre}${ele._id}`}/>
+                        </div>
                         <Button color="secondary" size="sm" onClick={()=>{this.initMusic(ele);}} className="playButtonMusicLine">{"Play"}</Button>
                         {buttonAddNext}
                     </div>
@@ -34,6 +38,7 @@ class MusiquesBlock extends Component{
                                     <div className="titleMusicLine">Titre</div>
                                     <div className="albumMusicLine">Album</div>
                                     <div className="groupeMusicLine">Groupe</div>
+                                    <div className="noteMusicLine">Note</div>
                                 </div>
                             </div>
                             <div className='headMusicLine'>

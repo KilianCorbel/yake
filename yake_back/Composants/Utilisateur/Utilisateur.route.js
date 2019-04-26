@@ -19,10 +19,14 @@ lienAjouter = '/user';
 lienModifier = '/user/:id';
 lienSupprimer = '/user/:id';
 lienGet = '/user/:id';
-
+lienConnexion = '/user/connection';
+validateToken = '/user/token'
+setNote = '/user/voteformusic'
 // routes vers le front react
 pageErreur ='';
 pageUser = '';
+
+let process = require('./Utilisateur.process.js');
 
 // -- ERROR
 app.get(lienErreur, function(req, res) {
@@ -36,6 +40,28 @@ app.get(lienAll, function (req, res) {
         res.send(users);
     })
 });
+
+
+//Generate Token or get token if already exist from connection
+app.get(lienConnexion,function(req,res){
+	process.connect(req.headers.username,req.headers.password)
+	.then(data=>res.status(200).json(data))
+	.catch(err=>res.status(500).json({err:err}));
+});
+
+//Test if token is valid
+app.get(validateToken,function(req,res){
+	process.isTokenValid(req.headers.token)
+	.then(data => res.status(200).json(data))
+	.catch(err =>res.status(500).json({err : err}));
+});
+
+app.post(setNote,function(req,res){
+	process.sendNote(req.headers.token,req.body.id,req.body.idAlbum,req.body.idArtiste,req.body.note)
+	.then(data => res.status(200).json(data))
+	.catch(err=>res.status(301).json({err : err}));
+});
+
 // -- CREATE
 app.post(lienAjouter, function (req, res) {
     let user = mongoose.model('Utilisateur');

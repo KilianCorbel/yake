@@ -30,11 +30,14 @@
 .groupeMusicLine{
   grid-area: c;
 }
-.playButtonMusicLine{
+.noteMusicLine{
   grid-area: d;
 }
-.playNextMusicLine{
+.playButtonMusicLine{
   grid-area: e;
+}
+.playNextMusicLine{
+  grid-area: f;
 }
 .musicLineContent:hover{
   background-color:#e6e4e4;
@@ -64,7 +67,7 @@
   justify-content:space-evenly;*/
   width : 70%;
   display : grid;
-  grid-template-areas:"a b c d e";
+  grid-template-areas:"a b c d e f";
   align-items: start;
   grid-gap:10px;
   grid-auto-columns: 150px;

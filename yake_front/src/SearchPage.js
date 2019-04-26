@@ -103,7 +103,7 @@ class SearchPage extends Component{
                 musicBlock=<div className="MusicList"><Spinner color="success"/></div>;
             }
             else if(this.state.musicList.length>0){
-                musicBlock=<MusiquesBlock musiques={this.state.musicList} playlist={this.props.playlist} refresh={this.props.refresh}/>;
+                musicBlock=<MusiquesBlock token={this.props.token} musiques={this.state.musicList} playlist={this.props.playlist} refresh={this.props.refresh}/>;
             }
             else{
                 musicBlock=<div className="MusicList"><p>Aucune musique trouvée</p></div>;

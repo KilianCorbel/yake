@@ -52,7 +52,7 @@ class AlbumWindow extends Component{
         if(this.state.album!==undefined && this.state.album.nom!== undefined && this.state.album.musiques!== undefined ){
             if(this.state.album.musiques.length>0){
                 musiqueList=this.state.album.musiques.map((ele)=>{ele.nomAlbum=this.state.album.nom;ele.idAlbum=this.state.album._id;ele.nomGroupe=this.state.album.nomGroupe;ele.idGroupe=this.state.album.idGroupe;return ele;})
-                musiqueList = (<MusiquesBlock refresh={this.props.refresh} musiques={this.state.album.musiques} playlist={this.props.playlist}/>);
+                musiqueList = (<MusiquesBlock token={this.props.token} refresh={this.props.refresh} musiques={musiqueList} playlist={this.props.playlist}/>);
             }
             musiqueList=(<div><h3>Musiques contenues dans cet album</h3><div className="MusicList">{musiqueList}</div></div>);   
             retour = (

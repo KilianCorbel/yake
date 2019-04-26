@@ -162,6 +162,7 @@ app.use(function (req, res, next) {
 // ---- Define routes
 app.use('/api/artistes', require('./Composants/Artiste/Artiste.route'));
 app.use('/api/playlists', require('./Composants/Playlist/Playlist.route'));
+app.use('/api/utilisateur', require('./Composants/Utilisateur/Utilisateur.route'));
 // app.use('/api/users', require('./Composants/Utilisateur/Utilisateur.process'));
 
 // ---- Start server

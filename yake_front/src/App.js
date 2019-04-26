@@ -19,8 +19,10 @@ import AjoutArtiste from './AjoutArtiste';
 import AjoutAlbum from './AjoutAlbum';
 import AjoutMusique from './AjoutMusique.js';
 import PlaylistInfoWindow from './PlaylistInfoWindow.js'
-import ModifArtiste from './ModifArtiste.js';
+import NewModifArtiste from './NewModifArtiste.js';
 import {Route,Switch, withRouter} from 'react-router-dom';
+import ConnectionPopOver from './ConnectionPopOver.js';
+import Cookies from 'universal-cookie';
 // import FooterMenu from './FooterMenu.js';
 //import {Form} from 'react-bootstrap';
 class App extends Component {
@@ -37,7 +39,9 @@ class App extends Component {
       searchParams:{},
       genreFilterInput:"",
       genreFilter:[],
-      hasSearch:false
+      hasSearch:false,
+      pseudo : "",
+      token : ""
     }
     this.searchWindow=this.searchWindow.bind(this);
     this.albumWindow=this.albumWindow.bind(this);
@@ -54,6 +58,32 @@ class App extends Component {
     this.submitInputValueGenre=this.submitInputValueGenre.bind(this);
     this.modifArtiste = this.modifArtiste.bind(this);
     this.addGenre=this.addGenre.bind(this);
+    this.saveUser = this.saveUser.bind(this);
+  }
+
+  componentDidMount(){
+    let c = new Cookies();
+    let t = c.get('token');
+    if( t !== undefined && t !== ""){
+        this.connect(t);
+    }
+  }
+  removeCookie(){
+    let c = new Cookies();
+    c.remove('token');
+  }
+  connect(token){
+    let header = new Headers({token : token,date : new Date().getTime()});
+    fetch('/api/utilisateur/user/token',{
+      method : 'GET',
+      headers : header,
+      mode: 'cors'
+    })
+    .then(data=>{if(!data.ok)throw Error("Incorrect Account"); return data.json();})
+    .then(data=>{
+        this.setState({pseudo : data.pseudo,token : data.token});
+    })
+    .catch(err=>{this.removeCookie()});
   }
 
   toggle() {
@@ -83,6 +113,15 @@ class App extends Component {
   }
   inputGenreFilterChange(evt){
     this.setState({genreFilterInput:evt.target.value});
+  }
+  saveUser(pseudo,token){
+    if(token === "")
+      this.removeCookie();
+    else{
+      let c = new Cookies();
+      c.set('token',token);
+    }
+    this.setState({pseudo : pseudo,token : token});
   }
   submitInputValue(evt){
     if(evt.key === "Enter" && evt.target.value.replace(/ /g,"").length>0){
@@ -136,7 +175,7 @@ class App extends Component {
     return false;
   }
   searchWindow(){
-    return <SearchPage change={this.hasSearch()} searchParams={this.state.searchParams} refresh={()=>{this.setState({});}} playlist={this.state.playlist}/>;
+    return <SearchPage token={this.state.token} change={this.hasSearch()} searchParams={this.state.searchParams} refresh={()=>{this.setState({});}} playlist={this.state.playlist}/>;
   }
   homeWindow(){
     return <HomeWindow/>
@@ -148,7 +187,7 @@ class App extends Component {
     return <TendancesWindow/>
   }
   modifArtiste(){
-    return <ModifArtiste/>
+    return <NewModifArtiste/>
   }
   playlistWindow(){
     return <PlaylistInfoWindow playlist={this.state.playlist} refresh={()=>{this.setState({});}}/>
@@ -163,7 +202,7 @@ class App extends Component {
     return <ArtisteWindow/>
   }
   albumWindow(){
-    return <AlbumWindow refresh={()=>{this.setState({});}} playlist={this.state.playlist}/>
+    return <AlbumWindow token={this.state.token} refresh={()=>{this.setState({});}} playlist={this.state.playlist}/>
   }
   ajoutArtiste(){
     return <AjoutArtiste/>
@@ -223,7 +262,7 @@ class App extends Component {
                 </PopoverBody>
               </Popover>
           </div>
-          <div className="RightHeaderBlock">{"Connexion"}</div>
+          <div className="RightHeaderBlock"><ConnectionPopOver pseudo={this.state.pseudo} token={this.state.token} saveUser={this.saveUser}/></div>
         </div>
         <div className="FullBody">
           <div className="LeftMenuBar">

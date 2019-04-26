@@ -1,0 +1,16 @@
+.starContainer{
+    display : flex;
+    flex-flow : row;
+    cursor: pointer;
+}
+
+.star{
+    flex : 1 0 0;
+    font-size: larger;
+    color: #000000;
+}
+
+.starColored{
+    flex : 1 0 0;
+    color: #9edd37;
+}

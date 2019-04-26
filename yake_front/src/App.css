@@ -50,6 +50,9 @@
 
 .RightHeaderBlock{
     flex: 2 0 0;
+    display : flex;
+    flex-flow: column;
+    height: 100%;
 }
 
 .FullBody{

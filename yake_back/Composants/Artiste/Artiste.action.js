@@ -114,8 +114,11 @@ exports.filterMusiqueFromResult = function(artiste,genres,name){
 					musicObj.idGroupe = alb.idGroupe;
 					musicObj.titre=mus.titre;
 					musicObj._id=mus._id;
+					musicObj.note = mus.notes;
 					return musicObj;
 				}).reduce((prev,ele)=>prev.concat(ele),[])).reduce((prev,ele)=>prev.concat(ele),[]).filter(ele=>{if(genre===undefined)return true;return containsAtLeastOne(ele.genres,genre)}).filter(ele=>ele.titre.toLowerCase().includes(name.toLowerCase()));
+				if(mus !== undefined)
+					mus.map(ele=>{ele.note = Math.floor(ele.note.reduce((prev,elem)=>prev+elem.note,0)/ele.note.length);return ele;});
 				resolve(mus);
 		}
 		else{
@@ -180,7 +183,6 @@ exports.getArtisteHavingAlbumWithId = function(id){
 };
 
 exports.formatageBlocAlbumPourEnvoi = function(artiste,id){
-	console.log(artiste);
 	return new Promise(function(resolve,reject){
 		if(artiste){
 				artiste = artiste.map(arti=>{arti.albums=arti.albums.filter(album=>album._id.toString()===id);return arti;});
@@ -188,6 +190,15 @@ exports.formatageBlocAlbumPourEnvoi = function(artiste,id){
 					arti.albums.map(alb=>{let retour = {};retour.musiques=alb.musiques;retour.genres=alb.genres;retour.datePublication=alb.datePublication;retour._id=alb._id;retour.nom = alb.nom;retour.nomGroupe = arti.nom;retour.idGroupe=arti._id;return retour})
 					.reduce((prev,ele)=>prev.concat(ele),[])
 				).reduce((prev,ele)=>prev.concat(ele),[])[0];
+				artiste.musiques = artiste.musiques.map(mus=>{
+					let note = Math.floor(mus.notes.reduce((prev,ele)=>prev+ele.note,0)/mus.notes.length);
+					mus.note = note;
+					let returnObj = {};
+					returnObj._id=mus._id;
+					returnObj.titre=mus.titre;
+					returnObj.note=note;
+					return returnObj;
+				});
 				resolve(artiste);
 		}
 		else{
