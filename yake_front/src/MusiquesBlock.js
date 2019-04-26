@@ -26,7 +26,7 @@ class MusiquesBlock extends Component{
                         <Link to={`/showAlbum?id=${ele.idAlbum}`} key={`${ele.titre}album`}style={{textDecoration:'none',color:'black'}} className="albumMusicLine">{ele.nomAlbum}</Link>
                         <Link to={`/showArtiste?id=${ele.idGroupe}`} key={`${ele.titre}groupe`} style={{textDecoration:'none',color:'black'}} className="groupeMusicLine">{ele.nomGroupe}</Link>
                         <div key={`${ele.titre}note`} className="noteMusicLine">
-                            <NoteBlock note={ele.note} id={ele._id} idAlbum={ele.idAlbum} idArtiste={ele.idGroupe} token={this.props.token} connected={this.props.token!==undefined && this.props.token!==""}name={`${ele.titre}${ele._id}`}/>
+                            <NoteBlock note={ele.note} id={ele._id} idAlbum={ele.idAlbum} idArtiste={ele.idGroupe} token={this.props.token} name={`${ele.titre}${ele._id}`}/>
                         </div>
                         <Button color="secondary" size="sm" onClick={()=>{this.initMusic(ele);}} className="playButtonMusicLine">{"Play"}</Button>
                         {buttonAddNext}

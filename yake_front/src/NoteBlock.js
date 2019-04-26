@@ -17,7 +17,7 @@ class NoteBlock extends Component{
     }
 
     sendNote(note){
-        if(this.props.connected){
+        if(this.props.token !== undefined && this.props.token !== ""){
             if(note > 5)
                 note = 5;
             let header = new Headers({token : this.props.token,"Content-Type": "application/json"});
@@ -50,7 +50,9 @@ class NoteBlock extends Component{
                 }
             }
         }*/
-        this.setState({choosenNote:note});
+        if(this.props.token !== undefined && this.props.token !== ""){
+            this.setState({choosenNote:note});
+        }
     }
 
     leaveStar(){
@@ -68,7 +70,9 @@ class NoteBlock extends Component{
             }
         }
         */
-       this.setState({choosenNote : undefined});
+        if(this.props.token !== undefined && this.props.token !== ""){
+            this.setState({choosenNote : undefined});
+        }
     }
 
     render(){
