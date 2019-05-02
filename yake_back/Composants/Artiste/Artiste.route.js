@@ -94,7 +94,7 @@ app.post(addMusique,function(req,res){
 app.get(getAlbumById, function(req, res) {
 	process.getAlbumById(req.params)
     .then(result=>res.send(result))
-	.catch(err=>res.status(500).json({}));
+	.catch(err=>res.status(500).json({err:err}));
 });
 
 // -- GET album/:name

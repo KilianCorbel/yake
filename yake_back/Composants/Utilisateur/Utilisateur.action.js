@@ -72,7 +72,7 @@ exports.sendNoteFromUser = function(user,id,idAlbum,idArtiste,note){
 						if(data !== undefined)
 							data = data[0].musiques.filter(ele=>ele._id==id);
 						if(data != undefined)
-							data=Math.floor(data[0].notes.reduce((prev,ele)=>prev+ele.note,0)/data[0].notes.length);
+							data=data[0].notes.reduce((prev,ele)=>prev+ele.note,0)/data[0].notes.length;
 						console.log(data);
 						resolve({note:data});
 				}

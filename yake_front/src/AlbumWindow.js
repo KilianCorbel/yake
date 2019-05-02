@@ -2,6 +2,7 @@ import React , { Component } from 'react';
 import './MainContent.css';
 import './Scrollable.css';
 import './AlbumWindow.css';
+import NoteBlock from './NoteBlock.js';
 import MusiquesBlock from './MusiquesBlock.js';
 import { Button } from 'reactstrap';
 import {Link} from 'react-router-dom';
@@ -63,6 +64,7 @@ class AlbumWindow extends Component{
                         {`Publié en ${this.state.album.datePublication} par :`}
                         <Link style={{textDecoration:'none',color:'black'}} to={`/showArtiste?id=${this.state.album.idGroupe}`}><h5 className="clicable">{`${this.state.album.nomGroupe}`}</h5></Link>
                         <p>{this.state.album.genres.reduce((accu,ele,ind)=>this.state.album.genres.length-1===ind?accu+ele:accu+ele+",","")}</p>
+                        <NoteBlock note={this.state.album.note} token=""/>
                     </div>
                     <div className="AlbumImg">
                         <img src={`api/artistes/albums/stream/${this.state.album._id}`} alt="noImage" key={"album"}></img>

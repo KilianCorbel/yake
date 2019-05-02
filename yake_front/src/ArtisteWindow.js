@@ -2,6 +2,7 @@ import React , { Component } from 'react';
 import './MainContent.css';
 import './Scrollable.css';
 import AlbumsBlock from './AlbumsBlock.js'
+import NoteBlock from './NoteBlock.js';
 class ArtisteWindow extends Component{
     constructor(props){
         super(props);
@@ -33,6 +34,7 @@ class ArtisteWindow extends Component{
                     <p>{
                         genresArtiste.reduce((accu,ele,ind)=>genresArtiste.length-1===ind?accu+ele:accu+ele+",","")}
                         </p>
+                    <NoteBlock note={this.state.artiste.note} token=""/>
                     <div className="Content">{this.state.artiste.biographie}</div>  
                     <div className="AlbumList">
                     <h3>{"Albums de l'artiste"}</h3>

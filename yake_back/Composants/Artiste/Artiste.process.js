@@ -61,7 +61,7 @@ exports.getAlbumById = function(params){
 	return new Promise(function(resolve,reject){
 		Actions.getArtisteHavingAlbumWithId(params.id)
 		.then(result=>Actions.formatageBlocAlbumPourEnvoi(result,params.id))
-		.then(result=>resolve(result))
+		.then(result=>resolve(result),err=>reject(err))
 		.catch(err=>reject(err));
 	});
 }
@@ -148,7 +148,8 @@ exports.getArtisteCover = function(id){
 exports.findArtisteById = function(id){
 	return new Promise(function(resolve,reject){
 		Actions.getArtisteById(id)
-		.then(result=>resolve(result))
+		.then(result=>Actions.formatageArtistePourEnvoi(result))
+		.then(result=>resolve(result),err=>reject(err))
 		.catch(err=>reject(err));
 	});	
 }

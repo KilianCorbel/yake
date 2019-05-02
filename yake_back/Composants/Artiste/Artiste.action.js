@@ -118,7 +118,7 @@ exports.filterMusiqueFromResult = function(artiste,genres,name){
 					return musicObj;
 				}).reduce((prev,ele)=>prev.concat(ele),[])).reduce((prev,ele)=>prev.concat(ele),[]).filter(ele=>{if(genre===undefined)return true;return containsAtLeastOne(ele.genres,genre)}).filter(ele=>ele.titre.toLowerCase().includes(name.toLowerCase()));
 				if(mus !== undefined)
-					mus.map(ele=>{ele.note = Math.floor(ele.note.reduce((prev,elem)=>prev+elem.note,0)/ele.note.length);return ele;});
+					mus.map(ele=>{ele.note = ele.note.reduce((prev,elem)=>prev+elem.note,0)/ele.note.length;return ele;});
 				resolve(mus);
 		}
 		else{
@@ -179,32 +179,69 @@ exports.getAlbumById = function(id){
 
 exports.getArtisteHavingAlbumWithId = function(id){
 	let artiste = mongoose.model('Artiste');
-	return artiste.find({'albums._id' : id});
+	return artiste.findOne({'albums._id' : id});
 };
 
+exports.formatageArtistePourEnvoi = function(artiste){
+	if(artiste){
+		let artisteRenvoi = {};
+		artisteRenvoi.albums = artiste.albums;
+		artisteRenvoi.dateCreation = artiste.dateCreation;
+		artisteRenvoi.dataFin = artiste.dateFin;
+		artisteRenvoi.nom = artiste.nom;
+		artisteRenvoi.biographie = artiste.biographie;
+		artisteRenvoi._id = artiste._id;
+		if(artisteRenvoi.albums && artisteRenvoi.albums.length>0){
+			let albums = artisteRenvoi.albums.map(ele=>exports.formatageBlocAlbumPourEnvoi(artisteRenvoi,ele._id.toString()));
+			artisteRenvoi.albums = albums.map(ele=>{ele.musiques = undefined; return ele;});
+			artisteRenvoi.note = albums.filter(ele=>ele.note!==undefined);
+			if(artisteRenvoi.note && artisteRenvoi.note.length>0){
+				artisteRenvoi.note=artisteRenvoi.note.reduce((prev,ele)=>prev+ele.note,0)/artisteRenvoi.note.length;
+			}
+			else{
+				artisteRenvoi.note = undefined;
+			}
+		}
+		return artisteRenvoi;
+	}
+	else{
+		throw Error("Aucun artiste trouvé");
+	}
+}
+
 exports.formatageBlocAlbumPourEnvoi = function(artiste,id){
-	return new Promise(function(resolve,reject){
 		if(artiste){
-				artiste = artiste.map(arti=>{arti.albums=arti.albums.filter(album=>album._id.toString()===id);return arti;});
-				artiste = artiste.map(arti=>
-					arti.albums.map(alb=>{let retour = {};retour.musiques=alb.musiques;retour.genres=alb.genres;retour.datePublication=alb.datePublication;retour._id=alb._id;retour.nom = alb.nom;retour.nomGroupe = arti.nom;retour.idGroupe=arti._id;return retour})
-					.reduce((prev,ele)=>prev.concat(ele),[])
-				).reduce((prev,ele)=>prev.concat(ele),[])[0];
-				artiste.musiques = artiste.musiques.map(mus=>{
-					let note = Math.floor(mus.notes.reduce((prev,ele)=>prev+ele.note,0)/mus.notes.length);
-					mus.note = note;
+				let album = artiste.albums.filter(album=>album._id.toString()===id);
+				album = album.map(alb=>{
+						let retour = {};
+						retour.musiques=alb.musiques;
+						retour.genres=alb.genres;
+						retour.datePublication=alb.datePublication;
+						retour._id=alb._id;retour.nom = alb.nom;
+						retour.nomGroupe = artiste.nom;
+						retour.idGroupe=artiste._id;
+						return retour;
+					})[0];
+				album.musiques = album.musiques.map(mus=>{
+					let note = undefined;
+					if(mus.notes.length>0){
+						note = Math.floor(mus.notes.reduce((prev,ele)=>prev+ele.note,0)/mus.notes.length);
+					}
 					let returnObj = {};
 					returnObj._id=mus._id;
 					returnObj.titre=mus.titre;
 					returnObj.note=note;
 					return returnObj;
 				});
-				resolve(artiste);
+				album.note = album.musiques.filter(ele=>ele.note!=undefined);
+				if(album.note.length > 0){
+					album.note = album.note.reduce((prev,ele)=>prev+ele.note,0)/album.note.length;
+				}
+				return album;
 		}
 		else{
-			reject("Aucun album trouve");
+			throw Error("Aucun album trouve");
 		}
-	});
 };
 
 exports.formatageBlocsArtistepourEnvoi = function(artistes){
