@@ -13,13 +13,13 @@ app.use(bodyParser.urlencoded({extended : true}));
 // -- Load model
 const Model = require('./Playlist.model');
 
-exports.getAllPlaylists = function(res){
+exports.getAllPlaylists = function(res) {
     let playlist = mongoose.model('Playlist');
     
     return playlist.find({}, 'playlists');
 }
 
-exports.getPlaylistById = function(id){
+exports.getPlaylistById = function(id) {
     let playlist = mongoose.model('Playlist');
     return playlist.findOne({_id : id});
 }

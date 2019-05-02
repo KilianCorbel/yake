@@ -1,12 +1,12 @@
 // -- Load dependencies
-let express = require('express'),
+const express = require('express'),
     app = express(),
     mongoose = require('mongoose'),
     session = require('cookie-session');
 
 // -- Middleware
 // - body-parser needed to catch and to treat information inside req.body
-let bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended : true}));
 app.use(session({secret: 'todotopsecret'}))
