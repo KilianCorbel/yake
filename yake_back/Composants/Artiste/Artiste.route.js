@@ -30,6 +30,7 @@ const postArtiste = '/';
 // const postAlbum = '/artiste/album';
 // const postMusique = "/artiste/album/musique";
 const putArtiste = '/:id';
+const putAlbum = '/updateAlbum'
 // const putAlbum = '/artiste/album/:id';
 // const putMusique = '/artiste/album/musique/:id'
 const deleteArtiste = '/:id';
@@ -397,6 +398,21 @@ app.get(getArtisteById, function (req, res) {
         }
     },(err)=>{
         res.send(err);
+    });
+});
+
+
+//Modification d'un album à partir de son id
+app.put(putAlbum, function (req, res) {
+    console.log("entree");
+    mongoose.model('Artiste').updateOne({_id : req.body._id, "albums._id" : req.body.albums._id}, {$set : req.body}, (err, updatedAlbum)=>{
+       if(err){
+           console.log("erreur : " + err);
+            res.send(err);
+       }else{
+           console.log("reussi " + updatedAlbum);
+            res.send(updatedAlbum);
+       }
     });
 });
 

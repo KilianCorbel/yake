@@ -18,6 +18,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import AjoutArtiste from './AjoutArtiste';
 import NewModifArtiste from './NewModifArtiste';
 import AjoutAlbum from './AjoutAlbum';
+import ModifAlbum from './ModifAlbum';
 import AjoutMusique from './AjoutMusique.js';
 import PlaylistInfoWindow from './PlaylistInfoWindow.js'
 import {Route,Switch, withRouter} from 'react-router-dom';
@@ -163,6 +164,9 @@ class App extends Component {
   modifArtiste(){
     return <NewModifArtiste/>
   }
+  modifAlbum(){
+    return <ModifAlbum/>
+  }
 
 
   render() {
@@ -226,6 +230,7 @@ class App extends Component {
             <Menu clicable={true} to="/addAlbum" value="Ajout album"/>
             <Menu clicable={true} to="/addMusic" value="Ajout musique"/>
             <Menu clicable={true} to="/updateArtiste" value="Modif artiste"/>
+            <Menu clicable={true} to="/updateAlbum" value="Modif album"/>
             <Menu clicable={false} onClick={()=>{}} value=""/>
           </div>
           <div className="Body">
@@ -240,6 +245,7 @@ class App extends Component {
                   <Route path='/tendances' component={this.tendancesWindow}/>
                   <Route path='/myMusic' component={this.mesMusiquesWindow}/>
                   <Route path='/updateArtiste' component={this.modifArtiste}/>
+                  <Route path='/updateAlbum' component={this.modifAlbum}/>
                   <Route path='/others' component={this.autresWindow}/>
                   <Route path='/myPlaylists' component={this.mesPlaylistsWindow}/>
                   <Route path='/' component={show}/>

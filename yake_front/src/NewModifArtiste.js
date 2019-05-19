@@ -73,7 +73,7 @@ class NewModifArtiste extends Component {
   }
 
   getArtistes() {
-    fetch("/api/artistes/", {
+    fetch("/api/artistes", {
       method: "GET",
       headers: new Headers({
         "Content-Type": "application/json"
